@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:where_to_eat/providers/auth.dart';
 
 class SettingsScreen extends StatelessWidget {
   /////////////////////////////////////////////////////////////////////////////////////
   ///
   ///             Consts and vars
-  static const routeName = 'settings';
+  ///
+  /////////////////////////////////////////////////////////////////////////////////////
+  static const routeName = '/settings';
 
   /////////////////////////////////////////////////////////////////////////////////////
   ///
   ///     Functions
+  ///
+  ////////////////////////////////////////////////////////////////////////////////////
   void showChangePassword(BuildContext context) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -123,9 +129,13 @@ class SettingsScreen extends StatelessWidget {
 
   /////////////////////////////////////////////////////////////////////////////////////
   ///
-  ///     Build
+  ///     Build Method
+  ///
+  ////////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    final authenticator = Provider.of<Auth>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -177,7 +187,11 @@ class SettingsScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed('/');
+
+                authenticator.logout();
+              },
               child: Text('Logout'),
             )
           ],

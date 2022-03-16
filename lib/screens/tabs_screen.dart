@@ -8,8 +8,8 @@ import './my_profile_screen.dart';
 import './news_feed_screen.dart';
 
 class TabsScreen extends StatefulWidget {
+  static const routeName = '/tabs-screen';
   const TabsScreen({Key? key}) : super(key: key);
-
   @override
   State<TabsScreen> createState() => _TabsScreenState();
 }
@@ -18,12 +18,18 @@ class _TabsScreenState extends State<TabsScreen> {
   ///////////////////////////////////////////////////////////////////
   ///
   ///           Varbiables and consts
+  ///
+////////////////////////////////////////////////////////////////////////////////
+
   List<Map<String, Object>> _pages = [];
   int _selectedPageIndex = 0;
 
 ///////////////////////////////////////////////////////////////////
   ///
   ///           Functions
+  ///
+////////////////////////////////////////////////////////////////////////////////
+
   void _selectPage(int index) {
     print(index);
     setState(() {
@@ -34,6 +40,9 @@ class _TabsScreenState extends State<TabsScreen> {
   ///////////////////////////////////////////////////////////////////
   ///
   ///           Overrides
+  ///
+////////////////////////////////////////////////////////////////////////////////
+
   @override
   initState() {
     _pages = [
@@ -59,7 +68,8 @@ class _TabsScreenState extends State<TabsScreen> {
 ///////////////////////////////////////////////////////////////////
   ///
   ///           Build
-
+  ///
+////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,8 +88,8 @@ class _TabsScreenState extends State<TabsScreen> {
             label: 'News Feed',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'My Profile',
+            icon: Icon(Icons.person),
+            label: 'Me',
           ),
         ],
         currentIndex: _selectedPageIndex,

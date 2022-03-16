@@ -1,29 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:where_to_eat/data/dummy_data.dart';
-import 'package:where_to_eat/widgets/new_post.dart';
+import 'package:where_to_eat/screens/new_review_screen.dart';
 import 'package:where_to_eat/widgets/post.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
 class NewsFeedScreen extends StatelessWidget {
   const NewsFeedScreen({Key? key}) : super(key: key);
-
-  _startAddPost(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.75,
-          decoration: BoxDecoration(),
-          child: GestureDetector(
-            onTap: null,
-            child: NewPost(),
-            behavior: HitTestBehavior.opaque,
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +27,8 @@ class NewsFeedScreen extends StatelessWidget {
                   DUMMY_Reviews)), // This trailing comma makes auto-formatting nicer for build methods.
       floatingActionButton: IconButton(
           icon: Icon(Icons.add),
-          onPressed: () => _startAddPost(context),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(NewReviewScreen.routeName),
           color: Theme.of(context).accentColor,
           iconSize: 45.0),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

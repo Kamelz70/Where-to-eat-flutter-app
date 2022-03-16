@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:where_to_eat/data/dummy_data.dart';
-import 'package:where_to_eat/widgets/new_post.dart';
+import 'package:where_to_eat/widgets/new_review_screen/new_review.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
+import '../widgets/new_review_screen/new_review.dart';
+
 class RestaurantPageScreen extends StatelessWidget {
-  static const routeName = 'restaurant-page';
+  static const routeName = '/restaurant-page';
 
   //for titles like steps, ingredients
   Widget buildSectionTitle(BuildContext context, String text) {
@@ -44,7 +46,7 @@ class RestaurantPageScreen extends StatelessWidget {
           decoration: BoxDecoration(),
           child: GestureDetector(
             onTap: null,
-            child: NewPost(),
+            child: NewReview(),
             behavior: HitTestBehavior.opaque,
           ),
         );

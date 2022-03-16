@@ -4,7 +4,7 @@ import '../widgets/restaurant_item.dart';
 
 class WishListScreen extends StatelessWidget {
   const WishListScreen({Key? key}) : super(key: key);
-  static const routeName = 'wishlist';
+  static const routeName = '/wishlist';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

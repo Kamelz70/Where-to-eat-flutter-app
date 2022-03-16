@@ -1,0 +1,291 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+class NewReview extends StatefulWidget {
+  @override
+  _NewReviewState createState() => _NewReviewState();
+}
+
+class _NewReviewState extends State<NewReview> {
+  //////////////////////////////////////////////////////////////////////////
+  ///
+  ///       Consts and vars
+  ///
+//////////////////////////////////////////////////////////////////////////
+  //final amountController = TextEditingController();
+  static const newReviewImagesPath = 'assets/images/new-review-images/';
+
+//////////////////////////////////////////////////////////////////////////
+  ///
+  ///       Functions
+  ///
+//////////////////////////////////////////////////////////////////////////
+//Submit data function
+  void _submitData() {
+    //String titletext = titleController.text;
+    //double amount = double.parse(amountController.text);
+
+    //widget.newTxHandler(titleController.text, double.parse(amountController.text));
+    Navigator.of(context).pop();
+  }
+
+//////////////////////////////////////////////////////////////////////////
+  ///
+  ///       Build Method
+  ///
+//////////////////////////////////////////////////////////////////////////
+  @override
+  Widget build(BuildContext context) {
+    final _starSize = MediaQuery.of(context).size.height * 0.05;
+    return ListView(
+      padding: EdgeInsets.only(
+          top: 15,
+          left: 15,
+          right: 15,
+          bottom: (MediaQuery.of(context).viewInsets.bottom) + 10),
+      children: <Widget>[
+        Form(
+          key: null,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Info',
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.headline5),
+              SizedBox(height: 20),
+              //restarant,branch inputs container
+              //restarant,branch column
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.cover,
+                    child: Text("Restaurant",
+                        style: Theme.of(context).textTheme.headline4),
+                  ),
+                  Container(
+                    width: 200,
+                    child: TextFormField(
+                      controller: null,
+                      onSaved: (_) => {},
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.cover,
+                    child: Text(
+                      "Branch",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                  ),
+                  Container(
+                    width: 200,
+                    child: TextFormField(
+                      controller: null,
+                      onSaved: (_) => {},
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Text('Rating',
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.headline5),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          height: 26,
+                          child: Image.asset(
+                            newReviewImagesPath + 'price.png',
+                          ),
+                        ),
+                        Text('Price'),
+                        Container(
+                          width: 30,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(counterText: ""),
+                            maxLength: 2,
+                            validator: (value) {
+                              int num = int.parse(value!);
+                              if (num < 0 || num > 10) {
+                                return 'Please enter a rating out of 10 only';
+                              }
+                            },
+                          ),
+                        ),
+                        Text('/10'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 26,
+                          child: Image.asset(
+                            newReviewImagesPath + 'taste.png',
+                          ),
+                        ),
+                        Text('Taste'),
+                        Container(
+                          width: 30,
+                          child: TextFormField(
+                            decoration: InputDecoration(counterText: ""),
+                            keyboardType: TextInputType.number,
+                            maxLength: 2,
+                            validator: (value) {
+                              int num = int.parse(value!);
+                              if (num < 0 || num > 10) {
+                                return 'Please enter a rating out of 10 only';
+                              }
+                            },
+                          ),
+                        ),
+                        Text('/10'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          height: 26,
+                          child: Image.asset(
+                            newReviewImagesPath + 'quantity.png',
+                          ),
+                        ),
+                        Text('Quantity'),
+                        Container(
+                          width: 30,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(counterText: ""),
+                            maxLength: 2,
+                            validator: (value) {
+                              int num = int.parse(value!);
+                              if (num < 0 || num > 10) {
+                                return 'Please enter a rating out of 10 only';
+                              }
+                            },
+                          ),
+                        ),
+                        Text('/10'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 26,
+                          child: Image.asset(
+                            newReviewImagesPath + 'service.png',
+                          ),
+                        ),
+                        Text('Service'),
+                        Container(
+                          width: 30,
+                          child: TextFormField(
+                            decoration: InputDecoration(counterText: ""),
+                            keyboardType: TextInputType.number,
+                            maxLength: 2,
+                            validator: (value) {
+                              int num = int.parse(value!);
+                              if (num < 0 || num > 10) {
+                                return 'Please enter a rating out of 10 only';
+                              }
+                            },
+                          ),
+                        ),
+                        Text('/10'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 50),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: "Describe your Experience",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                maxLines: 4,
+                maxLengthEnforcement: MaxLengthEnforcement.none,
+                keyboardType: TextInputType.multiline,
+              ),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        ),
+        SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              flex: 4,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text("Did you like the restaurant?",
+                    style: Theme.of(context).textTheme.headline5),
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Icon(Icons.thumb_up, color: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(10),
+                  primary: Colors.green, // <-- Button color
+                ),
+              ),
+            ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Icon(Icons.thumb_down, color: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(10),
+                  primary: Colors.red, // <-- Button color
+                ),
+              ),
+            ),
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+        SizedBox(height: MediaQuery.of(context).viewInsets.bottom)
+      ],
+    );
+  }
+}
