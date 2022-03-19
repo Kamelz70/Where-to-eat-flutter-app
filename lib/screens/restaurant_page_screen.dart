@@ -46,7 +46,7 @@ class RestaurantPageScreen extends StatelessWidget {
           decoration: BoxDecoration(),
           child: GestureDetector(
             onTap: null,
-            child: NewReview(),
+            child: null,
             behavior: HitTestBehavior.opaque,
           ),
         );

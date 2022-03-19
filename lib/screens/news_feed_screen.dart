@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:where_to_eat/data/dummy_data.dart';
 import 'package:where_to_eat/screens/new_review_screen.dart';
-import 'package:where_to_eat/widgets/post.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
 class NewsFeedScreen extends StatelessWidget {

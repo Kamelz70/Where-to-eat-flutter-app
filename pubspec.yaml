@@ -39,7 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.4
   shared_preferences: ^2.0.13
-  
+  smooth_page_indicator: ^1.0.0+2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -59,6 +59,7 @@ flutter:
   assets:     
          - assets/images/explore-screen-images/
          - assets/images/new-review-images/
+         - assets/images/item-review-images/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

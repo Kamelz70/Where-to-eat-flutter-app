@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:where_to_eat/models/review_item.dart';
 
+import '../data/dummy_data.dart';
 import '../widgets/items_review_screen/add_Item_review.dart';
+import '../widgets/reviewed_food_item.dart';
+import '../widgets/reviewed_food_items_list.dart';
+import '../widgets/reviews_list.dart';
 
 class ItemsReviewScreen extends StatefulWidget {
   static const routeName = '/items-review-page';
@@ -48,9 +53,11 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
         children: [
           Expanded(
             child: Card(
+              elevation: 7,
               margin: EdgeInsets.all(20),
               child: ListView(
-                padding: const EdgeInsets.all(20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,6 +73,26 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
                       )
                     ],
                   ),
+                  ReviewedFoodItemsList([
+                    ReviewedFoodItem(
+                        title: 'Stero Trio',
+                        price: 20,
+                        rating: 5,
+                        foodType: FoodType.FOOD,
+                        description: 'a good plate'),
+                    ReviewedFoodItem(
+                        title: 'Stero Trio',
+                        price: 20,
+                        rating: 5,
+                        foodType: FoodType.FOOD,
+                        description: 'a good plate'),
+                    ReviewedFoodItem(
+                        title: 'Stero Trio',
+                        price: 20,
+                        rating: 5,
+                        foodType: FoodType.FOOD,
+                        description: 'a good plate'),
+                  ]),
                 ],
               ),
             ),

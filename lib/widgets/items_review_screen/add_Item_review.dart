@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-enum Food { FOOD, BEVERAGE }
+import '../../models/review_item.dart';
 
 class AddItemReview extends StatefulWidget {
   const AddItemReview({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class AddItemReview extends StatefulWidget {
 }
 
 class _AddItemReviewState extends State<AddItemReview> {
-  Food? _val;
+  FoodType? _val;
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -35,28 +35,28 @@ class _AddItemReviewState extends State<AddItemReview> {
                     child: Text("Type",
                         style: Theme.of(context).textTheme.headline4),
                   ),
-                  Radio<Food>(
+                  Radio<FoodType>(
                     fillColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
                     focusColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
-                    value: Food.FOOD,
+                    value: FoodType.FOOD,
                     groupValue: _val,
-                    onChanged: (Food? value) {
+                    onChanged: (FoodType? value) {
                       setState(() {
                         _val = value;
                       });
                     },
                   ),
                   Text('Food', style: Theme.of(context).textTheme.headline4),
-                  Radio<Food>(
+                  Radio<FoodType>(
                     fillColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
                     focusColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
-                    value: Food.BEVERAGE,
+                    value: FoodType.BEVERAGE,
                     groupValue: _val,
-                    onChanged: (Food? value) {
+                    onChanged: (FoodType? value) {
                       setState(() {
                         _val = value;
                       });

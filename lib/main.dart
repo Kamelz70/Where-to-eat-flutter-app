@@ -15,10 +15,7 @@ import 'package:where_to_eat/screens/wish_list_screen.dart';
 import 'screens/Items_review_screen.dart';
 ////////////////////////////////////////////////////////////////
 ///   Widgets
-import 'widgets/new_review.dart';
-import 'package:where_to_eat/widgets/post.dart';
 
-import './screens/my_profile_screen.dart';
 ///////////////////////////////////////////////////////////////
 ///   Screens
 import 'Screens/tabs_screen.dart';
@@ -48,12 +45,17 @@ class _MyAppState extends State<MyApp> {
         builder: (ctx, authenticator, _) => MaterialApp(
           title: 'Where to eat?',
           theme: ThemeData(
+            appBarTheme: AppBarTheme(
+                color: Color.fromARGB(249, 255, 255, 255),
+                titleTextStyle: Theme.of(context).textTheme.headline6,
+                foregroundColor: Colors.orange),
+
             // This is the theme of your application.
             colorScheme:
                 Theme.of(context).colorScheme.copyWith(primary: Colors.orange),
             textTheme: ThemeData.light().textTheme.copyWith(
                   bodyText1: TextStyle(color: Color.fromRGBO(20, 55, 55, 1)),
-                  bodyText2: TextStyle(color: Color.fromRGBO(20, 55, 55, 1)),
+
                   headline3: TextStyle(
                     fontSize: 20,
                     fontFamily: 'RobotoCondensed',
@@ -70,6 +72,11 @@ class _MyAppState extends State<MyApp> {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'RobotoCondensed',
                     color: Colors.orange,
+                    //Theme.of(context).colorScheme.primary,
+                  ),
+                  bodyText2: TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'RobotoCondensed',
                     //Theme.of(context).colorScheme.primary,
                   ),
                 ),

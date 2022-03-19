@@ -3,9 +3,32 @@ import '../widgets/new_review_screen/new_review.dart';
 import 'Items_review_screen.dart';
 
 class NewReviewScreen extends StatelessWidget {
+  /////////////////////////////////////////////////////////////////////////
+  ///
+  ///     Vars and consts
+  ///
+  ////////////////////////////////////////////////////////////////////////////////
   NewReviewScreen({Key? key}) : super(key: key);
   static const routeName = '/new-review-page';
 
+  final _formKey = GlobalKey<FormState>();
+  /////////////////////////////////////////////////////////////////////////
+  ///
+  ///     Functions
+  ///
+  ////////////////////////////////////////////////////////////////////////////////
+  void _fromSubmit(BuildContext context) {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    Navigator.of(context).pop();
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  ///
+  ///     Build method
+  ///
+  ////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,8 +40,9 @@ class NewReviewScreen extends StatelessWidget {
           Flexible(
             fit: FlexFit.loose,
             child: Card(
+              elevation: 7,
               margin: EdgeInsets.all(20),
-              child: NewReview(),
+              child: NewReview(_formKey),
             ),
           ),
           SizedBox(height: 10),
@@ -35,7 +59,7 @@ class NewReviewScreen extends StatelessWidget {
               ElevatedButton(
                 child: Text('Post'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  _fromSubmit(context);
                 },
               ),
               SizedBox(width: 20),
