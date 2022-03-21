@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/new_review_provider.dart';
 
 class NewReview extends StatefulWidget {
   final GlobalKey<FormState> _formKey;
-  Map<String, dynamic> _formData;
-  NewReview(this._formKey, this._formData);
+  NewReview(this._formKey);
   @override
   _NewReviewState createState() => _NewReviewState();
 }
@@ -41,6 +43,8 @@ class _NewReviewState extends State<NewReview> {
 //////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    final newPostProvider = Provider.of<NewReviewProvider>(context);
+
     String? _ratingInputError = null;
     final _starSize = MediaQuery.of(context).size.height * 0.05;
     return ListView(
@@ -78,7 +82,7 @@ class _NewReviewState extends State<NewReview> {
                         /////////////////////////////
                         /// needs modification
                         /////////////////////
-                        widget._formData['restaurantName'] = value;
+                        newPostProvider.postFormData['restaurantName'] = value;
                       },
                       textInputAction: TextInputAction.next,
                     ),
@@ -103,7 +107,7 @@ class _NewReviewState extends State<NewReview> {
                       /// needs modification
                       /////////////////////
                       onSaved: (value) {
-                        widget._formData['location'] = value;
+                        newPostProvider.postFormData['location'] = value;
                       },
                       textInputAction: TextInputAction.next,
                     ),
@@ -137,7 +141,7 @@ class _NewReviewState extends State<NewReview> {
                             decoration: InputDecoration(counterText: ""),
                             maxLength: 2,
                             onSaved: (value) {
-                              widget._formData['costRating'] =
+                              newPostProvider.postFormData['costRating'] =
                                   int.parse(value!);
                             },
                             validator: (value) {
@@ -187,7 +191,7 @@ class _NewReviewState extends State<NewReview> {
                             keyboardType: TextInputType.number,
                             maxLength: 2,
                             onSaved: (value) {
-                              widget._formData['tasteRating'] =
+                              newPostProvider.postFormData['tasteRating'] =
                                   int.parse(value!);
                             },
                             validator: (value) {
@@ -237,7 +241,7 @@ class _NewReviewState extends State<NewReview> {
                             ),
                             maxLength: 2,
                             onSaved: (value) {
-                              widget._formData['quantityRating'] =
+                              newPostProvider.postFormData['quantityRating'] =
                                   int.parse(value!);
                             },
                             validator: (value) {
@@ -285,7 +289,7 @@ class _NewReviewState extends State<NewReview> {
                             keyboardType: TextInputType.number,
                             maxLength: 2,
                             onSaved: (value) {
-                              widget._formData['serviceRating'] =
+                              newPostProvider.postFormData['serviceRating'] =
                                   int.parse(value!);
                             },
                             validator: (value) {
@@ -315,7 +319,7 @@ class _NewReviewState extends State<NewReview> {
               SizedBox(height: 50),
               TextFormField(
                 onSaved: (value) {
-                  widget._formData['reviewText'] = value;
+                  newPostProvider.postFormData['reviewText'] = value;
                 },
                 validator: (value) {
                   if (value == null || value.length < 10) {
@@ -353,14 +357,14 @@ class _NewReviewState extends State<NewReview> {
               child: ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    widget._formData['isLiked'] = true;
+                    newPostProvider.postFormData['isLiked'] = true;
                   });
                 },
                 child: Icon(Icons.thumb_up, color: Colors.white),
                 style: ElevatedButton.styleFrom(
                   shape: CircleBorder(),
                   padding: EdgeInsets.all(10),
-                  primary: widget._formData['isLiked']
+                  primary: newPostProvider.postFormData['isLiked']
                       ? Colors.green
                       : Colors.grey[500], // <-- Button color
                 ),
@@ -370,14 +374,14 @@ class _NewReviewState extends State<NewReview> {
               child: ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    widget._formData['isLiked'] = false;
+                    newPostProvider.postFormData['isLiked'] = false;
                   });
                 },
                 child: Icon(Icons.thumb_down, color: Colors.white),
                 style: ElevatedButton.styleFrom(
                   shape: CircleBorder(),
                   padding: EdgeInsets.all(10),
-                  primary: widget._formData['isLiked']
+                  primary: newPostProvider.postFormData['isLiked']
                       ? Colors.grey[500]
                       : Colors.red, // <-- Button color
                 ),

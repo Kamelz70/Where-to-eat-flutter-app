@@ -1,44 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/review_item.dart';
+import '../../providers/new_review_provider.dart';
 
 class AddItemReview extends StatefulWidget {
-  AddItemReview(this.reviewItemsList, {Key? key}) : super(key: key);
-  List<ReviewItem> reviewItemsList;
+  AddItemReview({Key? key}) : super(key: key);
+
   @override
   State<AddItemReview> createState() => _AddItemReviewState();
 }
 
 class _AddItemReviewState extends State<AddItemReview> {
-  Map<String, dynamic> itemData = {
-    'id': '',
-    'title': '',
-    'price': 0.0 as double,
-    'foodType': FoodType.FOOD,
-    'rating': 3.0 as double,
-    'description': '',
-  };
   final _formKey = GlobalKey<FormState>();
 
-  void _submitItem(BuildContext context) {
+  void _submitItem(BuildContext context, NewReviewProvider newPostProvider) {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
-    setState(() {
-      widget.reviewItemsList.add(ReviewItem(
-        description: itemData['description'],
-        foodType: itemData['foodType'],
-        id: itemData['id'],
-        title: itemData['title'],
-        price: itemData['price'],
-        rating: itemData['rating'],
-      ));
-    });
+
+    newPostProvider.addReviewItem(ReviewItem(
+        description: newPostProvider.currentReviewItem['description'],
+        foodType: newPostProvider.currentReviewItem['foodType'],
+        id: newPostProvider.currentReviewItem['id'],
+        title: newPostProvider.currentReviewItem['title'],
+        price: newPostProvider.currentReviewItem['price'],
+        rating: newPostProvider.currentReviewItem['rating']));
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final newPostProvider =
+        Provider.of<NewReviewProvider>(context, listen: false);
     return ListView(
       children: <Widget>[
         Form(
@@ -61,10 +55,10 @@ class _AddItemReviewState extends State<AddItemReview> {
                     focusColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
                     value: FoodType.FOOD,
-                    groupValue: itemData['foodType'],
+                    groupValue: newPostProvider.currentReviewItem['foodType'],
                     onChanged: (FoodType? value) {
                       setState(() {
-                        itemData['foodType'] = value;
+                        newPostProvider.currentReviewItem['foodType'] = value;
                       });
                     },
                   ),
@@ -75,10 +69,10 @@ class _AddItemReviewState extends State<AddItemReview> {
                     focusColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
                     value: FoodType.BEVERAGE,
-                    groupValue: itemData['foodType'],
+                    groupValue: newPostProvider.currentReviewItem['foodType'],
                     onChanged: (FoodType? value) {
                       setState(() {
-                        itemData['foodType'] = value;
+                        newPostProvider.currentReviewItem['foodType'] = value;
                       });
                     },
                   ),
@@ -100,13 +94,19 @@ class _AddItemReviewState extends State<AddItemReview> {
                   SizedBox(width: 20),
                   Expanded(
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      onChanged: (value) {
+                        newPostProvider.currentReviewItem['title'] = value;
+                      },
+                      initialValue: newPostProvider.currentReviewItem['title'],
                       controller: null,
                       validator: (value) {
                         if (value == null || value.length < 3) {
                           return 'Please enter a title';
                         }
                       },
-                      onSaved: (value) => {itemData['title'] = value},
+                      onSaved: (value) =>
+                          {newPostProvider.currentReviewItem['title'] = value},
                     ),
                   ),
                   SizedBox(width: 30),
@@ -126,9 +126,17 @@ class _AddItemReviewState extends State<AddItemReview> {
                   Container(
                     width: 100,
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      onChanged: (value) {
+                        newPostProvider.currentReviewItem['price'] =
+                            double.parse(value);
+                      },
+                      initialValue:
+                          newPostProvider.currentReviewItem['price'].toString(),
                       controller: null,
                       onSaved: (value) {
-                        itemData['price'] = double.parse(value!);
+                        newPostProvider.currentReviewItem['price'] =
+                            double.parse(value!);
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -144,6 +152,11 @@ class _AddItemReviewState extends State<AddItemReview> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                textInputAction: TextInputAction.next,
+                onChanged: (value) {
+                  newPostProvider.currentReviewItem['description'] = value;
+                },
+                initialValue: newPostProvider.currentReviewItem['description'],
                 decoration: InputDecoration(
                   errorMaxLines: 2,
                   labelText: "Item Description",
@@ -158,7 +171,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                   }
                 },
                 onSaved: (value) {
-                  itemData['description'];
+                  newPostProvider.currentReviewItem['description'];
                 },
                 keyboardType: TextInputType.multiline,
               ),
@@ -176,7 +189,7 @@ class _AddItemReviewState extends State<AddItemReview> {
               unratedColor: Colors.grey.shade300,
               glowColor: Colors.amber,
               itemSize: 30,
-              initialRating: 3,
+              initialRating: newPostProvider.currentReviewItem['rating'],
               minRating: 0,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -187,7 +200,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                 color: Colors.amber,
               ),
               onRatingUpdate: (rating) {
-                itemData['rating'] = rating;
+                newPostProvider.currentReviewItem['rating'] = rating;
               },
             ),
           ],
@@ -199,7 +212,7 @@ class _AddItemReviewState extends State<AddItemReview> {
             ElevatedButton(
               child: Text('Add Item'),
               onPressed: () {
-                _submitItem(context);
+                _submitItem(context, newPostProvider);
               },
             ),
             SizedBox(width: 20),

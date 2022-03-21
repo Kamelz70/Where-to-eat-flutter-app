@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:where_to_eat/models/review_item.dart';
 
 import '../data/dummy_data.dart';
+import '../providers/new_review_provider.dart';
 import '../widgets/items_review_screen/add_Item_review.dart';
 import '../widgets/reviewed_food_item.dart';
 import '../widgets/reviewed_food_items_list.dart';
@@ -9,8 +11,7 @@ import '../widgets/reviews_list.dart';
 
 class ItemsReviewScreen extends StatefulWidget {
   static const routeName = '/items-review-page';
-  List<ReviewItem> reviewItemsList;
-  ItemsReviewScreen(this.reviewItemsList, {Key? key}) : super(key: key);
+  ItemsReviewScreen({Key? key}) : super(key: key);
   @override
   State<ItemsReviewScreen> createState() => _ItemsReviewScreenState();
 }
@@ -21,6 +22,7 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
   ///           Functions
   ///
   //////////////////////////////////////////////////////////////////////////////////
+
   void _showAddDish() {
     showModalBottomSheet(
       context: context,
@@ -39,13 +41,11 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
                   left: 20,
                   right: 20,
                   bottom: (MediaQuery.of(context).viewInsets.bottom) + 10),
-              child: AddItemReview(widget.reviewItemsList)),
+              child: AddItemReview()),
           behavior: HitTestBehavior.opaque,
         );
       },
-    ).then((value) {
-      setState(() {});
-    });
+    );
   }
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,12 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
                       )
                     ],
                   ),
-                  ReviewedFoodItemsList(widget.reviewItemsList),
+                  Consumer<NewReviewProvider>(
+                    builder: (ctx, newPostProvider, ch) {
+                      return ReviewedFoodItemsList(
+                          newPostProvider.reviewItemsList);
+                    },
+                  ),
                 ],
               ),
             ),

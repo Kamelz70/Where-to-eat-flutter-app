@@ -44,9 +44,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (_) => ReviewProvider([]),
-          ChangeNotifierProvider(
+        ),
+        ChangeNotifierProvider(
           create: (_) => NewReviewProvider(),
-          
         )
       ],
       child: Consumer<Auth>(
@@ -108,6 +108,7 @@ class _MyAppState extends State<MyApp> {
             SettingsScreen.routeName: (ctx) => SettingsScreen(),
             WishListScreen.routeName: (ctx) => WishListScreen(),
             NewReviewScreen.routeName: (ctx) => NewReviewScreen(),
+            ItemsReviewScreen.routeName: (ctx) => ItemsReviewScreen(),
           },
           //when it doesnt find named route, it goes to ongenroute
           onGenerateRoute: (settings) {

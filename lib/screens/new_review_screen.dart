@@ -13,21 +13,12 @@ class NewReviewScreen extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////
   NewReviewScreen({Key? key}) : super(key: key);
   static const routeName = '/new-review-page';
-  newPostProvider=Provider.of<NewReviewProvider>(context)
   final _formKey = GlobalKey<FormState>();
   /////////////////////////////////////////////////////////////////////////
   ///
   ///     Functions
   ///
   ////////////////////////////////////////////////////////////////////////////////
-  void _formSubmit(BuildContext context) {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    _formKey.currentState!.save();
-    print(this.formData);
-    //Navigator.of(context).pop();
-  }
 
   /////////////////////////////////////////////////////////////////////////
   ///
@@ -36,6 +27,9 @@ class NewReviewScreen extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    final newPostProvider =
+        Provider.of<NewReviewProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('New Review'),
@@ -47,7 +41,7 @@ class NewReviewScreen extends StatelessWidget {
             child: Card(
               elevation: 7,
               margin: EdgeInsets.all(20),
-              child: NewReview(_formKey, formData),
+              child: NewReview(_formKey),
             ),
           ),
           SizedBox(height: 10),
@@ -57,18 +51,19 @@ class NewReviewScreen extends StatelessWidget {
               ElevatedButton(
                 child: Text('Attach Dishes'),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ItemsReviewScreen(reviewItemsList)),
-                  );
+                  Navigator.of(context).pushNamed(ItemsReviewScreen.routeName);
                 },
               ),
               SizedBox(width: 20),
               ElevatedButton(
                 child: Text('Post'),
                 onPressed: () {
-                  _formSubmit(context);
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
+                  _formKey.currentState!.save();
+                  print(newPostProvider.postFormData);
+                  //Navigator.of(context).pop();
                 },
               ),
               SizedBox(width: 20),
