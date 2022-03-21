@@ -36,7 +36,7 @@ class ReviewPost extends StatelessWidget {
                     radius: 19.0,
                     child: ClipRRect(
                       child: Image.network(
-                        'https://scontent.fcai1-2.fna.fbcdn.net/v/t1.6435-9/68406470_2329293560457857_238321876919648256_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=174925&_nc_eui2=AeEMJynCO3wr772RkgWuBMF5k6fTKdUXlnCTp9Mp1ReWcO9EoxUbQhdTIs-kvnDs8cl9Nsc4DpfRcEh6rNVrdo9a&_nc_ohc=Ax5-x71qRGkAX-ZFy68&_nc_oc=AQk68tQD5_W47ZfoklJwxVteYayUXApQJu7ggMwwyzkAG8jZWn0wA8RSp2yDLE6T8MI&_nc_ht=scontent.fcai1-2.fna&oh=00_AT8TFgic4bd0h4KqxxqiGeGj_HTbfNmxjChxJJMdlQszqg&oe=622A85B2',
+                        review.authorImage,
                       ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
@@ -48,7 +48,7 @@ class ReviewPost extends StatelessWidget {
                     children: [
                       ////////////////////////////////////////////////////////////////////////////////////////////////
                       ///reviewer name
-                      Text("Mohamed Kamel"),
+                      Text(review.authorName),
                       Row(
                         children: [
                           Text("Rated: ${review.costRating}/10"),
@@ -59,7 +59,9 @@ class ReviewPost extends StatelessWidget {
                             child: Icon(
                               ////////////////////////////////////////////////////////////////////////////////////////////////
                               ///If liked ?
-                              Icons.thumb_up,
+                              review.isLiked
+                                  ? Icons.thumb_up
+                                  : Icons.thumb_down,
                               color: Colors.white,
                               size: 10,
                             ),
@@ -74,13 +76,13 @@ class ReviewPost extends StatelessWidget {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('7amada erstaurant'),
+                        Text(review.restaurantName),
                         Row(
                           children: [
                             Icon(Icons.location_on,
                                 color: Theme.of(context).colorScheme.primary,
                                 size: 15),
-                            Text('7amada erstaut'),
+                            Text(review.location),
                           ],
                         ),
                       ])
@@ -118,48 +120,38 @@ class ReviewPost extends StatelessWidget {
                       controller: _pageController,
                       children: [
                         Text(review.reviewText),
-                        ReviewedFoodItemsList([
-                          ReviewedFoodItem(
-                              title: 'Stero Trio',
-                              price: 20,
-                              rating: 5,
-                              foodType: FoodType.FOOD,
-                              description: 'a good plate'),
-                          ReviewedFoodItem(
-                              title: 'Stero Trio',
-                              price: 20,
-                              rating: 5,
-                              foodType: FoodType.FOOD,
-                              description: 'a good plate'),
-                          ReviewedFoodItem(
-                              title: 'Stero Trio',
-                              price: 20,
-                              rating: 5,
-                              foodType: FoodType.FOOD,
-                              description: 'a good plate'),
-                        ]),
+                        if (review.reviewItems != null)
+                          ListView(
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            children: [
+                              ReviewedFoodItemsList(review.reviewItems!),
+                              SizedBox(height: 20),
+                            ],
+                          ),
                       ],
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 10),
-              Center(
-                child: SmoothPageIndicator(
-                  onDotClicked: (value) {
-                    _pageController.animateToPage(value,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut);
-                  },
-                  controller: _pageController,
-                  count: 2,
-                  effect: WormEffect(
-                      dotWidth: 10.0,
-                      dotHeight: 10.0,
-                      dotColor: Colors.grey,
-                      activeDotColor: Colors.amber),
+              if (review.reviewItems != null)
+                Center(
+                  child: SmoothPageIndicator(
+                    onDotClicked: (value) {
+                      _pageController.animateToPage(value,
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeInOut);
+                    },
+                    controller: _pageController,
+                    count: 2,
+                    effect: WormEffect(
+                        dotWidth: 10.0,
+                        dotHeight: 10.0,
+                        dotColor: Colors.grey,
+                        activeDotColor: Colors.amber),
+                  ),
                 ),
-              ),
               SizedBox(height: 10),
 
               Row(

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/review_item.dart';
+import '../providers/new_review_provider.dart';
 import '../widgets/new_review_screen/new_review.dart';
 import 'Items_review_screen.dart';
 
@@ -10,18 +13,20 @@ class NewReviewScreen extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////
   NewReviewScreen({Key? key}) : super(key: key);
   static const routeName = '/new-review-page';
-
+  newPostProvider=Provider.of<NewReviewProvider>(context)
   final _formKey = GlobalKey<FormState>();
   /////////////////////////////////////////////////////////////////////////
   ///
   ///     Functions
   ///
   ////////////////////////////////////////////////////////////////////////////////
-  void _fromSubmit(BuildContext context) {
+  void _formSubmit(BuildContext context) {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    Navigator.of(context).pop();
+    _formKey.currentState!.save();
+    print(this.formData);
+    //Navigator.of(context).pop();
   }
 
   /////////////////////////////////////////////////////////////////////////
@@ -42,7 +47,7 @@ class NewReviewScreen extends StatelessWidget {
             child: Card(
               elevation: 7,
               margin: EdgeInsets.all(20),
-              child: NewReview(_formKey),
+              child: NewReview(_formKey, formData),
             ),
           ),
           SizedBox(height: 10),
@@ -52,14 +57,18 @@ class NewReviewScreen extends StatelessWidget {
               ElevatedButton(
                 child: Text('Attach Dishes'),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(ItemsReviewScreen.routeName);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ItemsReviewScreen(reviewItemsList)),
+                  );
                 },
               ),
               SizedBox(width: 20),
               ElevatedButton(
                 child: Text('Post'),
                 onPressed: () {
-                  _fromSubmit(context);
+                  _formSubmit(context);
                 },
               ),
               SizedBox(width: 20),

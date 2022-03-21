@@ -5,7 +5,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class NewReview extends StatefulWidget {
   final GlobalKey<FormState> _formKey;
-  NewReview(this._formKey);
+  Map<String, dynamic> _formData;
+  NewReview(this._formKey, this._formData);
   @override
   _NewReviewState createState() => _NewReviewState();
 }
@@ -73,7 +74,12 @@ class _NewReviewState extends State<NewReview> {
                     width: 200,
                     child: TextFormField(
                       controller: null,
-                      onSaved: (_) => {},
+                      onSaved: (value) {
+                        /////////////////////////////
+                        /// needs modification
+                        /////////////////////
+                        widget._formData['restaurantName'] = value;
+                      },
                       textInputAction: TextInputAction.next,
                     ),
                   ),
@@ -93,7 +99,12 @@ class _NewReviewState extends State<NewReview> {
                     width: 200,
                     child: TextFormField(
                       controller: null,
-                      onSaved: (_) => {},
+                      /////////////////////////////
+                      /// needs modification
+                      /////////////////////
+                      onSaved: (value) {
+                        widget._formData['location'] = value;
+                      },
                       textInputAction: TextInputAction.next,
                     ),
                   ),
@@ -125,6 +136,10 @@ class _NewReviewState extends State<NewReview> {
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(counterText: ""),
                             maxLength: 2,
+                            onSaved: (value) {
+                              widget._formData['costRating'] =
+                                  int.parse(value!);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 setState(() {
@@ -138,6 +153,7 @@ class _NewReviewState extends State<NewReview> {
                               if (num < 0 || num > 10) {
                                 return 'Please enter a rating out of 10 only';
                               }
+
                               setState(() {
                                 _ratingInputError = null;
                               });
@@ -170,6 +186,10 @@ class _NewReviewState extends State<NewReview> {
                             decoration: InputDecoration(counterText: ""),
                             keyboardType: TextInputType.number,
                             maxLength: 2,
+                            onSaved: (value) {
+                              widget._formData['tasteRating'] =
+                                  int.parse(value!);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 setState(() {
@@ -216,6 +236,10 @@ class _NewReviewState extends State<NewReview> {
                               counterText: "",
                             ),
                             maxLength: 2,
+                            onSaved: (value) {
+                              widget._formData['quantityRating'] =
+                                  int.parse(value!);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 setState(() {
@@ -260,6 +284,10 @@ class _NewReviewState extends State<NewReview> {
                             decoration: InputDecoration(counterText: ""),
                             keyboardType: TextInputType.number,
                             maxLength: 2,
+                            onSaved: (value) {
+                              widget._formData['serviceRating'] =
+                                  int.parse(value!);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 setState(() {
@@ -286,6 +314,9 @@ class _NewReviewState extends State<NewReview> {
               ),
               SizedBox(height: 50),
               TextFormField(
+                onSaved: (value) {
+                  widget._formData['reviewText'] = value;
+                },
                 validator: (value) {
                   if (value == null || value.length < 10) {
                     return 'Please describe your experience in 10 characters at least';
@@ -299,7 +330,6 @@ class _NewReviewState extends State<NewReview> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                maxLines: 4,
                 maxLengthEnforcement: MaxLengthEnforcement.none,
                 keyboardType: TextInputType.multiline,
               ),
@@ -321,23 +351,35 @@ class _NewReviewState extends State<NewReview> {
             SizedBox(width: 20),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    widget._formData['isLiked'] = true;
+                  });
+                },
                 child: Icon(Icons.thumb_up, color: Colors.white),
                 style: ElevatedButton.styleFrom(
                   shape: CircleBorder(),
                   padding: EdgeInsets.all(10),
-                  primary: Colors.green, // <-- Button color
+                  primary: widget._formData['isLiked']
+                      ? Colors.green
+                      : Colors.grey[500], // <-- Button color
                 ),
               ),
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    widget._formData['isLiked'] = false;
+                  });
+                },
                 child: Icon(Icons.thumb_down, color: Colors.white),
                 style: ElevatedButton.styleFrom(
                   shape: CircleBorder(),
                   padding: EdgeInsets.all(10),
-                  primary: Colors.red, // <-- Button color
+                  primary: widget._formData['isLiked']
+                      ? Colors.grey[500]
+                      : Colors.red, // <-- Button color
                 ),
               ),
             ),

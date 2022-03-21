@@ -4,25 +4,45 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../models/review_item.dart';
 
 class AddItemReview extends StatefulWidget {
-  const AddItemReview({Key? key}) : super(key: key);
-
+  AddItemReview(this.reviewItemsList, {Key? key}) : super(key: key);
+  List<ReviewItem> reviewItemsList;
   @override
   State<AddItemReview> createState() => _AddItemReviewState();
 }
 
 class _AddItemReviewState extends State<AddItemReview> {
-  FoodType? _val;
+  Map<String, dynamic> itemData = {
+    'id': '',
+    'title': '',
+    'price': 0.0 as double,
+    'foodType': FoodType.FOOD,
+    'rating': 3.0 as double,
+    'description': '',
+  };
+  final _formKey = GlobalKey<FormState>();
+
+  void _submitItem(BuildContext context) {
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+    setState(() {
+      widget.reviewItemsList.add(ReviewItem(
+        description: itemData['description'],
+        foodType: itemData['foodType'],
+        id: itemData['id'],
+        title: itemData['title'],
+        price: itemData['price'],
+        rating: itemData['rating'],
+      ));
+    });
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.only(
-          top: 20,
-          left: 20,
-          right: 20,
-          bottom: (MediaQuery.of(context).viewInsets.bottom) + 10),
       children: <Widget>[
         Form(
-          key: null,
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -41,10 +61,10 @@ class _AddItemReviewState extends State<AddItemReview> {
                     focusColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
                     value: FoodType.FOOD,
-                    groupValue: _val,
+                    groupValue: itemData['foodType'],
                     onChanged: (FoodType? value) {
                       setState(() {
-                        _val = value;
+                        itemData['foodType'] = value;
                       });
                     },
                   ),
@@ -55,10 +75,10 @@ class _AddItemReviewState extends State<AddItemReview> {
                     focusColor: MaterialStateColor.resolveWith(
                         (states) => Colors.amber),
                     value: FoodType.BEVERAGE,
-                    groupValue: _val,
+                    groupValue: itemData['foodType'],
                     onChanged: (FoodType? value) {
                       setState(() {
-                        _val = value;
+                        itemData['foodType'] = value;
                       });
                     },
                   ),
@@ -81,7 +101,12 @@ class _AddItemReviewState extends State<AddItemReview> {
                   Expanded(
                     child: TextFormField(
                       controller: null,
-                      onSaved: (_) => {},
+                      validator: (value) {
+                        if (value == null || value.length < 3) {
+                          return 'Please enter a title';
+                        }
+                      },
+                      onSaved: (value) => {itemData['title'] = value},
                     ),
                   ),
                   SizedBox(width: 30),
@@ -102,7 +127,15 @@ class _AddItemReviewState extends State<AddItemReview> {
                     width: 100,
                     child: TextFormField(
                       controller: null,
-                      onSaved: (_) => {},
+                      onSaved: (value) {
+                        itemData['price'] = double.parse(value!);
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Enter a value';
+                        }
+                      },
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                   Icon(Icons.attach_money,
@@ -112,12 +145,21 @@ class _AddItemReviewState extends State<AddItemReview> {
               SizedBox(height: 20),
               TextFormField(
                 decoration: InputDecoration(
+                  errorMaxLines: 2,
                   labelText: "Item Description",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 maxLines: 4,
+                validator: (value) {
+                  if (value == null || value.length < 5) {
+                    return 'Please describe your experience in 5 characters at least';
+                  }
+                },
+                onSaved: (value) {
+                  itemData['description'];
+                },
                 keyboardType: TextInputType.multiline,
               ),
             ],
@@ -134,7 +176,7 @@ class _AddItemReviewState extends State<AddItemReview> {
               unratedColor: Colors.grey.shade300,
               glowColor: Colors.amber,
               itemSize: 30,
-              initialRating: 4,
+              initialRating: 3,
               minRating: 0,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -145,7 +187,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                 color: Colors.amber,
               ),
               onRatingUpdate: (rating) {
-                print(rating);
+                itemData['rating'] = rating;
               },
             ),
           ],
@@ -157,7 +199,7 @@ class _AddItemReviewState extends State<AddItemReview> {
             ElevatedButton(
               child: Text('Add Item'),
               onPressed: () {
-                Navigator.of(context).pop();
+                _submitItem(context);
               },
             ),
             SizedBox(width: 20),

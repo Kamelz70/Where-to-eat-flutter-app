@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:where_to_eat/models/review.dart';
 import 'package:where_to_eat/widgets/reviewed_food_item.dart';
 
+import '../models/review_item.dart';
+
 class ReviewedFoodItemsList extends StatelessWidget {
-  final List<ReviewedFoodItem> reviewedFoodItemsList;
+  final List<ReviewItem> reviewedFoodItemsList;
   ReviewedFoodItemsList(this.reviewedFoodItemsList);
 
   @override

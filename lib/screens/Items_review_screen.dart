@@ -9,8 +9,8 @@ import '../widgets/reviews_list.dart';
 
 class ItemsReviewScreen extends StatefulWidget {
   static const routeName = '/items-review-page';
-  const ItemsReviewScreen({Key? key}) : super(key: key);
-
+  List<ReviewItem> reviewItemsList;
+  ItemsReviewScreen(this.reviewItemsList, {Key? key}) : super(key: key);
   @override
   State<ItemsReviewScreen> createState() => _ItemsReviewScreenState();
 }
@@ -24,6 +24,7 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
   void _showAddDish() {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
@@ -31,11 +32,20 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
       builder: (_) {
         return GestureDetector(
           onTap: null,
-          child: AddItemReview(),
+          child: Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              padding: EdgeInsets.only(
+                  top: 20,
+                  left: 20,
+                  right: 20,
+                  bottom: (MediaQuery.of(context).viewInsets.bottom) + 10),
+              child: AddItemReview(widget.reviewItemsList)),
           behavior: HitTestBehavior.opaque,
         );
       },
-    );
+    ).then((value) {
+      setState(() {});
+    });
   }
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -73,26 +83,7 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
                       )
                     ],
                   ),
-                  ReviewedFoodItemsList([
-                    ReviewedFoodItem(
-                        title: 'Stero Trio',
-                        price: 20,
-                        rating: 5,
-                        foodType: FoodType.FOOD,
-                        description: 'a good plate'),
-                    ReviewedFoodItem(
-                        title: 'Stero Trio',
-                        price: 20,
-                        rating: 5,
-                        foodType: FoodType.FOOD,
-                        description: 'a good plate'),
-                    ReviewedFoodItem(
-                        title: 'Stero Trio',
-                        price: 20,
-                        rating: 5,
-                        foodType: FoodType.FOOD,
-                        description: 'a good plate'),
-                  ]),
+                  ReviewedFoodItemsList(widget.reviewItemsList),
                 ],
               ),
             ),

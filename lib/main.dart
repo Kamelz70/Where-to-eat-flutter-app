@@ -12,6 +12,8 @@ import 'package:where_to_eat/screens/restaurant_page_screen.dart';
 import 'package:where_to_eat/screens/settings_screen.dart';
 import 'package:where_to_eat/screens/splash_screen.dart';
 import 'package:where_to_eat/screens/wish_list_screen.dart';
+import 'providers/new_review_provider.dart';
+import 'providers/review_provider.dart';
 import 'screens/Items_review_screen.dart';
 ////////////////////////////////////////////////////////////////
 ///   Widgets
@@ -39,6 +41,12 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           create: (_) => Auth(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ReviewProvider([]),
+          ChangeNotifierProvider(
+          create: (_) => NewReviewProvider(),
+          
         )
       ],
       child: Consumer<Auth>(
@@ -56,25 +64,25 @@ class _MyAppState extends State<MyApp> {
             textTheme: ThemeData.light().textTheme.copyWith(
                   bodyText1: TextStyle(color: Color.fromRGBO(20, 55, 55, 1)),
 
-                  headline3: TextStyle(
+                  headline3: const TextStyle(
                     fontSize: 20,
                     fontFamily: 'RobotoCondensed',
                     color: Color.fromARGB(255, 182, 159, 159),
                   ),
-                  headline4: TextStyle(
+                  headline4: const TextStyle(
                     fontSize: 18,
                     fontFamily: 'RobotoCondensed',
                     color: Color.fromRGBO(55, 55, 55, 1),
                   ),
                   //orange form headlines
-                  headline5: TextStyle(
+                  headline5: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'RobotoCondensed',
                     color: Colors.orange,
                     //Theme.of(context).colorScheme.primary,
                   ),
-                  bodyText2: TextStyle(
+                  bodyText2: const TextStyle(
                     fontSize: 12,
                     fontFamily: 'RobotoCondensed',
                     //Theme.of(context).colorScheme.primary,
@@ -82,7 +90,7 @@ class _MyAppState extends State<MyApp> {
                 ),
           ),
           home: authenticator.isAuth
-              ? TabsScreen()
+              ? const TabsScreen()
               : FutureBuilder(
                   future: authenticator.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
@@ -100,7 +108,6 @@ class _MyAppState extends State<MyApp> {
             SettingsScreen.routeName: (ctx) => SettingsScreen(),
             WishListScreen.routeName: (ctx) => WishListScreen(),
             NewReviewScreen.routeName: (ctx) => NewReviewScreen(),
-            ItemsReviewScreen.routeName: (ctx) => ItemsReviewScreen(),
           },
           //when it doesnt find named route, it goes to ongenroute
           onGenerateRoute: (settings) {
