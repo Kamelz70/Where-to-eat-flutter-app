@@ -25,7 +25,7 @@ class NewsFeedScreen extends StatelessWidget {
           // in the middle of the parent.
           Container(
         height: MediaQuery.of(context).size.height,
-        child: ReviewsList(DUMMY_Reviews),
+        child: ReviewsList(reviewsData.items),
         //reviewsData.items
       ), // This trailing comma makes auto-formatting nicer for build methods.
       floatingActionButton: IconButton(

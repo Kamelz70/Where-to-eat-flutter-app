@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../data/dummy_data.dart';
 import '../models/review.dart';
 
 class ReviewProvider with ChangeNotifier {
@@ -13,7 +14,7 @@ class ReviewProvider with ChangeNotifier {
   ////////////////////////////////////////////////////
   List<Review> get items {
     //copy spread items (brackets means copy)
-    return [..._items];
+    return [..._items, ...DUMMY_Reviews];
   }
 
 ///////////////////////////////////////////////////////
@@ -119,7 +120,7 @@ class ReviewProvider with ChangeNotifier {
         isLiked: review.isLiked,
       );
 
-      _items.insert(0, newReview);
+      _items.add(newReview);
       //or _items.add(newProduct);
       notifyListeners();
     } catch (error) {

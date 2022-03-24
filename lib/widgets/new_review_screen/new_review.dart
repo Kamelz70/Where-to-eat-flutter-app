@@ -142,7 +142,7 @@ class _NewReviewState extends State<NewReview> {
                             maxLength: 2,
                             onSaved: (value) {
                               newPostProvider.postFormData['costRating'] =
-                                  int.parse(value!);
+                                  double.parse(value!);
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -153,7 +153,7 @@ class _NewReviewState extends State<NewReview> {
                                 return '';
                               }
 
-                              int num = int.parse(value);
+                              double num = double.parse(value);
                               if (num < 0 || num > 10) {
                                 return 'Please enter a rating out of 10 only';
                               }
@@ -192,7 +192,7 @@ class _NewReviewState extends State<NewReview> {
                             maxLength: 2,
                             onSaved: (value) {
                               newPostProvider.postFormData['tasteRating'] =
-                                  int.parse(value!);
+                                  double.parse(value!);
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -202,7 +202,7 @@ class _NewReviewState extends State<NewReview> {
                                 });
                                 return '';
                               }
-                              int num = int.parse(value);
+                              double num = double.parse(value);
                               if (num < 0 || num > 10) {
                                 return 'Please enter a rating out of 10 only';
                               }
@@ -242,7 +242,7 @@ class _NewReviewState extends State<NewReview> {
                             maxLength: 2,
                             onSaved: (value) {
                               newPostProvider.postFormData['quantityRating'] =
-                                  int.parse(value!);
+                                  double.parse(value!);
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -252,7 +252,7 @@ class _NewReviewState extends State<NewReview> {
                                 });
                                 return '';
                               }
-                              int num = int.parse(value);
+                              double num = double.parse(value);
                               if (num < 0 || num > 10) {
                                 return 'Please enter a rating out of 10 only';
                               }
@@ -290,7 +290,7 @@ class _NewReviewState extends State<NewReview> {
                             maxLength: 2,
                             onSaved: (value) {
                               newPostProvider.postFormData['serviceRating'] =
-                                  int.parse(value!);
+                                  double.parse(value!);
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -300,7 +300,7 @@ class _NewReviewState extends State<NewReview> {
                                 });
                                 return '';
                               }
-                              int num = int.parse(value);
+                              double num = double.parse(value);
                               if (num < 0 || num > 10) {
                                 return 'Please enter a rating out of 10 only';
                               }

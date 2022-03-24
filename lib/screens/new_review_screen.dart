@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/review.dart';
 import '../models/review_item.dart';
 import '../providers/new_review_provider.dart';
+import '../providers/review_provider.dart';
 import '../widgets/new_review_screen/new_review.dart';
 import 'Items_review_screen.dart';
 
@@ -29,6 +31,7 @@ class NewReviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final newPostProvider =
         Provider.of<NewReviewProvider>(context, listen: false);
+    final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -63,7 +66,9 @@ class NewReviewScreen extends StatelessWidget {
                   }
                   _formKey.currentState!.save();
                   print(newPostProvider.postFormData);
-                  //Navigator.of(context).pop();
+                  reviewProvider.postReview(newPostProvider.currentReview);
+                  newPostProvider.clearCurrentReview();
+                  Navigator.of(context).pop();
                 },
               ),
               SizedBox(width: 20),
