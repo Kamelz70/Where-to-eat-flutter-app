@@ -5,6 +5,7 @@ import 'package:where_to_eat/Screens/explore_screen.dart';
 import 'package:where_to_eat/data/dummy_data.dart';
 import 'package:where_to_eat/models/restaurant.dart';
 import 'package:where_to_eat/providers/auth.dart';
+import 'package:where_to_eat/providers/restaurant_provider.dart';
 import 'package:where_to_eat/screens/auth_screen.dart';
 import 'package:where_to_eat/screens/new_review_screen.dart';
 import 'package:where_to_eat/screens/restaurant_list_screen.dart';
@@ -47,7 +48,10 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (_) => NewReviewProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RestaurantProvider([]),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, authenticator, _) => MaterialApp(
@@ -103,8 +107,7 @@ class _MyAppState extends State<MyApp> {
             TabsScreen.routeName: (ctx) => TabsScreen(),
             ExploreScreen.routeName: (ctx) => ExploreScreen(),
             RestaurantPageScreen.routeName: (ctx) => RestaurantPageScreen(),
-            RestaurantListScreen.routeName: (ctx) =>
-                RestaurantListScreen(_availableRestaurants),
+            RestaurantListScreen.routeName: (ctx) => RestaurantListScreen(),
             SettingsScreen.routeName: (ctx) => SettingsScreen(),
             WishListScreen.routeName: (ctx) => WishListScreen(),
             NewReviewScreen.routeName: (ctx) => NewReviewScreen(),

@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
 import '../models/review_item.dart';
+import '../providers/new_review_provider.dart';
 
 class ReviewedFoodItem extends StatelessWidget {
+  final String id;
   final String title;
   final double price;
   final double rating;
   final FoodType foodType;
   final String description;
+  final bool deletible;
 
-  const ReviewedFoodItem({
-    required this.title,
-    required this.price,
-    required this.rating,
-    required this.foodType,
-    required this.description,
-  });
+  const ReviewedFoodItem(
+      {required this.title,
+      required this.id,
+      required this.price,
+      required this.rating,
+      required this.foodType,
+      required this.description,
+      this.deletible = false});
 
   static const itemReviewImagesPath = 'assets/images/item-review-images/';
 
@@ -44,7 +49,21 @@ class ReviewedFoodItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /////////////////name here
-                  Text(title, style: Theme.of(context).textTheme.headline4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(title, style: Theme.of(context).textTheme.headline4),
+                      if (deletible)
+                        IconButton(
+                          onPressed: () {
+                            Provider.of<NewReviewProvider>(context,
+                                    listen: false)
+                                .deleteItemById(id);
+                          },
+                          icon: Icon(Icons.delete, color: Colors.red),
+                        )
+                    ],
+                  ),
                   SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

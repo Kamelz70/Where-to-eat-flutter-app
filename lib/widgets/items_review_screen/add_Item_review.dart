@@ -15,17 +15,18 @@ class AddItemReview extends StatefulWidget {
 class _AddItemReviewState extends State<AddItemReview> {
   final _formKey = GlobalKey<FormState>();
 
-  void _submitItem(BuildContext context, NewReviewProvider newPostProvider) {
+  void _addItem(BuildContext context, NewReviewProvider newPostProvider) {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
 
     newPostProvider.addReviewItem(ReviewItem(
         description: newPostProvider.currentReviewItem['description'],
         foodType: newPostProvider.currentReviewItem['foodType'],
-        id: newPostProvider.currentReviewItem['id'],
+        id: DateTime.now().toString(),
         title: newPostProvider.currentReviewItem['title'],
         price: newPostProvider.currentReviewItem['price'],
         rating: newPostProvider.currentReviewItem['rating']));
+    newPostProvider.clearCurrentReviewItem();
     Navigator.of(context).pop();
   }
 
@@ -132,7 +133,10 @@ class _AddItemReviewState extends State<AddItemReview> {
                             double.parse(value);
                       },
                       initialValue:
-                          newPostProvider.currentReviewItem['price'].toString(),
+                          newPostProvider.currentReviewItem['price'] == 0
+                              ? ''
+                              : newPostProvider.currentReviewItem['price']
+                                  .toStringAsFixed(0),
                       controller: null,
                       onSaved: (value) {
                         newPostProvider.currentReviewItem['price'] =
@@ -212,7 +216,7 @@ class _AddItemReviewState extends State<AddItemReview> {
             ElevatedButton(
               child: Text('Add Item'),
               onPressed: () {
-                _submitItem(context, newPostProvider);
+                _addItem(context, newPostProvider);
               },
             ),
             SizedBox(width: 20),

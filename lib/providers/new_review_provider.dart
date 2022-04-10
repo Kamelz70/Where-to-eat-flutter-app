@@ -27,6 +27,7 @@ class NewReviewProvider with ChangeNotifier {
     'description': '',
   };
   List<ReviewItem> _reviewItemsList = [];
+
   List<ReviewItem> get reviewItemsList {
     //copy spread items (brackets means copy)
     return [..._reviewItemsList];
@@ -54,6 +55,22 @@ class NewReviewProvider with ChangeNotifier {
   void addReviewItem(ReviewItem reviewItem) {
     _reviewItemsList.add(reviewItem);
     notifyListeners();
+  }
+
+  void deleteItemById(String id) {
+    _reviewItemsList.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
+
+  void clearCurrentReviewItem() {
+    currentReviewItem = {
+      'id': '',
+      'title': '',
+      'price': 0.0 as double,
+      'foodType': FoodType.FOOD,
+      'rating': 3.0 as double,
+      'description': '',
+    };
   }
 
   void clearCurrentReview() {

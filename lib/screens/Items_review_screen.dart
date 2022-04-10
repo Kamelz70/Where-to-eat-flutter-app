@@ -86,7 +86,8 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
                   Consumer<NewReviewProvider>(
                     builder: (ctx, newPostProvider, ch) {
                       return ReviewedFoodItemsList(
-                          newPostProvider.reviewItemsList);
+                          newPostProvider.reviewItemsList,
+                          deletible: true);
                     },
                   ),
                 ],

@@ -54,7 +54,8 @@ class ReviewPost extends StatelessWidget {
                           Text("Rated: ${review.costRating}/10"),
                           SizedBox(width: 7),
                           CircleAvatar(
-                            backgroundColor: Colors.green,
+                            backgroundColor:
+                                review.isLiked ? Colors.green : Colors.red,
                             radius: 9,
                             child: Icon(
                               ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,13 +122,18 @@ class ReviewPost extends StatelessWidget {
                       children: [
                         Text(review.reviewText),
                         if (review.reviewItems != null)
-                          ListView(
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            children: [
-                              ReviewedFoodItemsList(review.reviewItems!),
-                              SizedBox(height: 20),
-                            ],
+                          ConstrainedBox(
+                            constraints:
+                                BoxConstraints(minHeight: 20, maxHeight: 300),
+                            child: ListView(
+                              shrinkWrap: true,
+                              physics: ClampingScrollPhysics(),
+                              children: [
+                                ReviewedFoodItemsList(review.reviewItems!),
+                                Divider(),
+                                SizedBox(height: 10),
+                              ],
+                            ),
                           ),
                       ],
                     ),

@@ -14,7 +14,7 @@ class ReviewProvider with ChangeNotifier {
   ////////////////////////////////////////////////////
   List<Review> get items {
     //copy spread items (brackets means copy)
-    return [..._items, ...DUMMY_Reviews];
+    return [..._items];
   }
 
 ///////////////////////////////////////////////////////
@@ -66,6 +66,16 @@ class ReviewProvider with ChangeNotifier {
     //   print(error);
     //   throw error;
     // }
+    await Future.delayed(Duration(seconds: 1));
+
+    _items = _items.isEmpty ? [..._items, ...DUMMY_Reviews] : _items;
+    print('refreshing');
+    notifyListeners();
+  }
+
+  Future<List<Review>> fetchRestaurantReviews(String restaurantId) async {
+    await Future.delayed(Duration(seconds: 1));
+    return DUMMY_Reviews;
   }
 
   Future<void> postReview(Review review) async {
@@ -120,7 +130,7 @@ class ReviewProvider with ChangeNotifier {
         isLiked: review.isLiked,
       );
 
-      _items.add(newReview);
+      _items.insert(0, newReview);
       //or _items.add(newProduct);
       notifyListeners();
     } catch (error) {

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:where_to_eat/data/dummy_data.dart';
 import 'package:where_to_eat/widgets/new_review_screen/new_review.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
+import '../models/restaurant.dart';
+import '../models/review.dart';
+import '../providers/restaurant_provider.dart';
+import '../providers/review_provider.dart';
 import '../widgets/new_review_screen/new_review.dart';
+import 'new_review_screen.dart';
 
 class RestaurantPageScreen extends StatelessWidget {
   static const routeName = '/restaurant-page';
@@ -15,43 +21,13 @@ class RestaurantPageScreen extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.headline3,
+        style: Theme.of(context).textTheme.headline4,
       ),
-    );
-  }
-
-  //for lists like steps, ingredients
-  Widget buildContainer(Widget child) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
-      height: 200,
-      width: 300,
-      child: child,
     );
   }
 
   void _startAddPost(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.75,
-          decoration: BoxDecoration(),
-          child: GestureDetector(
-            onTap: null,
-            child: null,
-            behavior: HitTestBehavior.opaque,
-          ),
-        );
-      },
-    );
+    Navigator.of(context).pushNamed(NewReviewScreen.routeName);
   }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -60,115 +36,15 @@ class RestaurantPageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isRestaurantFavorite = false;
     final routeArgs = ModalRoute.of(context)!.settings.arguments;
-    final mealId = routeArgs as String;
-
-    final selectedMeal =
-        DUMMY_RestaurantS.firstWhere((element) => element.id == mealId);
+    final restaurantId = routeArgs as String;
+    final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
+    final restaurantsProvider =
+        Provider.of<RestaurantProvider>(context, listen: false);
+    final restaurant = restaurantsProvider.findById(restaurantId) as Restaurant;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(15),
-                  bottomRight: Radius.circular(15),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.7),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              height: 150,
-              width: double.infinity,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15)),
-                child: Image.network(
-                  selectedMeal.imageUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(children: [
-                    Icon(Icons.schedule),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Text("${selectedMeal.costRating}/5")
-                  ]),
-                  Row(
-                    children: [
-                      Icon(Icons.room_service),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text("${selectedMeal.serviceRating}/5")
-                    ],
-                  ),
-                  Row(children: [
-                    Icon(Icons.room_outlined),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Text("${selectedMeal.quantityRating}/5")
-                  ]),
-                  Row(children: [
-                    Icon(Icons.food_bank),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Text("${selectedMeal.tasteRating}/5")
-                  ])
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Overall rating:"),
-                SizedBox(width: 10),
-                RatingBar.builder(
-                  itemSize: 17,
-                  initialRating: (selectedMeal.quantityRating +
-                          selectedMeal.tasteRating +
-                          selectedMeal.serviceRating +
-                          selectedMeal.costRating) /
-                      4,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  itemPadding: EdgeInsets.symmetric(horizontal: 0.1),
-                  itemBuilder: (context, _) => Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
-                  onRatingUpdate: (rating) {},
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Divider(color: Colors.grey),
-            buildSectionTitle(context, "Reviews"),
-            Container(
-                height: MediaQuery.of(context).size.height * 0.54,
-                child: ReviewsList(DUMMY_Reviews))
-          ],
-        ),
-      ),
       appBar: AppBar(
-        title: Text('${selectedMeal.title}'),
+        title: Text('${restaurant.title}'),
         actions: [
           //icon Button on top appBar
           IconButton(
@@ -180,8 +56,344 @@ class RestaurantPageScreen extends StatelessWidget {
       floatingActionButton: IconButton(
           icon: Icon(Icons.add_circle_outline),
           onPressed: () => _startAddPost(context),
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.primary,
           iconSize: 45.0),
+      body: Stack(
+        children: <Widget>[
+          Positioned(
+            left: 0,
+            right: 0,
+            child: Container(
+              width: double.maxFinite,
+              child: Image.network(
+                restaurant.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Positioned(
+          //   left: 30,
+          //   top: 30,
+          //   child: Container(
+          //     height: 50,
+          //     width: 50,
+          //     //        IconButton(
+          //     //  icon: Icon(Icons.arrow_back),
+          //     //  onPressed: (){
+          //     //    Navigator.pop(context);
+          //     //  },
+          //     //)
+          //     child: FloatingActionButton(
+          //       backgroundColor: Colors.grey.withOpacity(0.6),
+          //       heroTag: 'back',
+          //       onPressed: () {
+          //         Navigator.pop(context);
+          //       },
+          //       child: const Icon(
+          //         Icons.arrow_back,
+          //         color: Colors.white,
+          //         size: 40,
+          //       ),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(10),
+          //       ),
+          //     ),
+          //   ),
+          // ), //MISSING TAGS
+          DraggableScrollableSheet(
+            initialChildSize: 0.75,
+            minChildSize: 0.75,
+            builder: (BuildContext context, ScrollController scrollController) {
+              return Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(60),
+                  ),
+                  color: Colors.white,
+                ),
+                child: ListView(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  controller: scrollController,
+                  children: [
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(padding: EdgeInsets.only(top: 10)),
+                                SizedBox(height: 10),
+                                buildSectionTitle(
+                                    context, '${restaurant.title}'),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_pin,
+                                      color: Colors.amber,
+                                      size: 20,
+                                    ),
+                                    Text("Location") //MISSING ACTUAL LOCATION
+                                  ],
+                                ),
+                              ]),
+                          Spacer(),
+                          Column(
+                            children: [
+                              SizedBox(height: 50),
+                              IconButton(
+                                  icon: Icon(Icons.add_circle_outline),
+                                  onPressed: () => _startAddPost(context),
+                                  color: Colors.amber,
+                                  iconSize: 35.0),
+                            ],
+                          ),
+                        ]),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            "Rating",
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 11),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  RatingTag(
+                                    rating: restaurant.costRating.toString(),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text("Price"),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  RatingTag(
+                                    rating: restaurant.tasteRating.toString(),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text("Taste"),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  RatingTag(
+                                    rating:
+                                        restaurant.quantityRating.toString(),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text("Quantity"),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  RatingTag(
+                                    rating: restaurant.serviceRating.toString(),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text("Service"),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 15),
+                    //   child: Text(
+                    //     "Details",
+                    //     style: Theme.of(context).textTheme.headline4,
+                    //   ),
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Text(
+                    //       "Price Range",
+                    //       style: TextStyle(
+                    //         fontSize: 18,
+                    //       ),
+                    //     ),
+                    //     Text(
+                    //       "data", //MISSING
+                    //       style: TextStyle(
+                    //         fontSize: 18,
+                    //         color: Colors.amber,
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                    // SizedBox(
+                    //   height: 6,
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Text(
+                    //       "Cuisines",
+                    //       style: TextStyle(
+                    //         fontSize: 18,
+                    //       ),
+                    //     ),
+                    //     Text(
+                    //       "data", //MISSING
+                    //       style: TextStyle(
+                    //         fontSize: 18,
+                    //         color: Colors.amber,
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                    // SizedBox(
+                    //   height: 6,
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 11),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Text(
+                    //         "Contact",
+                    //         style: TextStyle(
+                    //           fontSize: 18,
+                    //         ),
+                    //       ),
+                    //       Text(
+                    //         "data", //MISSING
+                    //         style: TextStyle(
+                    //           fontSize: 18,
+                    //           color: Colors.amber,
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
+                    Divider(color: Colors.grey),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Reviews",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                                onPressed: () {}, //ADD FUNC
+                                icon: Icon(
+                                  Icons.equalizer,
+                                  color: Colors.amber,
+                                  size: 30,
+                                )),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                textStyle: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                              onPressed: () {}, //ADD FUNC
+                              child: Text(
+                                'Data',
+                                style: TextStyle(
+                                  color: Colors.amber,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    ReviewPosts(
+                        reviewProvider: reviewProvider, restaurant: restaurant),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ReviewPosts extends StatefulWidget {
+  const ReviewPosts({
+    Key? key,
+    required this.reviewProvider,
+    required this.restaurant,
+  }) : super(key: key);
+
+  final ReviewProvider reviewProvider;
+  final Restaurant restaurant;
+
+  @override
+  State<ReviewPosts> createState() => _ReviewPostsState();
+}
+
+class _ReviewPostsState extends State<ReviewPosts> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureProvider<List<Review>?>(
+      initialData: null,
+      create: (_) {
+        // print('calling future');
+        return widget.reviewProvider
+            .fetchRestaurantReviews(widget.restaurant.id);
+      },
+      child: Consumer<List<Review>?>(builder: (_, value, __) {
+        if (value == null) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return ReviewsList(value);
+        }
+      }),
+    );
+  }
+}
+
+class RatingTag extends StatelessWidget {
+  final String rating;
+  const RatingTag({
+    Key? key,
+    required this.rating,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.amber,
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Text(
+        "${rating}/5",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:where_to_eat/data/dummy_data.dart';
+import 'package:where_to_eat/screens/restaurant_list_screen.dart';
 import 'package:where_to_eat/screens/wish_list_screen.dart';
 
 //////////////////////////////////////////////
 /// widgets
 /// //////////////////////////
 import 'package:where_to_eat/widgets/category_item.dart';
+
+import '../providers/restaurant_provider.dart';
 
 class ExploreScreen extends StatelessWidget {
   ///////////////////////////////////////////////////////////////////
@@ -34,7 +38,11 @@ class ExploreScreen extends StatelessWidget {
       'title': 'Trending',
       'imageLocation': '${exploreScreenImagesPath}trending.png',
       'onTap': (context) {
-        Navigator.of(context).pushNamed(WishListScreen.routeName);
+        Navigator.of(context).pushNamed(
+          RestaurantListScreen.routeName,
+          arguments: Provider.of<RestaurantProvider>(context, listen: false)
+              .fetchTrendingRestaurants(),
+        );
       }
     },
     {
