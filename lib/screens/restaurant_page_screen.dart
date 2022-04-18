@@ -14,6 +14,7 @@ import 'new_review_screen.dart';
 
 class RestaurantPageScreen extends StatelessWidget {
   static const routeName = '/restaurant-page';
+  static const foodImagePath = 'assets/images/item-review-images/food.png';
 
   //for titles like steps, ingredients
   Widget buildSectionTitle(BuildContext context, String text) {
@@ -68,6 +69,25 @@ class RestaurantPageScreen extends StatelessWidget {
               child: Image.network(
                 restaurant.imageUrl,
                 fit: BoxFit.cover,
+                height: 200,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 200,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+                errorBuilder: (_, sad, asd) {
+                  return Image.asset(foodImagePath, height: 150);
+                },
               ),
             ),
           ),

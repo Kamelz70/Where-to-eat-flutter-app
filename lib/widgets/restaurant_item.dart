@@ -8,8 +8,10 @@ class RestaurantItem extends StatelessWidget {
   ///
   ///           Vars and consts
   final Restaurant currentRestaurant;
-
   RestaurantItem(this.currentRestaurant);
+
+  static const foodImagePath = 'assets/images/item-review-images/food.png';
+
   ///////////////////////////////////////////////////////////////////
   ///
   ///           Functions
@@ -40,20 +42,19 @@ class RestaurantItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              FittedBox(
+                fit: BoxFit.cover,
+                child: Text(
+                  /////////////////title
+                  currentRestaurant.title,
+                  style: Theme.of(context).textTheme.headline4,
+                  softWrap: true,
+                  overflow: TextOverflow.fade,
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  FittedBox(
-                    fit: BoxFit.cover,
-                    child: Text(
-                      /////////////////title
-                      currentRestaurant.title,
-                      style: Theme.of(context).textTheme.headline4,
-                      softWrap: true,
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
-                  SizedBox(width: 10),
                   Icon(Icons.star_rounded,
                       color: Theme.of(context).colorScheme.primary),
 
@@ -116,8 +117,30 @@ class RestaurantItem extends StatelessWidget {
                       borderRadius: BorderRadius.all(
                         Radius.circular(15),
                       ),
-                      child: Image.network(currentRestaurant.imageUrl,
-                          height: 200, fit: BoxFit.cover),
+                      child: Image.network(
+                        currentRestaurant.imageUrl,
+                        fit: BoxFit.cover,
+                        height: 200,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (_, sad, asd) {
+                          return Image.asset(foodImagePath, height: 150);
+                        },
+                      ),
                     ),
                   ),
                   SizedBox(width: 10),

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:where_to_eat/widgets/search_result_list.dart';
+import 'package:provider/provider.dart';
+import 'package:where_to_eat/data/dummy_data.dart';
+import 'package:where_to_eat/widgets/search_screen/search_result_list.dart';
+
+import '../models/restaurant.dart';
+import '../providers/restaurant_provider.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -21,7 +26,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   List<String> filteredSearchHistory = [];
 
-  String selectedTerm = '';
+  String SearchTerm = '';
 
   List<String> filterSearchTerms({
     required String filter,
@@ -76,13 +81,22 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FloatingSearchBarController d;
+    final restaurantProvider =
+        Provider.of<RestaurantProvider>(context, listen: false);
     return Scaffold(
       body: FloatingSearchBar(
         controller: controller,
         body: FloatingSearchBarScrollNotifier(
-          child: SearchResultsList(
-            searchTerm: selectedTerm,
-          ),
+          child: FutureBuilder<List<Restaurant>>(
+              future: restaurantProvider.searchByName(SearchTerm),
+              builder: (_, restaurantSnapshot) {
+                if (restaurantSnapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return RestaurantSearchList(restaurantSnapshot.data!);
+              }),
         ),
         transition: CircularFloatingSearchBarTransition(),
         physics: BouncingScrollPhysics(),
@@ -102,7 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
         onSubmitted: (query) {
           setState(() {
             addSearchTerm(query);
-            selectedTerm = query;
+            SearchTerm = query;
           });
           controller.close();
         },
@@ -111,7 +125,7 @@ class _SearchScreenState extends State<SearchScreen> {
             borderRadius: BorderRadius.circular(8),
             child: Material(
               color: Colors.white,
-              elevation: 4,
+              elevation: 7,
               child: Builder(
                 builder: (context) {
                   if (filteredSearchHistory.isEmpty &&
@@ -134,7 +148,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       onTap: () {
                         setState(() {
                           addSearchTerm(controller.query);
-                          selectedTerm = controller.query;
+                          SearchTerm = controller.query;
                         });
                         controller.close();
                       },
@@ -162,7 +176,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               onTap: () {
                                 setState(() {
                                   putSearchTermFirst(term);
-                                  selectedTerm = term;
+                                  SearchTerm = term;
                                 });
                                 controller.close();
                               },

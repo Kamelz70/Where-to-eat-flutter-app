@@ -262,7 +262,7 @@ const DUMMY_RestaurantS = const [
     costRating: 3.5,
     quantityRating: 4.5,
     imageUrl:
-        'https://cdn.pixabay.com/photo/2017/05/01/05/18/pastry-2274750_1280.jpg',
+        'https://cdn.pixabay.com/photo/2017/05/01/05/pastry-2274750_asda1280.jpg',
   ),
   Restaurant(
     id: 'm7',

@@ -155,6 +155,32 @@ class _AddItemReviewState extends State<AddItemReview> {
                 ],
               ),
               SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Rating:", style: Theme.of(context).textTheme.headline4),
+                  SizedBox(width: 20),
+                  RatingBar.builder(
+                    unratedColor: Colors.grey.shade300,
+                    glowColor: Colors.amber,
+                    itemSize: 30,
+                    initialRating: newPostProvider.currentReviewItem['rating'],
+                    minRating: 0,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemPadding: EdgeInsets.symmetric(horizontal: 1),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {
+                      newPostProvider.currentReviewItem['rating'] = rating;
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
               TextFormField(
                 textInputAction: TextInputAction.next,
                 onChanged: (value) {
@@ -184,31 +210,6 @@ class _AddItemReviewState extends State<AddItemReview> {
           ),
         ),
         SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text("Rating:", style: Theme.of(context).textTheme.headline4),
-            SizedBox(width: 20),
-            RatingBar.builder(
-              unratedColor: Colors.grey.shade300,
-              glowColor: Colors.amber,
-              itemSize: 30,
-              initialRating: newPostProvider.currentReviewItem['rating'],
-              minRating: 0,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemPadding: EdgeInsets.symmetric(horizontal: 1),
-              itemBuilder: (context, _) => Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              onRatingUpdate: (rating) {
-                newPostProvider.currentReviewItem['rating'] = rating;
-              },
-            ),
-          ],
-        ),
         SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,

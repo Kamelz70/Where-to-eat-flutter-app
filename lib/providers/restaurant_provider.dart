@@ -90,6 +90,15 @@ class RestaurantProvider with ChangeNotifier {
     // }
   }
   Restaurant? findById(String id) {
-    return _items.firstWhere((element) => element.id == id);
+    try {
+      return _items.firstWhere((element) => element.id == id);
+    } catch (error) {
+      return DUMMY_RestaurantS.firstWhere((element) => element.id == id);
+    }
+  }
+
+  Future<List<Restaurant>> searchByName(String name) async {
+    await Future.delayed(Duration(seconds: 1));
+    return DUMMY_RestaurantS;
   }
 }

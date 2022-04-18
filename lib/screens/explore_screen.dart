@@ -88,7 +88,10 @@ class ExploreScreen extends StatelessWidget {
       ),
       body: GridView.builder(
         itemCount: exploreMaps.length,
-        padding: const EdgeInsets.all(35),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 25,
+        ),
         itemBuilder: (ctx, index) {
           return Container(
             decoration: const BoxDecoration(
@@ -134,8 +137,8 @@ class ExploreScreen extends StatelessWidget {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 11 / 13,
-          crossAxisSpacing: 25,
-          mainAxisSpacing: 30,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 25,
         ),
       ),
     );

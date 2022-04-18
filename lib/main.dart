@@ -22,6 +22,7 @@ import 'screens/Items_review_screen.dart';
 ///////////////////////////////////////////////////////////////
 ///   Screens
 import 'Screens/tabs_screen.dart';
+import 'screens/add_restaurant_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -67,11 +68,15 @@ class _MyAppState extends State<MyApp> {
                 Theme.of(context).colorScheme.copyWith(primary: Colors.orange),
             textTheme: ThemeData.light().textTheme.copyWith(
                   bodyText1: TextStyle(color: Color.fromRGBO(20, 55, 55, 1)),
-
+                  headline2: const TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'RobotoCondensed',
+                    color: Color.fromARGB(255, 67, 67, 67),
+                  ),
                   headline3: const TextStyle(
                     fontSize: 20,
                     fontFamily: 'RobotoCondensed',
-                    color: Color.fromARGB(255, 182, 159, 159),
+                    color: Color.fromARGB(255, 138, 138, 138),
                   ),
                   headline4: const TextStyle(
                     fontSize: 18,
@@ -112,6 +117,7 @@ class _MyAppState extends State<MyApp> {
             WishListScreen.routeName: (ctx) => WishListScreen(),
             NewReviewScreen.routeName: (ctx) => NewReviewScreen(),
             ItemsReviewScreen.routeName: (ctx) => ItemsReviewScreen(),
+            AddRestaurantScreen.routeName: (ctx) => AddRestaurantScreen(),
           },
           //when it doesnt find named route, it goes to ongenroute
           onGenerateRoute: (settings) {

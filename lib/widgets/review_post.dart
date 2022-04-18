@@ -33,10 +33,29 @@ class ReviewPost extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    radius: 19.0,
+                    radius: 20,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     child: ClipRRect(
                       child: Image.network(
                         review.authorImage,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (_, as, asd) {
+                          return Icon(Icons.person,
+                              size: 25,
+                              color: Theme.of(context).colorScheme.onPrimary);
+                        },
                       ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
