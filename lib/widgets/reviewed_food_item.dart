@@ -68,7 +68,13 @@ class ReviewedFoodItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(price.toStringAsFixed(0) + ' EGP'),
+                      Expanded(
+                          child: Text(
+                        price.toStringAsFixed(0) + ' EGP',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        softWrap: true,
+                        overflow: TextOverflow.fade,
+                      )),
                       RatingBarIndicator(
                         rating: rating,
                         itemBuilder: (context, index) => Icon(

@@ -14,6 +14,7 @@ import 'package:where_to_eat/screens/settings_screen.dart';
 import 'package:where_to_eat/screens/splash_screen.dart';
 import 'package:where_to_eat/screens/wish_list_screen.dart';
 import 'providers/new_review_provider.dart';
+import 'providers/profile_provider.dart';
 import 'providers/review_provider.dart';
 import 'screens/Items_review_screen.dart';
 ////////////////////////////////////////////////////////////////
@@ -53,6 +54,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (_) => RestaurantProvider([]),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileProvider(),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, authenticator, _) => MaterialApp(
@@ -67,7 +71,11 @@ class _MyAppState extends State<MyApp> {
             colorScheme:
                 Theme.of(context).colorScheme.copyWith(primary: Colors.orange),
             textTheme: ThemeData.light().textTheme.copyWith(
-                  bodyText1: TextStyle(color: Color.fromRGBO(20, 55, 55, 1)),
+                  bodyText1: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey.shade500,
+                    fontSize: 12,
+                  ),
                   headline2: const TextStyle(
                     fontSize: 20,
                     fontFamily: 'RobotoCondensed',

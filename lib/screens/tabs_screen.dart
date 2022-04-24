@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///   Screens
 import './explore_screen.dart';
 import './search_screen.dart';
-import './my_profile_screen.dart';
+import 'profile_screen.dart';
 import './news_feed_screen.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -31,7 +31,6 @@ class _TabsScreenState extends State<TabsScreen> {
 ////////////////////////////////////////////////////////////////////////////////
 
   void _selectPage(int index) {
-    print(index);
     setState(() {
       _selectedPageIndex = index;
     });
@@ -59,7 +58,7 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'News Feed',
       },
       {
-        'page': MyProfileScreen(),
+        'page': ProfileScreen(isMe: true),
         'title': 'My Profile',
       },
     ];

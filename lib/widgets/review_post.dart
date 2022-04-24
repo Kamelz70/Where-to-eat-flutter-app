@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:where_to_eat/models/review.dart';
 
+import '../Screens/profile_screen.dart';
 import '../models/review_item.dart';
 import 'reviewed_food_item.dart';
 import 'reviewed_food_items_list.dart';
@@ -14,6 +15,14 @@ class ReviewPost extends StatelessWidget {
   Review review;
   ReviewPost(this.review);
   PageController _pageController = new PageController();
+
+  void openProfile(BuildContext context, String profileId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProfileScreen(userId: profileId),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,32 +41,38 @@ class ReviewPost extends StatelessWidget {
               //header row
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: ClipRRect(
-                      child: Image.network(
-                        review.authorImage,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        },
-                        errorBuilder: (_, as, asd) {
-                          return Icon(Icons.person,
-                              size: 25,
-                              color: Theme.of(context).colorScheme.onPrimary);
-                        },
+                  GestureDetector(
+                    onTap: () {
+                      openProfile(context, review.authorId);
+                    },
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: ClipRRect(
+                        child: Image.network(
+                          review.authorImage,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (_, as, asd) {
+                            return Icon(Icons.person,
+                                size: 25,
+                                color: Theme.of(context).colorScheme.onPrimary);
+                          },
+                        ),
+                        borderRadius: BorderRadius.circular(50.0),
                       ),
-                      borderRadius: BorderRadius.circular(50.0),
                     ),
                   ),
                   SizedBox(width: 10),
@@ -67,7 +82,18 @@ class ReviewPost extends StatelessWidget {
                     children: [
                       ////////////////////////////////////////////////////////////////////////////////////////////////
                       ///reviewer name
-                      Text(review.authorName),
+                      GestureDetector(
+                        onTap: () {
+                          openProfile(context, review.authorId);
+                        },
+                        child: Text(
+                          review.authorName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2!
+                              .copyWith(fontSize: 14),
+                        ),
+                      ),
                       Row(
                         children: [
                           Text("Rated: ${review.costRating}/10"),
@@ -96,13 +122,20 @@ class ReviewPost extends StatelessWidget {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        /////////////////////////////////////
+                        /// ////Name And Location of res
+                        /////////////////
                         Text(review.restaurantName),
                         Row(
                           children: [
                             Icon(Icons.location_on,
                                 color: Theme.of(context).colorScheme.primary,
                                 size: 15),
-                            Text(review.location),
+                            Text(review.location,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(color: Colors.grey.shade500)),
                           ],
                         ),
                       ])
@@ -148,9 +181,20 @@ class ReviewPost extends StatelessWidget {
                               shrinkWrap: true,
                               physics: ClampingScrollPhysics(),
                               children: [
-                                ReviewedFoodItemsList(review.reviewItems!),
+                                Container(
+                                    padding: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 2,
+                                        color: Color.fromARGB(100, 230, 174, 7),
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: ReviewedFoodItemsList(
+                                        review.reviewItems!)),
                                 Divider(),
-                                SizedBox(height: 10),
                               ],
                             ),
                           ),
@@ -181,39 +225,56 @@ class ReviewPost extends StatelessWidget {
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(
-                    height: 25,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Icon(Icons.arrow_drop_up, color: Colors.white),
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
-                        primary: Colors.green, // <-- Button color
-                      ),
+                  Flexible(
+                    flex: 4,
+                    fit: FlexFit.tight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.green,
+                          child: IconButton(
+                            padding: EdgeInsets.all(2),
+                            onPressed: () {},
+                            iconSize: 20,
+                            icon:
+                                Icon(Icons.arrow_drop_up, color: Colors.white),
+                          ),
+                        ),
+                        ///////////////////////////////////////////
+                        /// UpVotes
+                        Text('23'),
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.red,
+                          child: IconButton(
+                            padding: EdgeInsets.all(2),
+                            onPressed: () {},
+                            iconSize: 20,
+                            icon: Icon(Icons.arrow_drop_down,
+                                color: Colors.white),
+                          ),
+                        ),
+                        /////////////////////////////////////////
+                        /// DownVotes
+                        Text('23'),
+                        IconButton(
+                          icon: Icon(Icons.comment_outlined),
+                          onPressed: () {},
+                        ),
+                      ],
                     ),
                   ),
-                  Text('23'),
-                  SizedBox(
-                    height: 25,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Icon(Icons.arrow_drop_down, color: Colors.white),
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
-                        primary: Colors.red, // <-- Button color
-                      ),
-                    ),
-                  ),
-                  Text('23'),
-                  IconButton(
-                    icon: Icon(Icons.comment_outlined),
-                    onPressed: () {},
-                  ),
-                  Spacer(),
+                  Spacer(flex: 2),
                   Text(
                     '1 hour ago',
-                    style: TextStyle(color: Colors.grey[500]),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2!
+                        .copyWith(color: Colors.grey.shade500),
                   ),
                 ],
               )
@@ -223,66 +284,66 @@ class ReviewPost extends StatelessWidget {
   }
 }
 
-class CarouselVariableHight extends StatefulWidget {
-  final List<Widget> caruselItems;
-  final PageController controller;
-  CarouselVariableHight({required this.caruselItems, required this.controller});
-  @override
-  CarouselVariableHightState createState() => CarouselVariableHightState();
-}
+// class CarouselVariableHight extends StatefulWidget {
+//   final List<Widget> caruselItems;
+//   final PageController controller;
+//   CarouselVariableHight({required this.caruselItems, required this.controller});
+//   @override
+//   CarouselVariableHightState createState() => CarouselVariableHightState();
+// }
 
-class CarouselVariableHightState extends State<CarouselVariableHight> {
-  double? height;
-  GlobalKey stackKey = GlobalKey();
-  bool? widgetHasHeigh;
+// class CarouselVariableHightState extends State<CarouselVariableHight> {
+//   double? height;
+//   GlobalKey stackKey = GlobalKey();
+//   bool? widgetHasHeigh;
 
-  @override
-  void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback(_afterLayout);
-    super.initState();
-  }
+//   @override
+//   void initState() {
+//     WidgetsBinding.instance?.addPostFrameCallback(_afterLayout);
+//     super.initState();
+//   }
 
-  _afterLayout(_) {
-    final RenderBox renderBox =
-        stackKey.currentContext!.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-    setState(() {
-      if (size.height == null || size.height < 70) {
-        height = 70;
-      } else {
-        height = size.height;
-      }
-    });
-  }
+//   _afterLayout(_) {
+//     final RenderBox renderBox =
+//         stackKey.currentContext!.findRenderObject() as RenderBox;
+//     final size = renderBox.size;
+//     setState(() {
+//       if (size.height == null || size.height < 70) {
+//         height = 70;
+//       } else {
+//         height = size.height;
+//       }
+//     });
+//   }
 
-  _buildStack() {
-    Widget firstElement;
-    if (height == null) {
-      firstElement = Container();
-    } else {
-      firstElement = Container(
-        height: height,
-        child: PageView(
-          controller: widget.controller,
-          children: widget.caruselItems,
-        ),
-      );
-    }
+//   _buildStack() {
+//     Widget firstElement;
+//     if (height == null) {
+//       firstElement = Container();
+//     } else {
+//       firstElement = Container(
+//         height: height,
+//         child: PageView(
+//           controller: widget.controller,
+//           children: widget.caruselItems,
+//         ),
+//       );
+//     }
 
-    return IndexedStack(
-      key: stackKey,
-      children: <Widget>[
-        firstElement,
-        ...widget.caruselItems,
-      ],
-    );
-  }
+//     return IndexedStack(
+//       key: stackKey,
+//       children: <Widget>[
+//         firstElement,
+//         ...widget.caruselItems,
+//       ],
+//     );
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return _buildStack();
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return _buildStack();
+//   }
+// }
 
 class ExpandablePageView extends StatefulWidget {
   final List<Widget>? children;
@@ -346,8 +407,12 @@ class _ExpandablePageViewState extends State<ExpandablePageView>
             maxHeight: double.infinity,
             alignment: Alignment.topCenter,
             child: SizeReportingWidget(
-              onSizeChange: (size) =>
-                  setState(() => _heights![index] = size.height),
+              onSizeChange: (size) => setState(() => {
+                    if (_heights![index] < 400)
+                      {_heights![index] = size.height}
+                    else
+                      {_heights![index] = 400}
+                  }),
               child: Align(child: child),
             ),
           ),

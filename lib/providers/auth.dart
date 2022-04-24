@@ -29,7 +29,8 @@ class Auth with ChangeNotifier {
   }
 
   String? get userId {
-    return _userId;
+    return 'me';
+    //_userId;
   }
 
   Future<void> _authenticate(

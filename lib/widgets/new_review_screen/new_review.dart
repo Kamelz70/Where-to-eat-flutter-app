@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/new_review_provider.dart';
+import 'image_input.dart';
 
 class NewReview extends StatefulWidget {
   final GlobalKey<FormState> _formKey;
@@ -27,6 +28,11 @@ class _NewReviewState extends State<NewReview> {
   ///       Functions
   ///
 //////////////////////////////////////////////////////////////////////////
+  ///
+  // void _addImage(File pickedImage) {
+  //   _pickedImage = pickedImage;
+  // }
+
 //Submit data function
   void _submitData() {
     //String titletext = titleController.text;
@@ -43,7 +49,8 @@ class _NewReviewState extends State<NewReview> {
 //////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
-    final newPostProvider = Provider.of<NewReviewProvider>(context);
+    final newPostProvider =
+        Provider.of<NewReviewProvider>(context, listen: false);
 
     String? _ratingInputError = null;
     final _starSize = MediaQuery.of(context).size.height * 0.05;
@@ -390,6 +397,7 @@ class _NewReviewState extends State<NewReview> {
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
+        ImageInput(() {}),
         SizedBox(height: MediaQuery.of(context).viewInsets.bottom)
       ],
     );

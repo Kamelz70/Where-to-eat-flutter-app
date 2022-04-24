@@ -40,6 +40,8 @@ dependencies:
   http: ^0.13.4
   shared_preferences: ^2.0.13
   smooth_page_indicator: ^1.0.0+2
+  image_picker: ^0.8.5
+  path_provider: ^2.0.9
 dev_dependencies:
   flutter_test:
     sdk: flutter

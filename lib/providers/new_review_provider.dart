@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../models/review.dart';
@@ -27,10 +29,16 @@ class NewReviewProvider with ChangeNotifier {
     'description': '',
   };
   List<ReviewItem> _reviewItemsList = [];
+  List<File> _imageList = [];
 
   List<ReviewItem> get reviewItemsList {
     //copy spread items (brackets means copy)
     return [..._reviewItemsList];
+  }
+
+  List<File> get imageList {
+    //copy spread items (brackets means copy)
+    return [..._imageList];
   }
 
   Review get currentReview {
@@ -54,6 +62,11 @@ class NewReviewProvider with ChangeNotifier {
 
   void addReviewItem(ReviewItem reviewItem) {
     _reviewItemsList.add(reviewItem);
+    notifyListeners();
+  }
+
+  void addImage(File image) {
+    _imageList.add(image);
     notifyListeners();
   }
 
@@ -96,7 +109,8 @@ class NewReviewProvider with ChangeNotifier {
       'rating': 3.0 as double,
       'description': '',
     };
-    List<ReviewItem> _reviewItemsList = [];
+    _reviewItemsList = [];
+    _imageList = [];
     notifyListeners();
   }
 }

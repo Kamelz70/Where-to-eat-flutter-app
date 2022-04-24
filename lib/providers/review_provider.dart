@@ -139,4 +139,9 @@ class ReviewProvider with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<List<Review>> fetchPostsOfId(String profileId) async {
+    await Future.delayed(Duration(seconds: 1));
+    return DUMMY_Reviews;
+  }
 }

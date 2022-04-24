@@ -235,6 +235,7 @@ class _AuthCardState extends State<AuthCard> {
           if (_authMode == AuthMode.LoginWithMail ||
               _authMode == AuthMode.Signup)
             TextFormField(
+              key: UniqueKey(),
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: 'E-mail',
