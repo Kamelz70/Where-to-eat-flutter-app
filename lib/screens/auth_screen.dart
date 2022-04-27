@@ -104,26 +104,23 @@ class _AuthCardState extends State<AuthCard> {
             _authData['email']!,
             _authData['password']!,
             _authData['name']!,
-            _authData['phone']!,
           );
+          setState(() {
+            _authMode = AuthMode.LoginWithMail;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: const Duration(seconds: 5),
+            content: Text(
+              "SignedUp, Now Tryout Your First Login",
+              textAlign: TextAlign.center,
+            ),
+          ));
           break;
       }
     }
     //check error type
     on HttpException catch (error) {
-      var errorMessage = 'Authentication failed';
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'Email already exists';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'Not a valid Email address';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'Password too weak';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = "Can't find Email";
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
-        errorMessage = "Invalid Pasword";
-      }
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(error.toString());
     }
     //on any other error type
     catch (error) {
@@ -152,214 +149,216 @@ class _AuthCardState extends State<AuthCard> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(20),
-        children: <Widget>[
-          SizedBox(height: 20),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: Center(
-              child: Text(
-                _authMode == AuthMode.Signup
-                    ? 'Create An Account'
-                    : ' Welcome to \n Where to eat ?',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30,
+      child: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.all(20),
+              children: <Widget>[
+                SizedBox(height: 20),
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: Center(
+                    child: Text(
+                      _authMode == AuthMode.Signup
+                          ? 'Create An Account'
+                          : ' Welcome to \n Where to eat ?',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 30,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          if (_authMode != AuthMode.Signup)
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: Text(
-                _authMode != AuthMode.LoginWithMail
-                    ? 'Enter Phone No.\n\nOr'
-                    : 'Enter E-mail and Password\n\nOr',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey,
+                if (_authMode != AuthMode.Signup)
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: Text(
+                      _authMode != AuthMode.LoginWithMail
+                          ? 'Enter Phone No.\n\nOr'
+                          : 'Enter E-mail and Password\n\nOr',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                if (_authMode != AuthMode.Signup)
+                  TextButton(
+                    child: Text(
+                      _authMode == AuthMode.LoginWithMail
+                          ? 'Login With Phone'
+                          : 'Login With Email',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    onPressed: () {
+                      //signup screen
+                      if (_authMode == AuthMode.LoginWithMail) {
+                        _setAuthMode(AuthMode.LoginWithMobile);
+                      } else {
+                        _setAuthMode(AuthMode.LoginWithMail);
+                      }
+                      switch (_authMode) {
+                        case AuthMode.LoginWithMobile:
+                          print('setting auth mode to LoginWithMobile');
+                          break;
+                        case AuthMode.LoginWithMail:
+                          print('setting auth mode to LoginWithMail');
+                          break;
+                        case AuthMode.Signup:
+                          print('setting auth mode to Signup');
+                          break;
+                      }
+                    },
+                  ),
+                if (_authMode == AuthMode.Signup)
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Account Name',
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['name'] = value as String;
+                    },
+                  ),
+                if (_authMode == AuthMode.LoginWithMail ||
+                    _authMode == AuthMode.Signup)
+                  TextFormField(
+                    key: UniqueKey(),
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'E-mail',
+                      prefixIcon: Icon(Icons.email),
+                    ),
+                    validator: (value) {
+                      if (!EmailValidator.validate(value!)) {
+                        return 'invalid E-mail Address';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['email'] = value!;
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                if (_authMode == AuthMode.LoginWithMail ||
+                    _authMode == AuthMode.Signup)
+                  TextFormField(
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Password',
+                      prefixIcon: Icon(Icons.password),
+                    ),
+                    controller: _passwordController,
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 7) {
+                        return 'Password is too short!';
+                      }
+                    },
+                    onSaved: (value) {
+                      _authData['password'] = value!;
+                    },
+                  ),
+                if (_authMode == AuthMode.Signup)
+                  TextFormField(
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: 'Confirm Password',
+                        prefixIcon: Icon(Icons.password),
+                      ),
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match!';
+                        }
+                      }),
+                if (_authMode != AuthMode.LoginWithMail)
+                  InternationalPhoneNumberInput(
+                    onInputChanged: (number) {
+                      print(number);
+                    },
+                    keyboardType: TextInputType.phone,
+                    spaceBetweenSelectorAndTextField: 6,
+                    validator: (value) {
+                      if (value!.length < 10) {
+                        return 'Phone too short';
+                      }
+                    },
+                    onSaved: (number) {
+                      _authData['phone'] = number.toString();
+                    },
+                    selectorConfig: SelectorConfig(
+                      selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    ),
+                  ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      //forgot password screen
+                    },
+                    child: const Text(
+                      'Forgot Password?',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          if (_authMode != AuthMode.Signup)
-            TextButton(
-              child: Text(
-                _authMode == AuthMode.LoginWithMail
-                    ? 'Login With Phone'
-                    : 'Login With Email',
-                style: TextStyle(fontSize: 15),
-              ),
-              onPressed: () {
-                //signup screen
-                if (_authMode == AuthMode.LoginWithMail) {
-                  _setAuthMode(AuthMode.LoginWithMobile);
-                } else {
-                  _setAuthMode(AuthMode.LoginWithMail);
-                }
-                switch (_authMode) {
-                  case AuthMode.LoginWithMobile:
-                    print('setting auth mode to LoginWithMobile');
-                    break;
-                  case AuthMode.LoginWithMail:
-                    print('setting auth mode to LoginWithMail');
-                    break;
-                  case AuthMode.Signup:
-                    print('setting auth mode to Signup');
-                    break;
-                }
-              },
-            ),
-          if (_authMode == AuthMode.Signup)
-            TextFormField(
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Account Name',
-                prefixIcon: Icon(Icons.person),
-              ),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _authData['name'] = value as String;
-              },
-            ),
-          if (_authMode == AuthMode.LoginWithMail ||
-              _authMode == AuthMode.Signup)
-            TextFormField(
-              key: UniqueKey(),
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'E-mail',
-                prefixIcon: Icon(Icons.email),
-              ),
-              validator: (value) {
-                if (!EmailValidator.validate(value!)) {
-                  return 'invalid E-mail Address';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _authData['email'] = value!;
-              },
-              keyboardType: TextInputType.emailAddress,
-            ),
-          if (_authMode == AuthMode.LoginWithMail ||
-              _authMode == AuthMode.Signup)
-            TextFormField(
-              obscureText: true,
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Password',
-                prefixIcon: Icon(Icons.password),
-              ),
-              controller: _passwordController,
-              validator: (value) {
-                if (value!.isEmpty || value.length < 5) {
-                  return 'Password is too short!';
-                }
-              },
-              onSaved: (value) {
-                _authData['password'] = value!;
-              },
-            ),
-          if (_authMode == AuthMode.Signup)
-            TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Confirm Password',
-                  prefixIcon: Icon(Icons.password),
+                Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      child: Text(
+                        _authMode == AuthMode.Signup ? 'Signup' : 'Login',
+                        style: TextStyle(fontSize: 17, color: Colors.white),
+                      ),
+                      onPressed: () {
+                        _submit();
+                      },
+                    )),
+                Row(
+                  children: <Widget>[
+                    TextButton(
+                      child: Text(
+                        _authMode == AuthMode.Signup ? 'Login' : 'Signup',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      onPressed: () {
+                        //signup screen
+                        if (_authMode == AuthMode.Signup) {
+                          _setAuthMode(AuthMode.LoginWithMail);
+                        } else {
+                          _setAuthMode(AuthMode.Signup);
+                        }
+                        switch (_authMode) {
+                          case AuthMode.LoginWithMobile:
+                            print('setting auth mode to LoginWithMobile');
+                            break;
+                          case AuthMode.LoginWithMail:
+                            print('setting auth mode to LoginWithMail');
+                            break;
+                          case AuthMode.Signup:
+                            print('setting auth mode to Signup');
+                            break;
+                        }
+                      },
+                    ),
+                    const Text('instead'),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
                 ),
-                validator: (value) {
-                  if (value != _passwordController.text) {
-                    return 'Passwords do not match!';
-                  }
-                }),
-          if (_authMode != AuthMode.LoginWithMail)
-            InternationalPhoneNumberInput(
-              onInputChanged: (number) {
-                print(number);
-              },
-              keyboardType: TextInputType.phone,
-              spaceBetweenSelectorAndTextField: 6,
-              validator: (value) {
-                if (value!.length < 10) {
-                  return 'Phone too short';
-                }
-              },
-              onSaved: (number) {
-                _authData['phone'] = number.toString();
-              },
-              selectorConfig: SelectorConfig(
-                selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-              ),
+              ],
             ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                //forgot password screen
-              },
-              child: const Text(
-                'Forgot Password?',
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          Container(
-              height: 50,
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ElevatedButton(
-                child: Text(
-                  _authMode == AuthMode.Signup ? 'Signup' : 'Login',
-                  style: TextStyle(fontSize: 17, color: Colors.white),
-                ),
-                onPressed: () {
-                  _submit();
-                },
-              )),
-          Row(
-            children: <Widget>[
-              TextButton(
-                child: Text(
-                  _authMode == AuthMode.Signup ? 'Login' : 'Signup',
-                  style: TextStyle(fontSize: 15),
-                ),
-                onPressed: () {
-                  //signup screen
-                  if (_authMode == AuthMode.Signup) {
-                    _setAuthMode(AuthMode.LoginWithMail);
-                  } else {
-                    _setAuthMode(AuthMode.Signup);
-                  }
-                  switch (_authMode) {
-                    case AuthMode.LoginWithMobile:
-                      print('setting auth mode to LoginWithMobile');
-                      break;
-                    case AuthMode.LoginWithMail:
-                      print('setting auth mode to LoginWithMail');
-                      break;
-                    case AuthMode.Signup:
-                      print('setting auth mode to Signup');
-                      break;
-                  }
-                },
-              ),
-              const Text('instead'),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
-        ],
-      ),
     );
   }
 }

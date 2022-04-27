@@ -113,4 +113,10 @@ class NewReviewProvider with ChangeNotifier {
     _imageList = [];
     notifyListeners();
   }
+
+  void removeImage(int index) {
+    print(index);
+    _imageList.removeAt(index);
+    notifyListeners();
+  }
 }

@@ -91,35 +91,6 @@ class RestaurantPageScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Positioned(
-          //   left: 30,
-          //   top: 30,
-          //   child: Container(
-          //     height: 50,
-          //     width: 50,
-          //     //        IconButton(
-          //     //  icon: Icon(Icons.arrow_back),
-          //     //  onPressed: (){
-          //     //    Navigator.pop(context);
-          //     //  },
-          //     //)
-          //     child: FloatingActionButton(
-          //       backgroundColor: Colors.grey.withOpacity(0.6),
-          //       heroTag: 'back',
-          //       onPressed: () {
-          //         Navigator.pop(context);
-          //       },
-          //       child: const Icon(
-          //         Icons.arrow_back,
-          //         color: Colors.white,
-          //         size: 40,
-          //       ),
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(10),
-          //       ),
-          //     ),
-          //   ),
-          // ), //MISSING TAGS
           DraggableScrollableSheet(
             initialChildSize: 0.75,
             minChildSize: 0.75,
@@ -133,7 +104,7 @@ class RestaurantPageScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
                 child: ListView(
-                  padding: EdgeInsets.only(left: 20, right: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   controller: scrollController,
                   children: [
                     Row(
@@ -235,76 +206,6 @@ class RestaurantPageScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 15),
-                    //   child: Text(
-                    //     "Details",
-                    //     style: Theme.of(context).textTheme.headline4,
-                    //   ),
-                    // ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     Text(
-                    //       "Price Range",
-                    //       style: TextStyle(
-                    //         fontSize: 18,
-                    //       ),
-                    //     ),
-                    //     Text(
-                    //       "data", //MISSING
-                    //       style: TextStyle(
-                    //         fontSize: 18,
-                    //         color: Colors.amber,
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: 6,
-                    // ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     Text(
-                    //       "Cuisines",
-                    //       style: TextStyle(
-                    //         fontSize: 18,
-                    //       ),
-                    //     ),
-                    //     Text(
-                    //       "data", //MISSING
-                    //       style: TextStyle(
-                    //         fontSize: 18,
-                    //         color: Colors.amber,
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: 6,
-                    // ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 11),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Text(
-                    //         "Contact",
-                    //         style: TextStyle(
-                    //           fontSize: 18,
-                    //         ),
-                    //       ),
-                    //       Text(
-                    //         "data", //MISSING
-                    //         style: TextStyle(
-                    //           fontSize: 18,
-                    //           color: Colors.amber,
-                    //         ),
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
                     Divider(color: Colors.grey),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

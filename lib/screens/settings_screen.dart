@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:where_to_eat/providers/auth.dart';
 
+import '../models/profile.dart';
+import '../providers/profile_provider.dart';
+
 class SettingsScreen extends StatelessWidget {
   /////////////////////////////////////////////////////////////////////////////////////
   ///
@@ -135,7 +138,10 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authenticator = Provider.of<Auth>(context, listen: false);
-
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
+    final profile = profileProvider.viewedProfile;
+// final profile = context.watch<Profile>();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -149,12 +155,35 @@ class SettingsScreen extends StatelessWidget {
             Card(
               margin: const EdgeInsets.all(8.0),
               child: ListTile(
-                title: Text('Mohamed Kamel'),
+                title: Text(profile.name),
                 leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   child: ClipRRect(
                     child: Image.network(
-                        'https://scontent.fcai1-2.fna.fbcdn.net/v/t1.6435-9/68406470_2329293560457857_238321876919648256_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=174925&_nc_eui2=AeEMJynCO3wr772RkgWuBMF5k6fTKdUXlnCTp9Mp1ReWcO9EoxUbQhdTIs-kvnDs8cl9Nsc4DpfRcEh6rNVrdo9a&_nc_ohc=Ax5-x71qRGkAX-ZFy68&_nc_oc=AQk68tQD5_W47ZfoklJwxVteYayUXApQJu7ggMwwyzkAG8jZWn0wA8RSp2yDLE6T8MI&_nc_ht=scontent.fcai1-2.fna&oh=00_AT8TFgic4bd0h4KqxxqiGeGj_HTbfNmxjChxJJMdlQszqg&oe=622A85B2'),
-                    borderRadius: BorderRadius.circular(100.0),
+                      /////image here
+                      profile.imageUrl,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (_, as, asd) {
+                        return Icon(Icons.person,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.onPrimary);
+                      },
+                    ),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
               ),

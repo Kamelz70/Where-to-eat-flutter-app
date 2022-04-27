@@ -13,7 +13,8 @@ import 'reviewed_food_items_list.dart';
 
 class ReviewPost extends StatelessWidget {
   Review review;
-  ReviewPost(this.review);
+  bool? isLinked;
+  ReviewPost(this.review, {this.isLinked = true});
   PageController _pageController = new PageController();
 
   void openProfile(BuildContext context, String profileId) {
@@ -42,9 +43,11 @@ class ReviewPost extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      openProfile(context, review.authorId);
-                    },
+                    onTap: isLinked!
+                        ? () {
+                            openProfile(context, review.authorId);
+                          }
+                        : () {},
                     child: CircleAvatar(
                       radius: 20,
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -83,9 +86,11 @@ class ReviewPost extends StatelessWidget {
                       ////////////////////////////////////////////////////////////////////////////////////////////////
                       ///reviewer name
                       GestureDetector(
-                        onTap: () {
-                          openProfile(context, review.authorId);
-                        },
+                        onTap: isLinked!
+                            ? () {
+                                openProfile(context, review.authorId);
+                              }
+                            : () {},
                         child: Text(
                           review.authorName,
                           style: Theme.of(context)

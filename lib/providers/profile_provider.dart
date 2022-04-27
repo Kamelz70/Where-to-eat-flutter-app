@@ -3,28 +3,17 @@ import 'package:flutter/material.dart';
 import '../models/profile.dart';
 
 class ProfileProvider with ChangeNotifier {
-  Profile? _myProfile;
+  Profile? _viewedProfile;
 
-  get myProfile {
-    return _myProfile;
+  get viewedProfile {
+    return _viewedProfile;
   }
 
-  Future<void> fetchmyProfile() async {
-    await Future.delayed(const Duration(seconds: 1));
-    _myProfile = Profile(
-        id: 'myId',
-        name: 'Mohamed Kamel',
-        imageUrl: 'dd',
-        followersCount: 20,
-        followingCount: 10,
-        reviewsCount: 10);
-    notifyListeners();
-  }
-
-  Future<Profile> fetchProfileByID(String id) async {
+  Future<void> fetchProfileByID(String id) async {
     await Future.delayed(Duration(seconds: 1));
+    print('Fetxhing profile');
     if (id == 'me')
-      return Profile(
+      _viewedProfile = Profile(
           id: id,
           name: 'Mohamed Kamel',
           imageUrl: 'dd',
@@ -32,7 +21,7 @@ class ProfileProvider with ChangeNotifier {
           followingCount: 10,
           reviewsCount: 10);
     else
-      return Profile(
+      _viewedProfile = Profile(
           id: id,
           name: 'Ahmed Ali',
           imageUrl: 'dd',

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/profile.dart';
+import '../../providers/auth.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
@@ -16,6 +18,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -67,6 +70,11 @@ class ProfileHeader extends StatelessWidget {
         SizedBox(height: 10),
         Text(profile.name, style: Theme.of(context).textTheme.headline2),
         SizedBox(height: 10),
+        if (profile.id != authProvider.userId)
+          ElevatedButton(
+            child: Text('Follow'),
+            onPressed: () {},
+          ),
         Divider(thickness: 3, color: Colors.grey.shade200),
         Container(
           height: 60,

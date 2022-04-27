@@ -106,6 +106,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
           ),
+
           home: authenticator.isAuth
               ? const TabsScreen()
               : FutureBuilder(

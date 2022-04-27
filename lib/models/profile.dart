@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Profile {
   String id;
   String name;

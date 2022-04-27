@@ -11,13 +11,18 @@ import '../screens/wish_list_screen.dart';
 import '../widgets/profile_screen/profile_header.dart';
 import '../widgets/reviews_list.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final bool isMe;
   final String? userId;
 
   const ProfileScreen({this.userId, this.isMe = false, Key? key})
       : super(key: key);
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   void openSettings(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
       SettingsScreen.routeName,
@@ -36,80 +41,86 @@ class ProfileScreen extends StatelessWidget {
     String? Id;
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
+    final authProvider = Provider.of<Auth>(context, listen: false);
     final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
-    if (isMe) {
-      Id = Provider.of<Auth>(context, listen: false).userId;
+    if (widget.isMe) {
+      Id = authProvider.userId;
     } else {
-      Id = userId;
+      Id = widget.userId;
     }
     final iconsColor = Color.fromARGB(251, 111, 111, 111);
     const double iconsSize = 25;
 
-    return Scaffold(
-      appBar: isMe
-          ? AppBar(title: Text('My Profile'), actions: [
-              IconButton(
-                  iconSize: 35,
-                  onPressed: () => openWishList(context),
-                  color: Theme.of(context).colorScheme.primary,
-                  icon: Icon(Icons.favorite)),
-              IconButton(
-                  iconSize: 35,
-                  onPressed: () => openSettings(context),
-                  color: Theme.of(context).colorScheme.primary,
-                  icon: Icon(Icons.settings)),
-            ])
-          : AppBar(title: Text('Profile')),
-      body: ListView(children: [
-        Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: FutureBuilder<Profile>(
-                future: profileProvider.fetchProfileByID(Id!),
-                builder: (_, profileSnapshot) {
-                  Widget child;
-                  if (profileSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    child = Container(
-                      height: 269,
-                      child: Center(
-                          child: LinearProgressIndicator(), key: ValueKey(0)),
-                    );
-                  } else
-                    child = ProfileHeader(
-                        profile: profileSnapshot.data!,
+    return FutureBuilder<void>(
+        future: profileProvider.fetchProfileByID(Id!),
+        builder: (_, profileSnapshot) {
+          Widget upperChild;
+          if (profileSnapshot.connectionState == ConnectionState.waiting) {
+            upperChild = const Scaffold(
+                body:
+                    Center(child: LinearProgressIndicator(), key: ValueKey(0)));
+          } else {
+            print(profileProvider.viewedProfile.id.toString());
+            upperChild = Scaffold(
+              appBar: widget.isMe
+                  ? AppBar(title: Text('My Profile'), actions: [
+                      IconButton(
+                          iconSize: 35,
+                          onPressed: () => openWishList(context),
+                          color: Theme.of(context).colorScheme.primary,
+                          icon: Icon(Icons.favorite)),
+                      IconButton(
+                          iconSize: 35,
+                          onPressed: () => openSettings(context),
+                          color: Theme.of(context).colorScheme.primary,
+                          icon: Icon(Icons.settings)),
+                    ])
+                  : AppBar(title: Text('Profile')),
+              body: ListView(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      child: ProfileHeader(
+                        profile: profileProvider.viewedProfile,
                         iconsSize: iconsSize,
-                        iconsColor: iconsColor);
+                        iconsColor: iconsColor,
+                      )),
+                  Container(
+                    decoration: BoxDecoration(color: Colors.grey.shade100),
+                    child: FutureBuilder<List<Review>>(
+                      future: reviewProvider.fetchPostsOfId(Id!),
+                      builder: (_, reviewsSnapshot) {
+                        Widget child;
+                        if (reviewsSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          child = Container(
+                            height: 269,
+                            child: Center(
+                                child: CircularProgressIndicator(),
+                                key: ValueKey(0)),
+                          );
+                        } else
+                          // ignore: curly_braces_in_flow_control_structures
+                          child = ReviewsList(reviewsSnapshot.data!,
+                              isLinked: false);
 
-                  return AnimatedSwitcher(
-                    duration: Duration(seconds: 1),
-                    child: child,
-                  );
-                })),
-        Container(
-            decoration: BoxDecoration(color: Colors.grey.shade100),
-            child: FutureBuilder<List<Review>>(
-                future: reviewProvider.fetchPostsOfId(Id),
-                builder: (_, reviewsSnapshot) {
-                  Widget child;
-                  if (reviewsSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    child = Container(
-                      height: 269,
-                      child: Center(
-                          child: CircularProgressIndicator(), key: ValueKey(0)),
-                    );
-                  } else
-                    // ignore: curly_braces_in_flow_control_structures
-                    child = ReviewsList(
-                      reviewsSnapshot.data!,
-                    );
-
-                  return AnimatedSwitcher(
-                    duration: Duration(seconds: 1),
-                    child: child,
-                  );
-                })),
-      ]),
-    );
+                        return AnimatedSwitcher(
+                          duration: Duration(seconds: 1),
+                          child: child,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return RefreshIndicator(
+              onRefresh: () async {
+                setState(() {});
+              },
+              child: upperChild);
+        });
   }
 }
