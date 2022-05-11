@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:where_to_eat/data/dummy_data.dart';
 import 'package:where_to_eat/widgets/search_screen/search_result_list.dart';
 
 import '../models/restaurant.dart';
@@ -93,13 +92,13 @@ class _SearchScreenState extends State<SearchScreen> {
               builder: (_, restaurantSnapshot) {
                 if (restaurantSnapshot.connectionState ==
                     ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: const CircularProgressIndicator());
                 }
                 return RestaurantSearchList(restaurantSnapshot.data!);
               }),
         ),
         transition: CircularFloatingSearchBarTransition(),
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         title: Text(
           'Search',
           style: Theme.of(context).textTheme.headline6,

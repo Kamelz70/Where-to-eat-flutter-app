@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:where_to_eat/data/dummy_data.dart';
-import 'package:where_to_eat/widgets/new_review_screen/new_review.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
 import '../models/restaurant.dart';
 import '../models/review.dart';
 import '../providers/restaurant_provider.dart';
 import '../providers/review_provider.dart';
-import '../widgets/new_review_screen/new_review.dart';
 import 'new_review_screen.dart';
 
 class RestaurantPageScreen extends StatelessWidget {
@@ -19,7 +15,7 @@ class RestaurantPageScreen extends StatelessWidget {
   //for titles like steps, ingredients
   Widget buildSectionTitle(BuildContext context, String text) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       child: Text(
         text,
         style: Theme.of(context).textTheme.headline4,
@@ -49,13 +45,13 @@ class RestaurantPageScreen extends StatelessWidget {
         actions: [
           //icon Button on top appBar
           IconButton(
-            icon: Icon(Icons.star_outline),
+            icon: const Icon(Icons.star_outline),
             onPressed: () => {},
           )
         ],
       ),
       floatingActionButton: IconButton(
-          icon: Icon(Icons.add_circle_outline),
+          icon: const Icon(Icons.add_circle_outline),
           onPressed: () => _startAddPost(context),
           color: Theme.of(context).colorScheme.primary,
           iconSize: 45.0),
@@ -97,14 +93,14 @@ class RestaurantPageScreen extends StatelessWidget {
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(60),
+                    topLeft: const Radius.circular(60),
                   ),
                   color: Colors.white,
                 ),
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   controller: scrollController,
                   children: [
                     Row(
@@ -114,12 +110,13 @@ class RestaurantPageScreen extends StatelessWidget {
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(padding: EdgeInsets.only(top: 10)),
-                                SizedBox(height: 10),
+                                const Padding(
+                                    padding: const EdgeInsets.only(top: 10)),
+                                const SizedBox(height: 10),
                                 buildSectionTitle(
                                     context, '${restaurant.title}'),
                                 Row(
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.location_pin,
                                       color: Colors.amber,
@@ -129,12 +126,12 @@ class RestaurantPageScreen extends StatelessWidget {
                                   ],
                                 ),
                               ]),
-                          Spacer(),
+                          const Spacer(),
                           Column(
                             children: [
-                              SizedBox(height: 50),
+                              const SizedBox(height: 50),
                               IconButton(
-                                  icon: Icon(Icons.add_circle_outline),
+                                  icon: const Icon(Icons.add_circle_outline),
                                   onPressed: () => _startAddPost(context),
                                   color: Colors.amber,
                                   iconSize: 35.0),
@@ -161,10 +158,10 @@ class RestaurantPageScreen extends StatelessWidget {
                                   RatingTag(
                                     rating: restaurant.costRating.toString(),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 6,
                                   ),
-                                  Text("Price"),
+                                  const Text("Price"),
                                 ],
                               ),
                               Column(
@@ -172,10 +169,10 @@ class RestaurantPageScreen extends StatelessWidget {
                                   RatingTag(
                                     rating: restaurant.tasteRating.toString(),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 6,
                                   ),
-                                  Text("Taste"),
+                                  const Text("Taste"),
                                 ],
                               ),
                               Column(
@@ -184,10 +181,10 @@ class RestaurantPageScreen extends StatelessWidget {
                                     rating:
                                         restaurant.quantityRating.toString(),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 6,
                                   ),
-                                  Text("Quantity"),
+                                  const Text("Quantity"),
                                 ],
                               ),
                               Column(
@@ -195,10 +192,10 @@ class RestaurantPageScreen extends StatelessWidget {
                                   RatingTag(
                                     rating: restaurant.serviceRating.toString(),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 6,
                                   ),
-                                  Text("Service"),
+                                  const Text("Service"),
                                 ],
                               ),
                             ],
@@ -206,7 +203,7 @@ class RestaurantPageScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Divider(color: Colors.grey),
+                    const Divider(color: Colors.grey),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -219,21 +216,21 @@ class RestaurantPageScreen extends StatelessWidget {
                           children: [
                             IconButton(
                                 onPressed: () {}, //ADD FUNC
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.equalizer,
                                   color: Colors.amber,
                                   size: 30,
                                 )),
                             TextButton(
                               style: TextButton.styleFrom(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 20,
                                 ),
                               ),
                               onPressed: () {}, //ADD FUNC
-                              child: Text(
+                              child: const Text(
                                 'Data',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.amber,
                                 ),
                               ),
@@ -302,14 +299,14 @@ class RatingTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(4),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(4),
+      decoration: const BoxDecoration(
         color: Colors.amber,
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       child: Text(
         "${rating}/5",
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 15,
           color: Colors.white,

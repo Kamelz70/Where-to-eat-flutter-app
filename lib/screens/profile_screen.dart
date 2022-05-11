@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../data/dummy_data.dart';
-import '../models/profile.dart';
 import '../models/review.dart';
 import '../providers/auth.dart';
 import '../providers/profile_provider.dart';
@@ -48,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       Id = widget.userId;
     }
-    final iconsColor = Color.fromARGB(251, 111, 111, 111);
+    const iconsColor = const Color.fromARGB(251, 111, 111, 111);
     const double iconsSize = 25;
 
     return FutureBuilder<void>(
@@ -63,19 +61,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             print(profileProvider.viewedProfile.id.toString());
             upperChild = Scaffold(
               appBar: widget.isMe
-                  ? AppBar(title: Text('My Profile'), actions: [
+                  ? AppBar(title: const Text('My Profile'), actions: [
                       IconButton(
                           iconSize: 35,
                           onPressed: () => openWishList(context),
                           color: Theme.of(context).colorScheme.primary,
-                          icon: Icon(Icons.favorite)),
+                          icon: const Icon(Icons.favorite)),
                       IconButton(
                           iconSize: 35,
                           onPressed: () => openSettings(context),
                           color: Theme.of(context).colorScheme.primary,
-                          icon: Icon(Icons.settings)),
+                          icon: const Icon(Icons.settings)),
                     ])
-                  : AppBar(title: Text('Profile')),
+                  : AppBar(title: const Text('Profile')),
               body: ListView(
                 children: [
                   Padding(
@@ -96,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ConnectionState.waiting) {
                           child = Container(
                             height: 269,
-                            child: Center(
+                            child: const Center(
                                 child: CircularProgressIndicator(),
                                 key: ValueKey(0)),
                           );
@@ -106,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               isLinked: false);
 
                         return AnimatedSwitcher(
-                          duration: Duration(seconds: 1),
+                          duration: const Duration(seconds: 1),
                           child: child,
                         );
                       },

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/dummy_data.dart';
 import '../models/restaurant.dart';
-import '../models/review.dart';
 
 class RestaurantProvider with ChangeNotifier {
   List<Restaurant> _items = [];
@@ -24,7 +23,7 @@ class RestaurantProvider with ChangeNotifier {
   /////////////////////////////////////////////////////////////////
 
   Future<void> fetchTrendingRestaurants() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     _items = DUMMY_RestaurantS;
   }
 
@@ -98,7 +97,7 @@ class RestaurantProvider with ChangeNotifier {
   }
 
   Future<List<Restaurant>> searchByName(String name) async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return DUMMY_RestaurantS;
   }
 }

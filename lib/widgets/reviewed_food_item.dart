@@ -33,11 +33,11 @@ class ReviewedFoodItem extends StatelessWidget {
       ),
       elevation: 7,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Row(
           children: [
             Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               height: 60,
               child: Image.asset(
                 /////////////////food type here
@@ -60,24 +60,24 @@ class ReviewedFoodItem extends StatelessWidget {
                                     listen: false)
                                 .deleteItemById(id);
                           },
-                          icon: Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                         )
                     ],
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                           child: Text(
                         price.toStringAsFixed(0) + ' EGP',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                         softWrap: true,
                         overflow: TextOverflow.fade,
                       )),
                       RatingBarIndicator(
                         rating: rating,
-                        itemBuilder: (context, index) => Icon(
+                        itemBuilder: (context, index) => const Icon(
                           Icons.star,
                           color: Colors.amber,
                         ),
@@ -87,7 +87,7 @@ class ReviewedFoodItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(description,
                       style: Theme.of(context).textTheme.bodyText2)
                 ],

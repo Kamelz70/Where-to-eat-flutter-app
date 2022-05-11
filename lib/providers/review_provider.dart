@@ -66,7 +66,7 @@ class ReviewProvider with ChangeNotifier {
     //   print(error);
     //   throw error;
     // }
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     _items = _items.isEmpty ? [..._items, ...DUMMY_Reviews] : _items;
     print('refreshing');
@@ -74,7 +74,7 @@ class ReviewProvider with ChangeNotifier {
   }
 
   Future<List<Review>> fetchRestaurantReviews(String restaurantId) async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return DUMMY_Reviews;
   }
 
@@ -141,7 +141,7 @@ class ReviewProvider with ChangeNotifier {
   }
 
   Future<List<Review>> fetchPostsOfId(String profileId) async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return DUMMY_Reviews;
   }
 }

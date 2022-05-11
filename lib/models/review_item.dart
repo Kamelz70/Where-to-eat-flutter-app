@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 enum FoodType { FOOD, BEVERAGE }
 
 class ReviewItem {

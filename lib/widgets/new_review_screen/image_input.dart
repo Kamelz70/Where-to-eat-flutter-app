@@ -61,7 +61,7 @@ class _ImageInputState extends State<ImageInput> {
                   return Container(
                       width: 150,
                       height: 150,
-                      margin: EdgeInsets.only(right: 10),
+                      margin: const EdgeInsets.only(right: 10),
                       alignment: Alignment.center,
                       child: Stack(children: [
                         ClipRRect(
@@ -74,7 +74,8 @@ class _ImageInputState extends State<ImageInput> {
                         ),
                         Positioned(
                           child: CircleAvatar(
-                            backgroundColor: Color.fromRGBO(220, 220, 220, 0.6),
+                            backgroundColor:
+                                const Color.fromRGBO(220, 220, 220, 0.6),
                             radius: 20,
                             child: IconButton(
                                 icon: const Icon(Icons.delete),

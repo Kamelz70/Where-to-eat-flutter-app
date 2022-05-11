@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:where_to_eat/models/review_item.dart';
 
 class Review {

@@ -6,7 +6,7 @@ import '../../models/review_item.dart';
 import '../../providers/new_review_provider.dart';
 
 class AddItemReview extends StatefulWidget {
-  AddItemReview({Key? key}) : super(key: key);
+  const AddItemReview({Key? key}) : super(key: key);
 
   @override
   State<AddItemReview> createState() => _AddItemReviewState();
@@ -79,7 +79,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                   ),
                   Text('Beverage',
                       style: Theme.of(context).textTheme.headline4),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                 ],
               ),
               Row(
@@ -92,7 +92,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Expanded(
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
@@ -110,7 +110,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                           {newPostProvider.currentReviewItem['title'] = value},
                     ),
                   ),
-                  SizedBox(width: 30),
+                  const SizedBox(width: 30),
                 ],
               ),
               Row(
@@ -123,7 +123,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Container(
                     width: 100,
                     child: TextFormField(
@@ -154,12 +154,12 @@ class _AddItemReviewState extends State<AddItemReview> {
                       color: Theme.of(context).colorScheme.primary),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Rating:", style: Theme.of(context).textTheme.headline4),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   RatingBar.builder(
                     unratedColor: Colors.grey.shade300,
                     glowColor: Colors.amber,
@@ -169,8 +169,8 @@ class _AddItemReviewState extends State<AddItemReview> {
                     direction: Axis.horizontal,
                     allowHalfRating: true,
                     itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 1),
-                    itemBuilder: (context, _) => Icon(
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 1),
+                    itemBuilder: (context, _) => const Icon(
                       Icons.star,
                       color: Colors.amber,
                     ),
@@ -180,7 +180,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 textInputAction: TextInputAction.next,
                 onChanged: (value) {
@@ -209,18 +209,18 @@ class _AddItemReviewState extends State<AddItemReview> {
             mainAxisAlignment: MainAxisAlignment.center,
           ),
         ),
-        SizedBox(height: 20),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ElevatedButton(
-              child: Text('Add Item'),
+              child: const Text('Add Item'),
               onPressed: () {
                 _addItem(context, newPostProvider);
               },
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
           ],
         ),
       ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 import '../../models/restaurant.dart';
 import '../../screens/add_restaurant_screen.dart';
@@ -8,7 +7,7 @@ import '../../screens/restaurant_page_screen.dart';
 class RestaurantSearchList extends StatelessWidget {
   final List<Restaurant> ResultList;
 
-  RestaurantSearchList(
+  const RestaurantSearchList(
     this.ResultList,
   );
 
@@ -19,7 +18,7 @@ class RestaurantSearchList extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.search,
               size: 64,
             ),
@@ -37,14 +36,14 @@ class RestaurantSearchList extends StatelessWidget {
       child: ListView(
         children: [
           TextButton(
-            child: Text("Can't find your restaurant?"),
+            child: const Text("Can't find your restaurant?"),
             onPressed: () {
               Navigator.of(context).pushNamed(AddRestaurantScreen.routeName);
             },
           ),
           ListView.builder(
               shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (context, index) {
                 return RestaurantSearchItem(ResultList[index]);
               },
@@ -71,7 +70,7 @@ class RestaurantSearchItem extends StatelessWidget {
   final Restaurant currentItem;
   static const foodImagePath = 'assets/images/item-review-images/food.png';
 
-  RestaurantSearchItem(this.currentItem);
+  const RestaurantSearchItem(this.currentItem);
   ///////////////////////////////////////////////////////////////////
   ///
   ///           Functions
@@ -100,7 +99,7 @@ class RestaurantSearchItem extends StatelessWidget {
           leading: ClipRRect(
             // ignore: prefer_const_constructors
             borderRadius: BorderRadius.all(
-              Radius.circular(15),
+              const Radius.circular(15),
             ),
             child: Container(
               height: 90,
@@ -156,7 +155,7 @@ class RestaurantSearchItem extends StatelessWidget {
                               currentItem.costRating) /
                           4)
                       .toString()),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Icon(Icons.attach_money,
                       color: Theme.of(context).colorScheme.primary),
                 ],
@@ -164,7 +163,7 @@ class RestaurantSearchItem extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Location Data'),
+                  const Text('Location Data'),
                   Ink(
                     decoration: ShapeDecoration(
                       color: Theme.of(context).colorScheme.primary,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:where_to_eat/data/dummy_data.dart';
 import 'package:where_to_eat/screens/new_review_screen.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
@@ -40,7 +39,7 @@ class NewsFeedScreen extends StatelessWidget {
               return RefreshIndicator(
                 onRefresh: () => _fetchReviewPosts(ctx),
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Consumer<ReviewProvider>(
                     builder: (_, reviewsData, child) {
                       return ReviewsList(reviewsData.items);
@@ -54,7 +53,7 @@ class NewsFeedScreen extends StatelessWidget {
         //reviewsData.items
       ), // This trailing comma makes auto-formatting nicer for build methods.
       floatingActionButton: IconButton(
-          icon: Icon(Icons.add_circle_outline),
+          icon: const Icon(Icons.add_circle_outline),
           onPressed: () =>
               Navigator.of(context).pushNamed(NewReviewScreen.routeName),
           color: Theme.of(context).colorScheme.primary,

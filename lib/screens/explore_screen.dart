@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:where_to_eat/data/dummy_data.dart';
 import 'package:where_to_eat/screens/restaurant_list_screen.dart';
 import 'package:where_to_eat/screens/wish_list_screen.dart';
-
-//////////////////////////////////////////////
-/// widgets
-/// //////////////////////////
-import 'package:where_to_eat/widgets/category_item.dart';
 
 import '../providers/restaurant_provider.dart';
 

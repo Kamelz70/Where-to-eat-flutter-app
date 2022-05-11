@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/review.dart';
-import '../models/review_item.dart';
 import '../providers/new_review_provider.dart';
 import '../providers/review_provider.dart';
 import '../widgets/new_review_screen/new_review.dart';
@@ -35,7 +33,7 @@ class NewReviewScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Review'),
+        title: const Text('New Review'),
       ),
       body: Column(
         children: [
@@ -43,23 +41,23 @@ class NewReviewScreen extends StatelessWidget {
             fit: FlexFit.loose,
             child: Card(
               elevation: 7,
-              margin: EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20),
               child: NewReview(_formKey),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
-                child: Text('Attach Dishes'),
+                child: const Text('Attach Dishes'),
                 onPressed: () {
                   Navigator.of(context).pushNamed(ItemsReviewScreen.routeName);
                 },
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               ElevatedButton(
-                child: Text('Post'),
+                child: const Text('Post'),
                 onPressed: () {
                   if (!_formKey.currentState!.validate()) {
                     return;
@@ -71,10 +69,10 @@ class NewReviewScreen extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
             ],
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
         ],
       ),
     );

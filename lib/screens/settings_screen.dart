@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:where_to_eat/providers/auth.dart';
 
-import '../models/profile.dart';
 import '../providers/profile_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -13,6 +12,8 @@ class SettingsScreen extends StatelessWidget {
   /////////////////////////////////////////////////////////////////////////////////////
   static const routeName = '/settings';
 
+  const SettingsScreen({Key? key}) : super(key: key);
+
   /////////////////////////////////////////////////////////////////////////////////////
   ///
   ///     Functions
@@ -20,7 +21,7 @@ class SettingsScreen extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////////
   void showChangePassword(BuildContext context) {
     showModalBottomSheet(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))),
         isScrollControlled: true,
         context: context,
@@ -32,48 +33,48 @@ class SettingsScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: TextField(
-                    decoration: const InputDecoration(
+                  padding: const EdgeInsets.all(10.0),
+                  child: const TextField(
+                    decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: ('Enter old password'),
                     ),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: TextField(
-                    decoration: const InputDecoration(
+                  padding: const EdgeInsets.all(10.0),
+                  child: const TextField(
+                    decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: ('Enter new password'),
                     ),
                   ),
                 ),
-                Text(
+                const Text(
                   'Are you sure ?',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Container(
+                    SizedBox(
                       width: 150,
                       child: ElevatedButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text('Cancel'),
+                        child: const Text('Cancel'),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: 150,
                       child: ElevatedButton(
                         onPressed: () {},
-                        child: Text('Change'),
+                        child: const Text('Change'),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           );
@@ -82,7 +83,7 @@ class SettingsScreen extends StatelessWidget {
 
   void showChangeUserName(BuildContext context) {
     showModalBottomSheet(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))),
         isScrollControlled: true,
         context: context,
@@ -92,39 +93,39 @@ class SettingsScreen extends StatelessWidget {
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Container(
-                padding: EdgeInsets.all(10.0),
-                child: TextField(
-                  decoration: const InputDecoration(
+                padding: const EdgeInsets.all(10.0),
+                child: const TextField(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: ('Enter new username'),
                   ),
                 ),
               ),
-              Text(
+              const Text(
                 'Are you sure ?',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     width: 150,
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 150,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text('Change'),
+                      child: const Text('Change'),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ]),
           );
         });
@@ -144,7 +145,7 @@ class SettingsScreen extends StatelessWidget {
 // final profile = context.watch<Profile>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Settings',
           textAlign: TextAlign.center,
         ),
@@ -166,14 +167,12 @@ class SettingsScreen extends StatelessWidget {
                       loadingBuilder: (BuildContext context, Widget child,
                           ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child;
-                        return Container(
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
                           ),
                         );
                       },
@@ -198,8 +197,8 @@ class SettingsScreen extends StatelessWidget {
                       Icons.account_circle,
                       color: Colors.amber[800],
                     ),
-                    title: Text('Change Username'),
-                    trailing: Icon(Icons.edit),
+                    title: const Text('Change Username'),
+                    trailing: const Icon(Icons.edit),
                     onTap: () => showChangeUserName(context),
                   ),
                   ListTile(
@@ -207,21 +206,21 @@ class SettingsScreen extends StatelessWidget {
                       Icons.lock_outline,
                       color: Colors.amber[800],
                     ),
-                    title: Text('Change Password'),
-                    trailing: Icon(Icons.edit),
+                    title: const Text('Change Password'),
+                    trailing: const Icon(Icons.edit),
                     onTap: () => showChangePassword(context),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushReplacementNamed('/');
 
                 authenticator.logout();
               },
-              child: Text('Logout'),
+              child: const Text('Logout'),
             )
           ],
         ),

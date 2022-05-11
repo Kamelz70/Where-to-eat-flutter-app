@@ -5,6 +5,7 @@ import 'package:where_to_eat/models/review.dart';
 
 import '../models/review_item.dart';
 
+// ignore: non_constant_identifier_names
 var DUMMY_Reviews = [
   Review(
       id: 'r1',
@@ -108,7 +109,7 @@ var DUMMY_Reviews = [
     location: 'Branch F',
   ),
 ];
-const DUMMY_CATEGORIES = const [
+const DUMMY_CATEGORIES = [
   Category(
     id: 'c1',
     title: 'Italian',
@@ -180,7 +181,7 @@ const DUMMY_CATEGORIES = const [
           'https://img.jamieoliver.com/jamieoliver/recipe-database/2qnhNmtM4pc9NlAYOSSF9J.jpg?tr=w-330'),
 ];
 
-const DUMMY_RestaurantS = const [
+const DUMMY_RestaurantS = [
   Restaurant(
     id: 'm1',
     categories: [

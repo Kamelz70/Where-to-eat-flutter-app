@@ -37,7 +37,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<Restaurant> _availableRestaurants = DUMMY_RestaurantS;
+  final List<Restaurant> _availableRestaurants = DUMMY_RestaurantS;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
           title: 'Where to eat?',
           theme: ThemeData(
             appBarTheme: AppBarTheme(
-                color: Color.fromARGB(249, 255, 255, 255),
+                color: const Color.fromARGB(249, 255, 255, 255),
                 titleTextStyle: Theme.of(context).textTheme.headline6,
                 foregroundColor: Colors.orange),
 
@@ -115,15 +115,15 @@ class _MyAppState extends State<MyApp> {
                       authResultSnapshot.connectionState ==
                               ConnectionState.waiting
                           ? SplashScreen()
-                          : AuthScreen(),
+                          : const AuthScreen(),
                 ),
           routes: {
-            TabsScreen.routeName: (ctx) => TabsScreen(),
+            TabsScreen.routeName: (ctx) => const TabsScreen(),
             ExploreScreen.routeName: (ctx) => ExploreScreen(),
             RestaurantPageScreen.routeName: (ctx) => RestaurantPageScreen(),
             RestaurantListScreen.routeName: (ctx) => RestaurantListScreen(),
-            SettingsScreen.routeName: (ctx) => SettingsScreen(),
-            WishListScreen.routeName: (ctx) => WishListScreen(),
+            SettingsScreen.routeName: (ctx) => const SettingsScreen(),
+            WishListScreen.routeName: (ctx) => const WishListScreen(),
             NewReviewScreen.routeName: (ctx) => NewReviewScreen(),
             ItemsReviewScreen.routeName: (ctx) => ItemsReviewScreen(),
             AddRestaurantScreen.routeName: (ctx) => AddRestaurantScreen(),
@@ -134,14 +134,14 @@ class _MyAppState extends State<MyApp> {
                 "Error: Unknown named route, going to home route as a measure");
 
             return MaterialPageRoute(
-              builder: (context) => TabsScreen(),
+              builder: (context) => const TabsScreen(),
             );
           },
           //when it doesnt find named route, it goes to ongenroute
           onUnknownRoute: (settings) {
             print("Error: Unknown route, going to home route as a measure");
             return MaterialPageRoute(
-              builder: (context) => TabsScreen(),
+              builder: (context) => const TabsScreen(),
             );
           },
         ),

@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/review.dart';
-import '../models/review_item.dart';
-import '../providers/new_review_provider.dart';
 import '../providers/restaurant_provider.dart';
-import '../providers/review_provider.dart';
-import '../widgets/new_review_screen/new_review.dart';
-import 'Items_review_screen.dart';
 
 class AddRestaurantScreen extends StatelessWidget {
   /////////////////////////////////////////////////////////////////////////
@@ -42,7 +36,7 @@ class AddRestaurantScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Restaurant'),
+        title: const Text('Add Restaurant'),
       ),
       body: Column(
         children: [
@@ -50,7 +44,7 @@ class AddRestaurantScreen extends StatelessWidget {
             fit: FlexFit.loose,
             child: Card(
               elevation: 7,
-              margin: EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20),
               child: ListView(
                 padding: EdgeInsets.only(
                     top: 15,
@@ -66,7 +60,7 @@ class AddRestaurantScreen extends StatelessWidget {
                         Text('Info',
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.headline5),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         //restarant,branch inputs container
                         //restarant,branch column
                         Row(
@@ -118,22 +112,22 @@ class AddRestaurantScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 50),
+                        const SizedBox(height: 50),
                       ],
                       mainAxisAlignment: MainAxisAlignment.center,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
-                child: Text('Submit'),
+                child: const Text('Submit'),
                 onPressed: () {
                   if (!_formKey.currentState!.validate()) {
                     return;
@@ -143,10 +137,10 @@ class AddRestaurantScreen extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
             ],
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
         ],
       ),
     );

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/new_review_provider.dart';
@@ -9,7 +8,7 @@ import 'image_input.dart';
 
 class NewReview extends StatefulWidget {
   final GlobalKey<FormState> _formKey;
-  NewReview(this._formKey);
+  const NewReview(this._formKey);
   @override
   _NewReviewState createState() => _NewReviewState();
 }
@@ -69,7 +68,7 @@ class _NewReviewState extends State<NewReview> {
               Text('Info',
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.headline5),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               //restarant,branch inputs container
               //restarant,branch column
               Row(
@@ -121,11 +120,11 @@ class _NewReviewState extends State<NewReview> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text('Rating',
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.headline5),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               if (_ratingInputError != null) Text(_ratingInputError),
               Row(
                 children: [
@@ -139,13 +138,13 @@ class _NewReviewState extends State<NewReview> {
                             newReviewImagesPath + 'price.png',
                           ),
                         ),
-                        Text('Price'),
+                        const Text('Price'),
                         Container(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(counterText: ""),
+                            decoration: const InputDecoration(counterText: ""),
                             maxLength: 2,
                             onSaved: (value) {
                               newPostProvider.postFormData['costRating'] =
@@ -171,11 +170,11 @@ class _NewReviewState extends State<NewReview> {
                             },
                           ),
                         ),
-                        Text('/10'),
+                        const Text('/10'),
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 30,
                   ),
                   Flexible(
@@ -189,12 +188,12 @@ class _NewReviewState extends State<NewReview> {
                             newReviewImagesPath + 'taste.png',
                           ),
                         ),
-                        Text('Taste'),
+                        const Text('Taste'),
                         Container(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
-                            decoration: InputDecoration(counterText: ""),
+                            decoration: const InputDecoration(counterText: ""),
                             keyboardType: TextInputType.number,
                             maxLength: 2,
                             onSaved: (value) {
@@ -219,7 +218,7 @@ class _NewReviewState extends State<NewReview> {
                             },
                           ),
                         ),
-                        Text('/10'),
+                        const Text('/10'),
                       ],
                     ),
                   ),
@@ -237,13 +236,13 @@ class _NewReviewState extends State<NewReview> {
                             newReviewImagesPath + 'quantity.png',
                           ),
                         ),
-                        Text('Quantity'),
+                        const Text('Quantity'),
                         Container(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               counterText: "",
                             ),
                             maxLength: 2,
@@ -269,11 +268,11 @@ class _NewReviewState extends State<NewReview> {
                             },
                           ),
                         ),
-                        Text('/10'),
+                        const Text('/10'),
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 30,
                   ),
                   Flexible(
@@ -287,12 +286,12 @@ class _NewReviewState extends State<NewReview> {
                             newReviewImagesPath + 'service.png',
                           ),
                         ),
-                        Text('Service'),
+                        const Text('Service'),
                         Container(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
-                            decoration: InputDecoration(counterText: ""),
+                            decoration: const InputDecoration(counterText: ""),
                             keyboardType: TextInputType.number,
                             maxLength: 2,
                             onSaved: (value) {
@@ -317,13 +316,13 @@ class _NewReviewState extends State<NewReview> {
                             },
                           ),
                         ),
-                        Text('/10'),
+                        const Text('/10'),
                       ],
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               TextFormField(
                 onSaved: (value) {
                   newPostProvider.postFormData['reviewText'] = value;
@@ -348,7 +347,7 @@ class _NewReviewState extends State<NewReview> {
             mainAxisAlignment: MainAxisAlignment.center,
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(
@@ -359,7 +358,7 @@ class _NewReviewState extends State<NewReview> {
                     style: Theme.of(context).textTheme.headline5),
               ),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
@@ -367,10 +366,10 @@ class _NewReviewState extends State<NewReview> {
                     newPostProvider.postFormData['isLiked'] = true;
                   });
                 },
-                child: Icon(Icons.thumb_up, color: Colors.white),
+                child: const Icon(Icons.thumb_up, color: Colors.white),
                 style: ElevatedButton.styleFrom(
-                  shape: CircleBorder(),
-                  padding: EdgeInsets.all(10),
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(10),
                   primary: newPostProvider.postFormData['isLiked']
                       ? Colors.green
                       : Colors.grey[500], // <-- Button color
@@ -384,10 +383,10 @@ class _NewReviewState extends State<NewReview> {
                     newPostProvider.postFormData['isLiked'] = false;
                   });
                 },
-                child: Icon(Icons.thumb_down, color: Colors.white),
+                child: const Icon(Icons.thumb_down, color: Colors.white),
                 style: ElevatedButton.styleFrom(
-                  shape: CircleBorder(),
-                  padding: EdgeInsets.all(10),
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(10),
                   primary: newPostProvider.postFormData['isLiked']
                       ? Colors.grey[500]
                       : Colors.red, // <-- Button color

@@ -22,7 +22,7 @@ class ProfileHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Container(
           width: double.infinity,
           child: Stack(
@@ -67,12 +67,12 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(profile.name, style: Theme.of(context).textTheme.headline2),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         if (profile.id != authProvider.userId)
           ElevatedButton(
-            child: Text('Follow'),
+            child: const Text('Follow'),
             onPressed: () {},
           ),
         Divider(thickness: 3, color: Colors.grey.shade200),
@@ -86,7 +86,7 @@ class ProfileHeader extends StatelessWidget {
                 children: [
                   Icon(Icons.person_outline_rounded,
                       size: iconsSize, color: iconsColor),
-                  Text('Followers'),
+                  const Text('Followers'),
                   Text(
                     profile.followersCount.toString(),
                     style: TextStyle(
@@ -102,7 +102,7 @@ class ProfileHeader extends StatelessWidget {
                 children: [
                   Icon(Icons.person_rounded,
                       size: iconsSize, color: iconsColor),
-                  Text('Following'),
+                  const Text('Following'),
                   Text(
                     profile.followingCount.toString(),
                     style: TextStyle(
@@ -117,7 +117,7 @@ class ProfileHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Icon(Icons.feed_rounded, size: iconsSize, color: iconsColor),
-                  Text('Reviews'),
+                  const Text('Reviews'),
                   Text(
                     profile.reviewsCount.toString(),
                     style: TextStyle(

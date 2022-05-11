@@ -1,20 +1,15 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:where_to_eat/models/review.dart';
 
 import '../Screens/profile_screen.dart';
-import '../models/review_item.dart';
-import 'reviewed_food_item.dart';
 import 'reviewed_food_items_list.dart';
 
 class ReviewPost extends StatelessWidget {
   Review review;
   bool? isLinked;
-  ReviewPost(this.review, {this.isLinked = true});
+  ReviewPost(this.review, {Key? key, this.isLinked = true}) : super(key: key);
   PageController _pageController = new PageController();
 
   void openProfile(BuildContext context, String profileId) {
@@ -29,7 +24,7 @@ class ReviewPost extends StatelessWidget {
   Widget build(BuildContext context) {
     //whole post card
     return Card(
-        margin: EdgeInsets.all(15),
+        margin: const EdgeInsets.all(15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -78,7 +73,7 @@ class ReviewPost extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   //// name and rating small column
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +97,7 @@ class ReviewPost extends StatelessWidget {
                       Row(
                         children: [
                           Text("Rated: ${review.costRating}/10"),
-                          SizedBox(width: 7),
+                          const SizedBox(width: 7),
                           CircleAvatar(
                             backgroundColor:
                                 review.isLiked ? Colors.green : Colors.red,
@@ -121,7 +116,7 @@ class ReviewPost extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
 
                   ///restaurant small column
                   Column(
@@ -146,7 +141,7 @@ class ReviewPost extends StatelessWidget {
                       ])
                 ],
               ),
-              SizedBox(height: 19),
+              const SizedBox(height: 19),
               Flexible(
                 fit: FlexFit.loose,
                 child: Stack(
@@ -180,26 +175,27 @@ class ReviewPost extends StatelessWidget {
                         Text(review.reviewText),
                         if (review.reviewItems != null)
                           ConstrainedBox(
-                            constraints:
-                                BoxConstraints(minHeight: 20, maxHeight: 300),
+                            constraints: const BoxConstraints(
+                                minHeight: 20, maxHeight: 300),
                             child: ListView(
                               shrinkWrap: true,
-                              physics: ClampingScrollPhysics(),
+                              physics: const ClampingScrollPhysics(),
                               children: [
                                 Container(
-                                    padding: EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(10.0),
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                         width: 2,
-                                        color: Color.fromARGB(100, 230, 174, 7),
+                                        color: const Color.fromARGB(
+                                            100, 230, 174, 7),
                                       ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(20),
+                                      borderRadius: const BorderRadius.all(
+                                        const Radius.circular(20),
                                       ),
                                     ),
                                     child: ReviewedFoodItemsList(
                                         review.reviewItems!)),
-                                Divider(),
+                                const Divider(),
                               ],
                             ),
                           ),
@@ -208,7 +204,7 @@ class ReviewPost extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               if (review.reviewItems != null)
                 Center(
                   child: SmoothPageIndicator(
@@ -219,14 +215,14 @@ class ReviewPost extends StatelessWidget {
                     },
                     controller: _pageController,
                     count: 2,
-                    effect: WormEffect(
+                    effect: const WormEffect(
                         dotWidth: 10.0,
                         dotHeight: 10.0,
                         dotColor: Colors.grey,
                         activeDotColor: Colors.amber),
                   ),
                 ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -242,38 +238,38 @@ class ReviewPost extends StatelessWidget {
                           radius: 12,
                           backgroundColor: Colors.green,
                           child: IconButton(
-                            padding: EdgeInsets.all(2),
+                            padding: const EdgeInsets.all(2),
                             onPressed: () {},
                             iconSize: 20,
-                            icon:
-                                Icon(Icons.arrow_drop_up, color: Colors.white),
+                            icon: const Icon(Icons.arrow_drop_up,
+                                color: Colors.white),
                           ),
                         ),
                         ///////////////////////////////////////////
                         /// UpVotes
-                        Text('23'),
+                        const Text('23'),
                         CircleAvatar(
                           radius: 12,
                           backgroundColor: Colors.red,
                           child: IconButton(
-                            padding: EdgeInsets.all(2),
+                            padding: const EdgeInsets.all(2),
                             onPressed: () {},
                             iconSize: 20,
-                            icon: Icon(Icons.arrow_drop_down,
+                            icon: const Icon(Icons.arrow_drop_down,
                                 color: Colors.white),
                           ),
                         ),
                         /////////////////////////////////////////
                         /// DownVotes
-                        Text('23'),
+                        const Text('23'),
                         IconButton(
-                          icon: Icon(Icons.comment_outlined),
+                          icon: const Icon(Icons.comment_outlined),
                           onPressed: () {},
                         ),
                       ],
                     ),
                   ),
-                  Spacer(flex: 2),
+                  const Spacer(flex: 2),
                   Text(
                     '1 hour ago',
                     style: Theme.of(context)

@@ -50,15 +50,15 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'Explore',
       },
       {
-        'page': SearchScreen(),
+        'page': const SearchScreen(),
         'title': 'Search',
       },
       {
-        'page': NewsFeedScreen(),
+        'page': const NewsFeedScreen(),
         'title': 'News Feed',
       },
       {
-        'page': ProfileScreen(isMe: true),
+        'page': const ProfileScreen(isMe: true),
         'title': 'My Profile',
       },
     ];

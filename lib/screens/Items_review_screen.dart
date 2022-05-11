@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:where_to_eat/models/review_item.dart';
 
-import '../data/dummy_data.dart';
 import '../providers/new_review_provider.dart';
 import '../widgets/items_review_screen/add_Item_review.dart';
-import '../widgets/reviewed_food_item.dart';
 import '../widgets/reviewed_food_items_list.dart';
-import '../widgets/reviews_list.dart';
 
 class ItemsReviewScreen extends StatefulWidget {
   static const routeName = '/items-review-page';
@@ -27,9 +23,10 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+            topLeft: const Radius.circular(15.0),
+            topRight: Radius.circular(15.0)),
       ),
       builder: (_) {
         return GestureDetector(
@@ -64,7 +61,7 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
           Expanded(
             child: Card(
               elevation: 7,
-              margin: EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20),
               child: ListView(
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -79,7 +76,7 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
                         color: Theme.of(context).colorScheme.primary,
                         iconSize: 30,
                         onPressed: _showAddDish,
-                        icon: Icon(Icons.add_circle_outline),
+                        icon: const Icon(Icons.add_circle_outline),
                       )
                     ],
                   ),
@@ -94,21 +91,21 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
               ),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               ElevatedButton(
-                child: Text('Done'),
+                child: const Text('Done'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         ],
       ),
     );

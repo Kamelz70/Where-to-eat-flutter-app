@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:where_to_eat/screens/restaurant_page_screen.dart';
 import '../models/restaurant.dart';
+import '../screens/restaurant_page_screen.dart';
 
 class RestaurantItem extends StatelessWidget {
 ///////////////////////////////////////////////////////////////////
   ///
   ///           Vars and consts
   final Restaurant currentRestaurant;
-  RestaurantItem(this.currentRestaurant);
+  const RestaurantItem(this.currentRestaurant);
 
   static const foodImagePath = 'assets/images/item-review-images/food.png';
 
@@ -36,7 +35,7 @@ class RestaurantItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         elevation: 7,
-        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -65,12 +64,12 @@ class RestaurantItem extends StatelessWidget {
                               currentRestaurant.costRating) /
                           4)
                       .toString()),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Icon(Icons.attach_money,
                       color: Theme.of(context).colorScheme.primary),
 
                   /////////////////rating
-                  Text("70-80"),
+                  const Text("70-80"),
                   // Row(children: [
                   //   Icon(Icons.schedule),
                   //   SizedBox(
@@ -103,8 +102,8 @@ class RestaurantItem extends StatelessWidget {
                   // ])
                 ],
               ),
-              Text('Location Data'),
-              SizedBox(
+              const Text('Location Data'),
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -114,8 +113,8 @@ class RestaurantItem extends StatelessWidget {
                   Flexible(
                     flex: 8,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(15),
                       ),
                       child: Image.network(
                         currentRestaurant.imageUrl,
@@ -143,7 +142,7 @@ class RestaurantItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Flexible(
                     flex: 1,
                     child: Ink(
@@ -162,7 +161,7 @@ class RestaurantItem extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
             ],
           ),
         ),

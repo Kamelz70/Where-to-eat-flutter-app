@@ -8,7 +8,7 @@ import '../providers/restaurant_provider.dart';
 class RestaurantListScreen extends StatefulWidget {
   static const routeName = 'restaurant-list';
 
-  RestaurantListScreen();
+  const RestaurantListScreen();
 
   @override
   State<RestaurantListScreen> createState() => _RestaurantListScreenState();
@@ -30,7 +30,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Restaurants'),
+        title: const Text('Restaurants'),
       ),
       body: FutureBuilder(
           future: futureFunctionState,

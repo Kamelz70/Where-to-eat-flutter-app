@@ -2,7 +2,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
-import 'package:where_to_eat/Screens/tabs_screen.dart';
 import 'package:where_to_eat/models/http_exception.dart';
 
 import '../providers/auth.dart';
@@ -21,8 +20,8 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: AuthCard(),
+    return const Scaffold(
+      body: const AuthCard(),
     );
   }
 }
@@ -76,14 +75,14 @@ class _AuthCardState extends State<AuthCard> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text('Error'),
+          title: const Text('Error'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Okay')),
+                child: const Text('Okay')),
           ],
         ),
       );
@@ -108,8 +107,8 @@ class _AuthCardState extends State<AuthCard> {
           setState(() {
             _authMode = AuthMode.LoginWithMail;
           });
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 5),
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            duration: Duration(seconds: 5),
             content: Text(
               "SignedUp, Now Tryout Your First Login",
               textAlign: TextAlign.center,
@@ -154,7 +153,7 @@ class _AuthCardState extends State<AuthCard> {
           : ListView(
               padding: const EdgeInsets.all(20),
               children: <Widget>[
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
@@ -163,7 +162,7 @@ class _AuthCardState extends State<AuthCard> {
                       _authMode == AuthMode.Signup
                           ? 'Create An Account'
                           : ' Welcome to \n Where to eat ?',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 30,
                       ),
@@ -179,7 +178,7 @@ class _AuthCardState extends State<AuthCard> {
                       _authMode != AuthMode.LoginWithMail
                           ? 'Enter Phone No.\n\nOr'
                           : 'Enter E-mail and Password\n\nOr',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         color: Colors.grey,
                       ),
@@ -192,7 +191,7 @@ class _AuthCardState extends State<AuthCard> {
                       _authMode == AuthMode.LoginWithMail
                           ? 'Login With Phone'
                           : 'Login With Email',
-                      style: TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 15),
                     ),
                     onPressed: () {
                       //signup screen
@@ -298,7 +297,7 @@ class _AuthCardState extends State<AuthCard> {
                     onSaved: (number) {
                       _authData['phone'] = number.toString();
                     },
-                    selectorConfig: SelectorConfig(
+                    selectorConfig: const SelectorConfig(
                       selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                     ),
                   ),
@@ -320,7 +319,8 @@ class _AuthCardState extends State<AuthCard> {
                     child: ElevatedButton(
                       child: Text(
                         _authMode == AuthMode.Signup ? 'Signup' : 'Login',
-                        style: TextStyle(fontSize: 17, color: Colors.white),
+                        style:
+                            const TextStyle(fontSize: 17, color: Colors.white),
                       ),
                       onPressed: () {
                         _submit();
@@ -331,7 +331,7 @@ class _AuthCardState extends State<AuthCard> {
                     TextButton(
                       child: Text(
                         _authMode == AuthMode.Signup ? 'Login' : 'Signup',
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                       onPressed: () {
                         //signup screen
