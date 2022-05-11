@@ -127,6 +127,7 @@ class ReviewProvider with ChangeNotifier {
         location: review.location,
         reviewText: review.reviewText,
         reviewItems: review.reviewItems,
+        reviewImages: review.reviewImages,
         isLiked: review.isLiked,
       );
 

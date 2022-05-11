@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:where_to_eat/models/review_item.dart';
 
 class Review {
@@ -16,6 +18,7 @@ class Review {
   final String reviewText;
   final bool isLiked;
   final List<ReviewItem>? reviewItems;
+  final List<File> reviewImages;
   int downVotes;
   int upVotes;
 
@@ -33,8 +36,9 @@ class Review {
     required this.location,
     required this.reviewText,
     required this.isLiked,
-    this.authorImage = '',
     this.reviewItems,
+    this.reviewImages = const [],
+    this.authorImage = '',
     this.upVotes = 0,
     this.downVotes = 0,
   });

@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:provider/provider.dart';
 
 import '../../providers/new_review_provider.dart';
+import '../../screens/photo_viewer_screen.dart';
 
 class ImageInput extends StatefulWidget {
   final Function onSelectImage;
@@ -39,6 +40,23 @@ class _ImageInputState extends State<ImageInput> {
     widget.onSelectImage(savedImage);
   }
 
+  void _openimageView(
+      BuildContext context, List<File> items, int initialIndex) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoViewerScreen(
+          galleryItems: items,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: initialIndex,
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final newReviewProvider = Provider.of<NewReviewProvider>(context);
@@ -59,17 +77,23 @@ class _ImageInputState extends State<ImageInput> {
                 itemCount: newReviewProvider.imageList.length,
                 itemBuilder: (ctx, index) {
                   return Container(
-                      width: 150,
-                      height: 150,
+                      width: 200,
+                      height: 200,
                       margin: const EdgeInsets.only(right: 10),
                       alignment: Alignment.center,
                       child: Stack(children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.file(
-                            newReviewProvider.imageList[index] as File,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
+                        InkWell(
+                          onTap: () {
+                            _openimageView(
+                                context, newReviewProvider.imageList, index);
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              newReviewProvider.imageList[index] as File,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
                           ),
                         ),
                         Positioned(

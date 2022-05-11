@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:where_to_eat/models/review.dart';
 
 import '../Screens/profile_screen.dart';
+import '../screens/photo_viewer_screen.dart';
 import 'reviewed_food_items_list.dart';
 
 class ReviewPost extends StatelessWidget {
@@ -11,6 +14,23 @@ class ReviewPost extends StatelessWidget {
   bool? isLinked;
   ReviewPost(this.review, {Key? key, this.isLinked = true}) : super(key: key);
   PageController _pageController = new PageController();
+
+  void _openimageView(
+      BuildContext context, List<File> items, int initialIndex) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoViewerScreen(
+          galleryItems: items,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: initialIndex,
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
 
   void openProfile(BuildContext context, String profileId) {
     Navigator.of(context).push(
@@ -22,6 +42,9 @@ class ReviewPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int tabsCount = 1;
+    if (review.reviewItems != null) tabsCount += 1;
+    tabsCount += review.reviewImages.length;
     //whole post card
     return Card(
         margin: const EdgeInsets.all(15),
@@ -146,29 +169,6 @@ class ReviewPost extends StatelessWidget {
                 fit: FlexFit.loose,
                 child: Stack(
                   children: [
-                    // CarouselVariableHight(caruselItems: [
-                    //   Text(review.reviewText),
-                    //   ReviewedFoodItemsList([
-                    //     ReviewedFoodItem(
-                    //         title: 'Stero Trio',
-                    //         price: 20,
-                    //         rating: 5,
-                    //         foodType: FoodType.FOOD,
-                    //         description: 'a good plate'),
-                    //     ReviewedFoodItem(
-                    //         title: 'Stero Trio',
-                    //         price: 20,
-                    //         rating: 5,
-                    //         foodType: FoodType.FOOD,
-                    //         description: 'a good plate'),
-                    //     ReviewedFoodItem(
-                    //         title: 'Stero Trio',
-                    //         price: 20,
-                    //         rating: 5,
-                    //         foodType: FoodType.FOOD,
-                    //         description: 'a good plate'),
-                    //   ]),
-                    // ], controller: _pageController),
                     ExpandablePageView(
                       controller: _pageController,
                       children: [
@@ -199,13 +199,31 @@ class ReviewPost extends StatelessWidget {
                               ],
                             ),
                           ),
+                        ...review.reviewImages.map((image) {
+                          return InkWell(
+                            onTap: () {
+                              _openimageView(context, review.reviewImages,
+                                  review.reviewImages.indexOf(image));
+                            },
+                            child: Container(
+                              height: 200,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(
+                                  image as File,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
                       ],
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
-              if (review.reviewItems != null)
+              if (tabsCount > 1)
                 Center(
                   child: SmoothPageIndicator(
                     onDotClicked: (value) {
@@ -214,7 +232,7 @@ class ReviewPost extends StatelessWidget {
                           curve: Curves.easeInOut);
                     },
                     controller: _pageController,
-                    count: 2,
+                    count: tabsCount,
                     effect: const WormEffect(
                         dotWidth: 10.0,
                         dotHeight: 10.0,
@@ -284,67 +302,6 @@ class ReviewPost extends StatelessWidget {
         ));
   }
 }
-
-// class CarouselVariableHight extends StatefulWidget {
-//   final List<Widget> caruselItems;
-//   final PageController controller;
-//   CarouselVariableHight({required this.caruselItems, required this.controller});
-//   @override
-//   CarouselVariableHightState createState() => CarouselVariableHightState();
-// }
-
-// class CarouselVariableHightState extends State<CarouselVariableHight> {
-//   double? height;
-//   GlobalKey stackKey = GlobalKey();
-//   bool? widgetHasHeigh;
-
-//   @override
-//   void initState() {
-//     WidgetsBinding.instance?.addPostFrameCallback(_afterLayout);
-//     super.initState();
-//   }
-
-//   _afterLayout(_) {
-//     final RenderBox renderBox =
-//         stackKey.currentContext!.findRenderObject() as RenderBox;
-//     final size = renderBox.size;
-//     setState(() {
-//       if (size.height == null || size.height < 70) {
-//         height = 70;
-//       } else {
-//         height = size.height;
-//       }
-//     });
-//   }
-
-//   _buildStack() {
-//     Widget firstElement;
-//     if (height == null) {
-//       firstElement = Container();
-//     } else {
-//       firstElement = Container(
-//         height: height,
-//         child: PageView(
-//           controller: widget.controller,
-//           children: widget.caruselItems,
-//         ),
-//       );
-//     }
-
-//     return IndexedStack(
-//       key: stackKey,
-//       children: <Widget>[
-//         firstElement,
-//         ...widget.caruselItems,
-//       ],
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return _buildStack();
-//   }
-// }
 
 class ExpandablePageView extends StatefulWidget {
   final List<Widget>? children;

@@ -57,6 +57,7 @@ class NewReviewProvider with ChangeNotifier {
       reviewText: postFormData['reviewText'],
       isLiked: postFormData['isLiked'],
       reviewItems: _reviewItemsList.isEmpty ? null : _reviewItemsList,
+      reviewImages: _imageList,
     );
   }
 
