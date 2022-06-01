@@ -28,7 +28,7 @@ class NewsFeedScreen extends StatelessWidget {
       body:
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
-          Container(
+          SizedBox(
         height: MediaQuery.of(context).size.height,
         child: FutureBuilder(
           future: _fetchReviewPosts(context),

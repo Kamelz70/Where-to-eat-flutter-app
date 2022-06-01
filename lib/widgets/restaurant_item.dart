@@ -114,7 +114,7 @@ class RestaurantItem extends StatelessWidget {
                     flex: 8,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(
-                        const Radius.circular(15),
+                        Radius.circular(15),
                       ),
                       child: Image.network(
                         currentRestaurant.imageUrl,
@@ -123,7 +123,7 @@ class RestaurantItem extends StatelessWidget {
                         loadingBuilder: (BuildContext context, Widget child,
                             ImageChunkEvent? loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return Container(
+                          return SizedBox(
                             height: 200,
                             child: Center(
                               child: CircularProgressIndicator(

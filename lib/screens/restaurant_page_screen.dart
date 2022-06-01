@@ -41,7 +41,7 @@ class RestaurantPageScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${restaurant.title}'),
+        title: Text(restaurant.title),
         actions: [
           //icon Button on top appBar
           IconButton(
@@ -60,7 +60,7 @@ class RestaurantPageScreen extends StatelessWidget {
           Positioned(
             left: 0,
             right: 0,
-            child: Container(
+            child: SizedBox(
               width: double.maxFinite,
               child: Image.network(
                 restaurant.imageUrl,
@@ -69,7 +69,7 @@ class RestaurantPageScreen extends StatelessWidget {
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
-                  return Container(
+                  return SizedBox(
                     height: 200,
                     child: Center(
                       child: CircularProgressIndicator(
@@ -95,7 +95,7 @@ class RestaurantPageScreen extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(60),
+                    topLeft: Radius.circular(60),
                   ),
                   color: Colors.white,
                 ),
@@ -111,10 +111,10 @@ class RestaurantPageScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Padding(
-                                    padding: const EdgeInsets.only(top: 10)),
+                                    padding: EdgeInsets.only(top: 10)),
                                 const SizedBox(height: 10),
                                 buildSectionTitle(
-                                    context, '${restaurant.title}'),
+                                    context, restaurant.title),
                                 Row(
                                   children: const [
                                     Icon(
@@ -230,7 +230,7 @@ class RestaurantPageScreen extends StatelessWidget {
                               onPressed: () {}, //ADD FUNC
                               child: const Text(
                                 'Data',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.amber,
                                 ),
                               ),
@@ -305,7 +305,7 @@ class RatingTag extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       child: Text(
-        "${rating}/5",
+        "$rating/5",
         style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 15,

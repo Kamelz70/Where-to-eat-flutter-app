@@ -72,7 +72,7 @@ class AddRestaurantScreen extends StatelessWidget {
                               child: Text("Restaurant",
                                   style: Theme.of(context).textTheme.headline4),
                             ),
-                            Container(
+                            SizedBox(
                               width: 200,
                               child: TextFormField(
                                 controller: null,
@@ -97,7 +97,7 @@ class AddRestaurantScreen extends StatelessWidget {
                                 style: Theme.of(context).textTheme.headline4,
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               width: 200,
                               child: TextFormField(
                                 controller: null,

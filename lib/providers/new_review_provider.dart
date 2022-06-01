@@ -23,9 +23,9 @@ class NewReviewProvider with ChangeNotifier {
   Map<String, dynamic> currentReviewItem = {
     'id': '',
     'title': '',
-    'price': 0.0 as double,
+    'price': 0.0,
     'foodType': FoodType.FOOD,
-    'rating': 3.0 as double,
+    'rating': 3.0,
     'description': '',
   };
   List<ReviewItem> _reviewItemsList = [];
@@ -80,9 +80,9 @@ class NewReviewProvider with ChangeNotifier {
     currentReviewItem = {
       'id': '',
       'title': '',
-      'price': 0.0 as double,
+      'price': 0.0,
       'foodType': FoodType.FOOD,
-      'rating': 3.0 as double,
+      'rating': 3.0,
       'description': '',
     };
   }
@@ -105,9 +105,9 @@ class NewReviewProvider with ChangeNotifier {
     currentReviewItem = {
       'id': '',
       'title': '',
-      'price': 0.0 as double,
+      'price': 0.0,
       'foodType': FoodType.FOOD,
-      'rating': 3.0 as double,
+      'rating': 3.0,
       'description': '',
     };
     _reviewItemsList = [];

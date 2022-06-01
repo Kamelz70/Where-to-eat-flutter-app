@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:where_to_eat/models/review.dart';
@@ -13,7 +12,7 @@ class ReviewPost extends StatelessWidget {
   Review review;
   bool? isLinked;
   ReviewPost(this.review, {Key? key, this.isLinked = true}) : super(key: key);
-  PageController _pageController = new PageController();
+  final PageController _pageController = PageController();
 
   void _openimageView(
       BuildContext context, List<File> items, int initialIndex) {
@@ -190,7 +189,7 @@ class ReviewPost extends StatelessWidget {
                                             100, 230, 174, 7),
                                       ),
                                       borderRadius: const BorderRadius.all(
-                                        const Radius.circular(20),
+                                        Radius.circular(20),
                                       ),
                                     ),
                                     child: ReviewedFoodItemsList(
@@ -205,12 +204,12 @@ class ReviewPost extends StatelessWidget {
                               _openimageView(context, review.reviewImages,
                                   review.reviewImages.indexOf(image));
                             },
-                            child: Container(
+                            child: SizedBox(
                               height: 200,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.file(
-                                  image as File,
+                                  image,
                                   fit: BoxFit.contain,
                                 ),
                               ),
@@ -328,7 +327,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView>
     _heights = widget.children!.map((e) => 0.0).toList();
     super.initState();
     widget.controller
-      ..addListener(() {
+      .addListener(() {
         final _newPage = widget.controller.page!.round();
         if (_currentPage != _newPage) {
           setState(() => _currentPage = _newPage);
@@ -399,12 +398,12 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _notifySize());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
     return widget.child!;
   }
 
   void _notifySize() {
-    if (!this.mounted) {
+    if (!mounted) {
       return;
     }
     final size = context.size;

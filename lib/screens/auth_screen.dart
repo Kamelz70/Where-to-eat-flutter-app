@@ -4,6 +4,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:where_to_eat/models/http_exception.dart';
 
+import '../helpers/common_functions.dart';
 import '../providers/auth.dart';
 
 //enum for authentication state
@@ -21,7 +22,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: const AuthCard(),
+      body: AuthCard(),
     );
   }
 }
@@ -48,7 +49,7 @@ class _AuthCardState extends State<AuthCard> {
   //////////////////////////////////////////////////////////
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.LoginWithMail;
-  Map<String, String> _authData = {
+  final Map<String, String> _authData = {
     'name': '',
     'email': '',
     'password': '',
@@ -71,22 +72,6 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    void _showErrorDialog(String message) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Okay')),
-          ],
-        ),
-      );
-    }
 
     final authenticationProvider = Provider.of<Auth>(context, listen: false);
     try {
@@ -119,12 +104,12 @@ class _AuthCardState extends State<AuthCard> {
     }
     //check error type
     on HttpException catch (error) {
-      _showErrorDialog(error.toString());
+      CommonFunctions.showErrorDialog(context, error.toString());
     }
     //on any other error type
     catch (error) {
       var errorMessage = 'Error Reaching Server';
-      _showErrorDialog(errorMessage);
+      CommonFunctions.showErrorDialog(context, errorMessage);
 
       print(error.toString());
     }
@@ -264,6 +249,7 @@ class _AuthCardState extends State<AuthCard> {
                       if (value!.isEmpty || value.length < 7) {
                         return 'Password is too short!';
                       }
+                      return null;
                     },
                     onSaved: (value) {
                       _authData['password'] = value!;
@@ -281,6 +267,7 @@ class _AuthCardState extends State<AuthCard> {
                         if (value != _passwordController.text) {
                           return 'Passwords do not match!';
                         }
+                        return null;
                       }),
                 if (_authMode != AuthMode.LoginWithMail)
                   InternationalPhoneNumberInput(
@@ -293,6 +280,7 @@ class _AuthCardState extends State<AuthCard> {
                       if (value!.length < 10) {
                         return 'Phone too short';
                       }
+                      return null;
                     },
                     onSaved: (number) {
                       _authData['phone'] = number.toString();

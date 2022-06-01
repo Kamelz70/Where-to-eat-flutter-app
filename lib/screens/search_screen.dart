@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:where_to_eat/widgets/search_screen/search_result_list.dart';
-
+import '../models/profile.dart';
 import '../models/restaurant.dart';
+import '../providers/profile_provider.dart';
 import '../providers/restaurant_provider.dart';
+import '../widgets/search_screen/profile_search_list.dart';
+import '../widgets/search_screen/restaurant_search_list.dart';
+
+enum SearchMode { RESTAURANTS, PROFILES }
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -15,14 +19,13 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   static const historyLength = 5;
-
   List<String> _searchHistory = [
     'fuchsia',
     'flutter',
     'widgets',
     'resocoder',
   ];
-
+  SearchMode _searchMode = SearchMode.RESTAURANTS;
   List<String> filteredSearchHistory = [];
 
   String SearchTerm = '';
@@ -63,39 +66,118 @@ class _SearchScreenState extends State<SearchScreen> {
     addSearchTerm(term);
   }
 
-  FloatingSearchBarController controller = null as FloatingSearchBarController;
+  FloatingSearchBarController barContoller =
+      null as FloatingSearchBarController;
 
   @override
   void initState() {
     super.initState();
-    controller = FloatingSearchBarController();
+    barContoller = FloatingSearchBarController();
     filteredSearchHistory = filterSearchTerms(filter: '');
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    barContoller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    FloatingSearchBarController d;
     final restaurantProvider =
         Provider.of<RestaurantProvider>(context, listen: false);
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     return Scaffold(
       body: FloatingSearchBar(
-        controller: controller,
+        controller: barContoller,
         body: FloatingSearchBarScrollNotifier(
-          child: FutureBuilder<List<Restaurant>>(
-              future: restaurantProvider.searchByName(SearchTerm),
-              builder: (_, restaurantSnapshot) {
-                if (restaurantSnapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Center(child: const CircularProgressIndicator());
-                }
-                return RestaurantSearchList(restaurantSnapshot.data!);
-              }),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 80),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton.icon(
+                      onPressed: _searchMode == SearchMode.RESTAURANTS
+                          ? () {}
+                          : () {
+                              setState(() {
+                                _searchMode = SearchMode.RESTAURANTS;
+                                barContoller.show();
+                                barContoller.open();
+                              });
+                            },
+                      icon: Icon(Icons.food_bank),
+                      label: Text('Restaurants'),
+                      style: ButtonStyle(
+                        foregroundColor: _searchMode == SearchMode.RESTAURANTS
+                            ? MaterialStateProperty.all<Color>(
+                                Theme.of(context).colorScheme.primary)
+                            : MaterialStateProperty.all<Color>(Colors.grey),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextButton.icon(
+                      onPressed: _searchMode == SearchMode.PROFILES
+                          ? () {}
+                          : () {
+                              setState(() {
+                                _searchMode = SearchMode.PROFILES;
+                                barContoller.show();
+                                barContoller.open();
+                              });
+                            },
+                      icon: Icon(Icons.person),
+                      label: Text('Profiles'),
+                      style: ButtonStyle(
+                        foregroundColor: _searchMode == SearchMode.PROFILES
+                            ? MaterialStateProperty.all<Color>(
+                                Theme.of(context).colorScheme.primary)
+                            : MaterialStateProperty.all<Color>(Colors.grey),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Expanded(
+                child: _searchMode == SearchMode.RESTAURANTS
+                    ? FutureBuilder<List<Restaurant>>(
+                        future: SearchTerm.isEmpty
+                            ? null
+                            : restaurantProvider.searchByName(SearchTerm),
+                        builder: (_, restaurantSnapshot) {
+                          print('building restaurants list');
+
+                          if (restaurantSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: const CircularProgressIndicator());
+                          }
+                          return SearchTerm.isEmpty
+                              ? RestaurantSearchList([])
+                              : RestaurantSearchList(restaurantSnapshot.data!);
+                        })
+                    : FutureBuilder<List<Profile>>(
+                        future: SearchTerm.isEmpty
+                            ? null
+                            : profileProvider.searchByName(SearchTerm),
+                        builder: (_, profilesSnapshot) {
+                          print('building profiles list');
+                          if (profilesSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: const CircularProgressIndicator());
+                          }
+                          return SearchTerm.isEmpty
+                              ? ProfileSearchList([])
+                              : ProfileSearchList(profilesSnapshot.data!);
+                        }),
+              ),
+            ],
+          ),
         ),
         transition: CircularFloatingSearchBarTransition(),
         physics: const BouncingScrollPhysics(),
@@ -108,16 +190,17 @@ class _SearchScreenState extends State<SearchScreen> {
           FloatingSearchBarAction.searchToClear(),
         ],
         onQueryChanged: (query) {
-          setState(() {
-            filteredSearchHistory = filterSearchTerms(filter: query);
-          });
+          // setState(() {
+          //   filteredSearchHistory = filterSearchTerms(filter: query);
+          // });
         },
         onSubmitted: (query) {
           setState(() {
             addSearchTerm(query);
             SearchTerm = query;
           });
-          controller.close();
+          print('searching');
+          barContoller.close();
         },
         builder: (context, transition) {
           return ClipRRect(
@@ -128,7 +211,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Builder(
                 builder: (context) {
                   if (filteredSearchHistory.isEmpty &&
-                      controller.query.isEmpty) {
+                      barContoller.query.isEmpty) {
                     return Container(
                       height: 56,
                       width: double.infinity,
@@ -142,14 +225,14 @@ class _SearchScreenState extends State<SearchScreen> {
                     );
                   } else if (filteredSearchHistory.isEmpty) {
                     return ListTile(
-                      title: Text(controller.query),
+                      title: Text(barContoller.query),
                       leading: const Icon(Icons.search),
                       onTap: () {
                         setState(() {
-                          addSearchTerm(controller.query);
-                          SearchTerm = controller.query;
+                          addSearchTerm(barContoller.query);
+                          SearchTerm = barContoller.query;
                         });
-                        controller.close();
+                        barContoller.close();
                       },
                     );
                   } else {
@@ -177,7 +260,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   putSearchTermFirst(term);
                                   SearchTerm = term;
                                 });
-                                controller.close();
+                                barContoller.close();
                               },
                             ),
                           )

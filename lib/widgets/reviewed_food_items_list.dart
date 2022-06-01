@@ -6,7 +6,7 @@ import '../models/review_item.dart';
 class ReviewedFoodItemsList extends StatelessWidget {
   final List<ReviewItem> reviewedFoodItemsList;
   final deletible;
-  ReviewedFoodItemsList(this.reviewedFoodItemsList, {this.deletible = false});
+  const ReviewedFoodItemsList(this.reviewedFoodItemsList, {this.deletible = false});
 
   @override
   Widget build(BuildContext context) {

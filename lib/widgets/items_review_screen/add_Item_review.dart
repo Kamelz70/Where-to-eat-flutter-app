@@ -105,6 +105,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                         if (value == null || value.length < 3) {
                           return 'Please enter a title';
                         }
+                        return null;
                       },
                       onSaved: (value) =>
                           {newPostProvider.currentReviewItem['title'] = value},
@@ -124,7 +125,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                     ),
                   ),
                   const SizedBox(width: 20),
-                  Container(
+                  SizedBox(
                     width: 100,
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
@@ -146,6 +147,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                         if (value == null || value.isEmpty) {
                           return 'Enter a value';
                         }
+                        return null;
                       },
                       keyboardType: TextInputType.number,
                     ),
@@ -199,6 +201,7 @@ class _AddItemReviewState extends State<AddItemReview> {
                   if (value == null || value.length < 5) {
                     return 'Please describe your experience in 5 characters at least';
                   }
+                  return null;
                 },
                 onSaved: (value) {
                   newPostProvider.currentReviewItem['description'];

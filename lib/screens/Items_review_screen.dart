@@ -7,7 +7,7 @@ import '../widgets/reviewed_food_items_list.dart';
 
 class ItemsReviewScreen extends StatefulWidget {
   static const routeName = '/items-review-page';
-  ItemsReviewScreen({Key? key}) : super(key: key);
+  const ItemsReviewScreen({Key? key}) : super(key: key);
   @override
   State<ItemsReviewScreen> createState() => _ItemsReviewScreenState();
 }
@@ -25,7 +25,7 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(15.0),
+            topLeft: Radius.circular(15.0),
             topRight: Radius.circular(15.0)),
       ),
       builder: (_) {
@@ -38,7 +38,7 @@ class _ItemsReviewScreenState extends State<ItemsReviewScreen> {
                   left: 20,
                   right: 20,
                   bottom: (MediaQuery.of(context).viewInsets.bottom) + 10),
-              child: AddItemReview()),
+              child: const AddItemReview()),
           behavior: HitTestBehavior.opaque,
         );
       },

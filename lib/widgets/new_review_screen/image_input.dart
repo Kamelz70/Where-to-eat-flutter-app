@@ -90,7 +90,7 @@ class _ImageInputState extends State<ImageInput> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.file(
-                              newReviewProvider.imageList[index] as File,
+                              newReviewProvider.imageList[index],
                               fit: BoxFit.cover,
                               width: double.infinity,
                             ),

@@ -26,7 +26,7 @@ var DUMMY_Reviews = [
       restaurantId: '',
       location: 'Branch A',
       reviewItems: [
-        ReviewItem(
+        const ReviewItem(
             id: 'm',
             title: '7amada zangabeel',
             foodType: FoodType.BEVERAGE,

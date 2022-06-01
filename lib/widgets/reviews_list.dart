@@ -10,10 +10,10 @@ class ReviewsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
             shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             itemBuilder: (context, index) {
               return ReviewPost(reviewsList[index],
-                  isLinked: isLinked, key: UniqueKey());
+                  isLinked: isLinked, key: ObjectKey(reviewsList[index]));
             },
             itemCount: reviewsList.length)
         // Column is also a layout widget. It takes a list of children and

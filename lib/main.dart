@@ -54,8 +54,12 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (_) => RestaurantProvider([]),
         ),
-        ChangeNotifierProvider(
-          create: (_) => ProfileProvider(),
+        ChangeNotifierProxyProvider<Auth, ProfileProvider>(
+          //we better not use the .value with provider in this case
+          // as it creates the list of products for more efficiency
+          update: (ctx, auth, previousPrifileProvider) => ProfileProvider(
+            auth.token,
+          ),
         ),
       ],
       child: Consumer<Auth>(
@@ -121,11 +125,12 @@ class _MyAppState extends State<MyApp> {
             TabsScreen.routeName: (ctx) => const TabsScreen(),
             ExploreScreen.routeName: (ctx) => ExploreScreen(),
             RestaurantPageScreen.routeName: (ctx) => RestaurantPageScreen(),
-            RestaurantListScreen.routeName: (ctx) => RestaurantListScreen(),
+            RestaurantListScreen.routeName: (ctx) =>
+                const RestaurantListScreen(),
             SettingsScreen.routeName: (ctx) => const SettingsScreen(),
             WishListScreen.routeName: (ctx) => const WishListScreen(),
             NewReviewScreen.routeName: (ctx) => NewReviewScreen(),
-            ItemsReviewScreen.routeName: (ctx) => ItemsReviewScreen(),
+            ItemsReviewScreen.routeName: (ctx) => const ItemsReviewScreen(),
             AddRestaurantScreen.routeName: (ctx) => AddRestaurantScreen(),
           },
           //when it doesnt find named route, it goes to ongenroute

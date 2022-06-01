@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/common_functions.dart';
+import '../../models/http_exception.dart';
 import '../../models/profile.dart';
 import '../../providers/auth.dart';
+import '../../providers/profile_provider.dart';
 
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatefulWidget {
   const ProfileHeader({
     Key? key,
     required this.profile,
@@ -17,13 +20,34 @@ class ProfileHeader extends StatelessWidget {
   final Color iconsColor;
 
   @override
+  State<ProfileHeader> createState() => _ProfileHeaderState();
+}
+
+class _ProfileHeaderState extends State<ProfileHeader> {
+  bool _isLoading = false;
+  _followProfile(BuildContext ctx, String id) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await Provider.of<ProfileProvider>(ctx, listen: false).followProfile(id);
+    } on HttpException catch (error) {
+      CommonFunctions.showErrorDialog(ctx, error.toString());
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<Auth>(context, listen: false);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 10),
-        Container(
+        SizedBox(
           width: double.infinity,
           child: Stack(
             alignment: Alignment.center,
@@ -31,52 +55,46 @@ class ProfileHeader extends StatelessWidget {
               CircleAvatar(
                 radius: 70.0,
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                child: ClipRRect(
-                  child: Image.network(
-                    /////image here
-                    profile.imageUrl,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                          ),
+                child: Image.network(
+                  /////image here
+                  widget.profile.imageUrl,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
                         ),
-                      );
-                    },
-                    errorBuilder: (_, as, asd) {
-                      return Icon(Icons.person,
-                          size: 100,
-                          color: Theme.of(context).colorScheme.onPrimary);
-                    },
-                  ),
-                  borderRadius: BorderRadius.circular(100.0),
+                      ),
+                    );
+                  },
+                  errorBuilder: (_, as, asd) {
+                    return Icon(Icons.person,
+                        size: 100,
+                        color: Theme.of(context).colorScheme.onPrimary);
+                  },
                 ),
               ),
-              // Positioned(
-              //   left: 40,
-              //   top: 00,
-              //   child: Text('My WishList'),
-              // ),
             ],
           ),
         ),
         const SizedBox(height: 10),
-        Text(profile.name, style: Theme.of(context).textTheme.headline2),
+        Text(widget.profile.name, style: Theme.of(context).textTheme.headline2),
         const SizedBox(height: 10),
-        if (profile.id != authProvider.userId)
-          ElevatedButton(
-            child: const Text('Follow'),
-            onPressed: () {},
-          ),
+        if (widget.profile.id != authProvider.userId)
+          _isLoading
+              ? CircularProgressIndicator()
+              : ElevatedButton(
+                  child: const Text('Follow'),
+                  onPressed: () => _followProfile(context, widget.profile.id),
+                ),
         Divider(thickness: 3, color: Colors.grey.shade200),
-        Container(
+        SizedBox(
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -85,10 +103,10 @@ class ProfileHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Icon(Icons.person_outline_rounded,
-                      size: iconsSize, color: iconsColor),
+                      size: widget.iconsSize, color: widget.iconsColor),
                   const Text('Followers'),
                   Text(
-                    profile.followersCount.toString(),
+                    widget.profile.followersCount.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -101,10 +119,10 @@ class ProfileHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Icon(Icons.person_rounded,
-                      size: iconsSize, color: iconsColor),
+                      size: widget.iconsSize, color: widget.iconsColor),
                   const Text('Following'),
                   Text(
-                    profile.followingCount.toString(),
+                    widget.profile.followingCount.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -116,10 +134,11 @@ class ProfileHeader extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(Icons.feed_rounded, size: iconsSize, color: iconsColor),
+                  Icon(Icons.feed_rounded,
+                      size: widget.iconsSize, color: widget.iconsColor),
                   const Text('Reviews'),
                   Text(
-                    profile.reviewsCount.toString(),
+                    widget.profile.reviewsCount.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,

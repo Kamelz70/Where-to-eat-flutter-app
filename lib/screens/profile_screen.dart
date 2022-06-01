@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/profile.dart';
 import '../models/review.dart';
 import '../providers/auth.dart';
 import '../providers/profile_provider.dart';
@@ -12,8 +13,14 @@ import '../widgets/reviews_list.dart';
 class ProfileScreen extends StatefulWidget {
   final bool isMe;
   final String? userId;
+  final Profile? profile;
 
-  const ProfileScreen({this.userId, this.isMe = false, Key? key})
+  const ProfileScreen(
+      // ignore: avoid_init_to_null
+      {this.userId,
+      this.isMe = false,
+      this.profile,
+      Key? key})
       : super(key: key);
 
   @override
@@ -46,11 +53,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       Id = widget.userId;
     }
-    const iconsColor = const Color.fromARGB(251, 111, 111, 111);
+    const iconsColor = Color.fromARGB(251, 111, 111, 111);
     const double iconsSize = 25;
 
     return FutureBuilder<void>(
-        future: profileProvider.fetchProfileByID(Id!),
+        future: widget.profile == null
+            ? profileProvider.fetchProfileByID(Id!)
+            : null,
         builder: (_, profileSnapshot) {
           Widget upperChild;
           if (profileSnapshot.connectionState == ConnectionState.waiting) {
@@ -58,7 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 body:
                     Center(child: LinearProgressIndicator(), key: ValueKey(0)));
           } else {
-            print(profileProvider.viewedProfile.id.toString());
             upperChild = Scaffold(
               appBar: widget.isMe
                   ? AppBar(title: const Text('My Profile'), actions: [
@@ -80,21 +88,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
                       child: ProfileHeader(
-                        profile: profileProvider.viewedProfile,
+                        profile: widget.profile == null
+                            ? profileProvider.viewedProfile
+                            : widget.profile,
                         iconsSize: iconsSize,
                         iconsColor: iconsColor,
                       )),
                   Container(
                     decoration: BoxDecoration(color: Colors.grey.shade100),
                     child: FutureBuilder<List<Review>>(
-                      future: reviewProvider.fetchPostsOfId(Id!),
+                      future: widget.profile == null
+                          ? reviewProvider.fetchPostsOfId(Id!)
+                          : reviewProvider.fetchPostsOfId(widget.profile!.id),
                       builder: (_, reviewsSnapshot) {
                         Widget child;
                         if (reviewsSnapshot.connectionState ==
                             ConnectionState.waiting) {
-                          child = Container(
+                          child = const SizedBox(
                             height: 269,
-                            child: const Center(
+                            child: Center(
                                 child: CircularProgressIndicator(),
                                 key: ValueKey(0)),
                           );

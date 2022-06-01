@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +50,7 @@ class _NewReviewState extends State<NewReview> {
     final newPostProvider =
         Provider.of<NewReviewProvider>(context, listen: false);
 
-    String? _ratingInputError = null;
+    String? _ratingInputError;
     final _starSize = MediaQuery.of(context).size.height * 0.05;
     return ListView(
       padding: EdgeInsets.only(
@@ -80,7 +79,7 @@ class _NewReviewState extends State<NewReview> {
                     child: Text("Restaurant",
                         style: Theme.of(context).textTheme.headline4),
                   ),
-                  Container(
+                  SizedBox(
                     width: 200,
                     child: TextFormField(
                       controller: null,
@@ -105,7 +104,7 @@ class _NewReviewState extends State<NewReview> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 200,
                     child: TextFormField(
                       controller: null,
@@ -132,14 +131,14 @@ class _NewReviewState extends State<NewReview> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Container(
+                        SizedBox(
                           height: 26,
                           child: Image.asset(
                             newReviewImagesPath + 'price.png',
                           ),
                         ),
                         const Text('Price'),
-                        Container(
+                        SizedBox(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
@@ -167,6 +166,7 @@ class _NewReviewState extends State<NewReview> {
                               setState(() {
                                 _ratingInputError = null;
                               });
+                              return null;
                             },
                           ),
                         ),
@@ -182,14 +182,14 @@ class _NewReviewState extends State<NewReview> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           height: 26,
                           child: Image.asset(
                             newReviewImagesPath + 'taste.png',
                           ),
                         ),
                         const Text('Taste'),
-                        Container(
+                        SizedBox(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
@@ -215,6 +215,7 @@ class _NewReviewState extends State<NewReview> {
                               setState(() {
                                 _ratingInputError = null;
                               });
+                              return null;
                             },
                           ),
                         ),
@@ -230,14 +231,14 @@ class _NewReviewState extends State<NewReview> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Container(
+                        SizedBox(
                           height: 26,
                           child: Image.asset(
                             newReviewImagesPath + 'quantity.png',
                           ),
                         ),
                         const Text('Quantity'),
-                        Container(
+                        SizedBox(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
@@ -265,6 +266,7 @@ class _NewReviewState extends State<NewReview> {
                               setState(() {
                                 _ratingInputError = null;
                               });
+                              return null;
                             },
                           ),
                         ),
@@ -280,14 +282,14 @@ class _NewReviewState extends State<NewReview> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           height: 26,
                           child: Image.asset(
                             newReviewImagesPath + 'service.png',
                           ),
                         ),
                         const Text('Service'),
-                        Container(
+                        SizedBox(
                           width: 30,
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
@@ -313,6 +315,7 @@ class _NewReviewState extends State<NewReview> {
                               setState(() {
                                 _ratingInputError = null;
                               });
+                              return null;
                             },
                           ),
                         ),
@@ -331,6 +334,7 @@ class _NewReviewState extends State<NewReview> {
                   if (value == null || value.length < 10) {
                     return 'Please describe your experience in 10 characters at least';
                   }
+                  return null;
                 },
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(

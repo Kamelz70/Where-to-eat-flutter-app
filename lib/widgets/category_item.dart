@@ -22,7 +22,7 @@ class CategoryItem extends StatelessWidget {
       child: Stack(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.all(const Radius.circular(15)),
+            borderRadius: const BorderRadius.all(Radius.circular(15)),
             child: Image.network(imageUrl,
                 height: double.infinity,
                 width: double.infinity,
@@ -53,7 +53,7 @@ class CategoryItem extends StatelessWidget {
             onTap: () => selectCategory(context),
             borderRadius: BorderRadius.circular(15),
             splashColor: Theme.of(context).primaryColor,
-            child: Container(
+            child: const SizedBox(
               height: double.infinity,
               width: double.infinity,
             ),

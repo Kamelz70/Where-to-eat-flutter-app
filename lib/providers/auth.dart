@@ -111,7 +111,7 @@ class Auth with ChangeNotifier {
 
       return;
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -155,7 +155,7 @@ class Auth with ChangeNotifier {
 
       return;
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -193,7 +193,7 @@ class Auth with ChangeNotifier {
 
       return;
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 

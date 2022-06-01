@@ -9,7 +9,7 @@ class WishListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WishList'),
+        title: const Text('WishList'),
       ),
       body: ListView.builder(
         itemBuilder: (ctx, index) {

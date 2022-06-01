@@ -78,7 +78,7 @@ class ExploreScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Explore'),
+        title: const Text('Explore'),
       ),
       body: GridView.builder(
         itemCount: exploreMaps.length,
@@ -114,7 +114,7 @@ class ExploreScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 100,
                       child: Image.asset(
                           exploreMaps[index]['imageLocation'] as String,

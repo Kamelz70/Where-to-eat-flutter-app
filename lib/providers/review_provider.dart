@@ -137,7 +137,7 @@ class ReviewProvider with ChangeNotifier {
     } catch (error) {
       // ignore: avoid_print
       print(error);
-      throw error;
+      rethrow;
     }
   }
 

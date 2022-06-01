@@ -32,8 +32,9 @@ class RestaurantSearchList extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8, top: 60),
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 0),
       child: ListView(
+        shrinkWrap: true,
         children: [
           TextButton(
             child: const Text("Can't find your restaurant?"),
@@ -101,7 +102,7 @@ class RestaurantSearchItem extends StatelessWidget {
             borderRadius: BorderRadius.all(
               const Radius.circular(15),
             ),
-            child: Container(
+            child: SizedBox(
               height: 90,
               width: 70,
               child: Image.network(currentItem.imageUrl, fit: BoxFit.fitHeight,
