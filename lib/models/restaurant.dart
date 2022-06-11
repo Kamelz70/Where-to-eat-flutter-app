@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 enum Complexity { Simple, Challenging, Hard }
+
 enum Affordability { Affordable, Pricey, Luxurious }
 
 class Restaurant {
@@ -12,6 +13,8 @@ class Restaurant {
   final double tasteRating;
   final double costRating;
   final double quantityRating;
+  final double totalRating;
+  final int? reviewsCount;
 
   const Restaurant({
     required this.id,
@@ -22,5 +25,7 @@ class Restaurant {
     required this.tasteRating,
     required this.costRating,
     required this.quantityRating,
+    required this.totalRating,
+    this.reviewsCount,
   });
 }

@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import '../data/dummy_data.dart';
+import '../models/http_exception.dart';
 import '../models/restaurant.dart';
+import 'package:http/http.dart' as http;
+
+const SearchByNameAPI = 'https://grad-projj.herokuapp.com/Restaurants/search';
 
 class RestaurantProvider with ChangeNotifier {
   List<Restaurant> _items = [];
@@ -25,6 +31,45 @@ class RestaurantProvider with ChangeNotifier {
   Future<void> fetchTrendingRestaurants() async {
     await Future.delayed(const Duration(seconds: 1));
     _items = DUMMY_RestaurantS;
+  }
+
+  Future<List<Restaurant>> searchByName(String searchTerm) async {
+    final url = Uri.parse('$SearchByNameAPI/$searchTerm');
+
+    try {
+      print('fetching restaurants');
+      final response = await http.get(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (response.statusCode != 200) {
+        throw HttpException('Get Restaurants Failed');
+      }
+      final responseData = json.decode(response.body);
+      print(responseData);
+      List<Restaurant> restaurantList = [];
+      responseData.forEach((restaurant) {
+        restaurantList.add(Restaurant(
+          id: restaurant['_id'],
+          title: restaurant['name'],
+          imageUrl: '',
+          categories: [],
+          serviceRating: restaurant['serviceRating'].toDouble(),
+          tasteRating: restaurant['TasteRating'].toDouble(),
+          costRating: restaurant['costRating'].toDouble(),
+          quantityRating: restaurant['quantityRating'].toDouble(),
+          totalRating: restaurant['TotalRating'].toDouble(),
+        ));
+      });
+      return restaurantList;
+    } catch (error) {
+      // ignore: avoid_print
+      print(error);
+      throw error;
+    }
+    return [];
   }
 
   Future<void> addRestaurant(Restaurant restaurant) async {
@@ -88,16 +133,12 @@ class RestaurantProvider with ChangeNotifier {
     //   throw error;
     // }
   }
-  Restaurant? findById(String id) {
+  Future<Restaurant?> findById(String id) async {
     try {
+      await Future.delayed(const Duration(seconds: 1));
       return _items.firstWhere((element) => element.id == id);
     } catch (error) {
       return DUMMY_RestaurantS.firstWhere((element) => element.id == id);
     }
-  }
-
-  Future<List<Restaurant>> searchByName(String name) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return DUMMY_RestaurantS;
   }
 }

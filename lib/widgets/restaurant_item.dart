@@ -16,11 +16,9 @@ class RestaurantItem extends StatelessWidget {
   ///           Functions
 
   //select meal tap function handler
-  void _selectRestaurant(BuildContext context) {
-    Navigator.of(context).pushNamed(
-      RestaurantPageScreen.routeName,
-      arguments: currentRestaurant.id,
-    );
+  void _selectRestaurant(BuildContext context, Restaurant restaurant) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => RestaurantPageScreen(restaurant: restaurant)));
   }
 ///////////////////////////////////////////////////////////////////
   ///
@@ -29,7 +27,7 @@ class RestaurantItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _selectRestaurant(context),
+      onTap: () => _selectRestaurant(context, currentRestaurant),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -70,36 +68,6 @@ class RestaurantItem extends StatelessWidget {
 
                   /////////////////rating
                   const Text("70-80"),
-                  // Row(children: [
-                  //   Icon(Icons.schedule),
-                  //   SizedBox(
-                  //     width: 6,
-                  //   ),
-                  //   Text("${currentRestaurant.costRating}/5")
-                  // ]),
-                  // Row(
-                  //   children: [
-                  //     Icon(Icons.room_service),
-                  //     SizedBox(
-                  //       width: 6,
-                  //     ),
-                  //     Text("${currentRestaurant.serviceRating}/5")
-                  //   ],
-                  // ),
-                  // Row(children: [
-                  //   Icon(Icons.room_outlined),
-                  //   SizedBox(
-                  //     width: 6,
-                  //   ),
-                  //   Text("${currentRestaurant.quantityRating}/5")
-                  // ]),
-                  // Row(children: [
-                  //   Icon(Icons.food_bank),
-                  //   SizedBox(
-                  //     width: 6,
-                  //   ),
-                  //   Text("${currentRestaurant.tasteRating}/5")
-                  // ])
                 ],
               ),
               const Text('Location Data'),
@@ -155,7 +123,8 @@ class RestaurantItem extends StatelessWidget {
                         icon: const Icon(Icons.keyboard_arrow_right,
                             color: Colors.white),
                         color: Colors.white,
-                        onPressed: () => _selectRestaurant(context),
+                        onPressed: () =>
+                            _selectRestaurant(context, currentRestaurant),
                       ),
                     ),
                   ),

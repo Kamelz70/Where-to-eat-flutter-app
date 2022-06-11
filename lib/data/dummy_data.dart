@@ -183,6 +183,7 @@ const DUMMY_CATEGORIES = [
 
 const DUMMY_RestaurantS = [
   Restaurant(
+    totalRating: 5,
     id: 'm1',
     categories: [
       'c1',
@@ -197,6 +198,7 @@ const DUMMY_RestaurantS = [
         'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg/800px-Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm2',
     categories: [
       'c2',
@@ -210,6 +212,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2018/07/11/21/51/toast-3532016_1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm3',
     categories: [
       'c2',
@@ -224,6 +227,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm4',
     categories: [
       'c4',
@@ -237,6 +241,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2018/03/31/19/29/schnitzel-3279045_1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm5',
     categories: [
       'c2'
@@ -252,6 +257,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2016/10/25/13/29/smoked-salmon-salad-1768890_1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm6',
     categories: [
       'c6',
@@ -266,6 +272,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2017/05/01/05/pastry-2274750_asda1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm7',
     categories: [
       'c7',
@@ -279,6 +286,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2018/07/10/21/23/pancake-3529653_1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm8',
     categories: [
       'c8',
@@ -292,6 +300,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2018/06/18/16/05/indian-food-3482749_1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm9',
     categories: [
       'c9',
@@ -305,6 +314,7 @@ const DUMMY_RestaurantS = [
         'https://cdn.pixabay.com/photo/2014/08/07/21/07/souffle-412785_1280.jpg',
   ),
   Restaurant(
+    totalRating: 5,
     id: 'm10',
     categories: [
       'c2',

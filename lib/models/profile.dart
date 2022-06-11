@@ -5,6 +5,7 @@ class Profile {
   int followersCount;
   int followingCount;
   int reviewsCount;
+  bool isFollowed;
 
   Profile({
     required this.id,
@@ -13,5 +14,6 @@ class Profile {
     required this.followersCount,
     required this.followingCount,
     required this.reviewsCount,
+    this.isFollowed = false,
   });
 }

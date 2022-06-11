@@ -124,7 +124,6 @@ class _MyAppState extends State<MyApp> {
           routes: {
             TabsScreen.routeName: (ctx) => const TabsScreen(),
             ExploreScreen.routeName: (ctx) => ExploreScreen(),
-            RestaurantPageScreen.routeName: (ctx) => RestaurantPageScreen(),
             RestaurantListScreen.routeName: (ctx) =>
                 const RestaurantListScreen(),
             SettingsScreen.routeName: (ctx) => const SettingsScreen(),

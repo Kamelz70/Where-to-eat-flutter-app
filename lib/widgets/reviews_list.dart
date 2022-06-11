@@ -13,7 +13,7 @@ class ReviewsList extends StatelessWidget {
             physics: const ClampingScrollPhysics(),
             itemBuilder: (context, index) {
               return ReviewPost(reviewsList[index],
-                  isLinked: isLinked, key: ObjectKey(reviewsList[index]));
+                  isLinked: isLinked, key: UniqueKey());
             },
             itemCount: reviewsList.length)
         // Column is also a layout widget. It takes a list of children and

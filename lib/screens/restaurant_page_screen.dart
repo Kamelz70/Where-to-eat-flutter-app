@@ -12,6 +12,15 @@ class RestaurantPageScreen extends StatelessWidget {
   static const routeName = '/restaurant-page';
   static const foodImagePath = 'assets/images/item-review-images/food.png';
 
+  final String? restaurantId;
+  final Restaurant? restaurant;
+
+  const RestaurantPageScreen(
+      // ignore: avoid_init_to_null
+      {this.restaurantId,
+      this.restaurant,
+      Key? key})
+      : super(key: key);
   //for titles like steps, ingredients
   Widget buildSectionTitle(BuildContext context, String text) {
     return Container(
@@ -32,222 +41,246 @@ class RestaurantPageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isRestaurantFavorite = false;
-    final routeArgs = ModalRoute.of(context)!.settings.arguments;
-    final restaurantId = routeArgs as String;
     final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
     final restaurantsProvider =
         Provider.of<RestaurantProvider>(context, listen: false);
-    final restaurant = restaurantsProvider.findById(restaurantId) as Restaurant;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(restaurant.title),
-        actions: [
-          //icon Button on top appBar
-          IconButton(
-            icon: const Icon(Icons.star_outline),
-            onPressed: () => {},
-          )
-        ],
-      ),
-      floatingActionButton: IconButton(
-          icon: const Icon(Icons.add_circle_outline),
-          onPressed: () => _startAddPost(context),
-          color: Theme.of(context).colorScheme.primary,
-          iconSize: 45.0),
-      body: Stack(
-        children: <Widget>[
-          Positioned(
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              width: double.maxFinite,
-              child: Image.network(
-                restaurant.imageUrl,
-                fit: BoxFit.cover,
-                height: 200,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return SizedBox(
-                    height: 200,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                      ),
-                    ),
-                  );
-                },
-                errorBuilder: (_, sad, asd) {
-                  return Image.asset(foodImagePath, height: 150);
-                },
-              ),
+    Restaurant? viewedRestaurant;
+    return FutureBuilder<Restaurant?>(
+      future: restaurant == null
+          ? restaurantsProvider.findById(restaurantId!)
+          : null,
+      builder: (_, restaurantSnapshot) {
+        if (restaurantSnapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+              body: Center(child: LinearProgressIndicator(), key: ValueKey(0)));
+        } else {
+          restaurant == null
+              ? viewedRestaurant = restaurantSnapshot.data
+              : viewedRestaurant = restaurant;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(viewedRestaurant!.title),
+              actions: [
+                //icon Button on top appBar
+                IconButton(
+                  icon: const Icon(Icons.star_outline),
+                  onPressed: () => {},
+                )
+              ],
             ),
-          ),
-          DraggableScrollableSheet(
-            initialChildSize: 0.75,
-            minChildSize: 0.75,
-            builder: (BuildContext context, ScrollController scrollController) {
-              return Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(60),
+            floatingActionButton: IconButton(
+                icon: const Icon(Icons.add_circle_outline),
+                onPressed: () => _startAddPost(context),
+                color: Theme.of(context).colorScheme.primary,
+                iconSize: 45.0),
+            body: Stack(
+              children: <Widget>[
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: Image.network(
+                      viewedRestaurant!.imageUrl,
+                      fit: BoxFit.cover,
+                      height: 200,
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (_, sad, asd) {
+                        return Image.asset(foodImagePath, height: 150);
+                      },
+                    ),
                   ),
-                  color: Colors.white,
                 ),
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  controller: scrollController,
-                  children: [
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                DraggableScrollableSheet(
+                  initialChildSize: 0.75,
+                  minChildSize: 0.75,
+                  builder: (BuildContext context,
+                      ScrollController scrollController) {
+                    return Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(60),
+                        ),
+                        color: Colors.white,
+                      ),
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        controller: scrollController,
                         children: [
-                          Column(
+                          Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                const Padding(
-                                    padding: EdgeInsets.only(top: 10)),
-                                const SizedBox(height: 10),
-                                buildSectionTitle(
-                                    context, restaurant.title),
-                                Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.location_pin,
-                                      color: Colors.amber,
-                                      size: 20,
-                                    ),
-                                    Text("Location") //MISSING ACTUAL LOCATION
+                                Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                          padding: EdgeInsets.only(top: 10)),
+                                      const SizedBox(height: 10),
+                                      buildSectionTitle(
+                                          context, viewedRestaurant!.title),
+                                      Row(
+                                        children: const [
+                                          Icon(
+                                            Icons.location_pin,
+                                            color: Colors.amber,
+                                            size: 20,
+                                          ),
+                                          Text(
+                                              "Location") //MISSING ACTUAL LOCATION
+                                        ],
+                                      ),
+                                    ]),
+                                const Spacer(),
+                                Column(
+                                  children: [
+                                    const SizedBox(height: 50),
+                                    IconButton(
+                                        icon: const Icon(
+                                            Icons.add_circle_outline),
+                                        onPressed: () => _startAddPost(context),
+                                        color: Colors.amber,
+                                        iconSize: 35.0),
                                   ],
                                 ),
                               ]),
-                          const Spacer(),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 50),
-                              IconButton(
-                                  icon: const Icon(Icons.add_circle_outline),
-                                  onPressed: () => _startAddPost(context),
-                                  color: Colors.amber,
-                                  iconSize: 35.0),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: Text(
+                                  "Rating",
+                                  style: Theme.of(context).textTheme.headline4,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 11),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        RatingTag(
+                                          rating: viewedRestaurant!.costRating
+                                              .toString(),
+                                        ),
+                                        const SizedBox(
+                                          height: 6,
+                                        ),
+                                        const Text("Price"),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        RatingTag(
+                                          rating: viewedRestaurant!.tasteRating
+                                              .toString(),
+                                        ),
+                                        const SizedBox(
+                                          height: 6,
+                                        ),
+                                        const Text("Taste"),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        RatingTag(
+                                          rating: viewedRestaurant!
+                                              .quantityRating
+                                              .toString(),
+                                        ),
+                                        const SizedBox(
+                                          height: 6,
+                                        ),
+                                        const Text("Quantity"),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        RatingTag(
+                                          rating: viewedRestaurant!
+                                              .serviceRating
+                                              .toString(),
+                                        ),
+                                        const SizedBox(
+                                          height: 6,
+                                        ),
+                                        const Text("Service"),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                        ]),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Text(
-                            "Rating",
-                            style: Theme.of(context).textTheme.headline4,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 11),
-                          child: Row(
+                          const Divider(color: Colors.grey),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                children: [
-                                  RatingTag(
-                                    rating: restaurant.costRating.toString(),
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  const Text("Price"),
-                                ],
+                              Text(
+                                "Reviews",
+                                style: Theme.of(context).textTheme.headline4,
                               ),
-                              Column(
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  RatingTag(
-                                    rating: restaurant.tasteRating.toString(),
+                                  IconButton(
+                                      onPressed: () {}, //ADD FUNC
+                                      icon: const Icon(
+                                        Icons.equalizer,
+                                        color: Colors.amber,
+                                        size: 30,
+                                      )),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      textStyle: const TextStyle(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    onPressed: () {}, //ADD FUNC
+                                    child: const Text(
+                                      'Data',
+                                      style: TextStyle(
+                                        color: Colors.amber,
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  const Text("Taste"),
                                 ],
-                              ),
-                              Column(
-                                children: [
-                                  RatingTag(
-                                    rating:
-                                        restaurant.quantityRating.toString(),
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  const Text("Quantity"),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  RatingTag(
-                                    rating: restaurant.serviceRating.toString(),
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  const Text("Service"),
-                                ],
-                              ),
+                              )
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const Divider(color: Colors.grey),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Reviews",
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                                onPressed: () {}, //ADD FUNC
-                                icon: const Icon(
-                                  Icons.equalizer,
-                                  color: Colors.amber,
-                                  size: 30,
-                                )),
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                textStyle: const TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              onPressed: () {}, //ADD FUNC
-                              child: const Text(
-                                'Data',
-                                style: TextStyle(
-                                  color: Colors.amber,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    ReviewPosts(
-                        reviewProvider: reviewProvider, restaurant: restaurant),
-                  ],
+                          ReviewPosts(
+                              reviewProvider: reviewProvider,
+                              restaurant: viewedRestaurant!),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ],
-      ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }

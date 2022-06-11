@@ -6,6 +6,10 @@ import '../helpers/mongo_errors.dart';
 import '../models/http_exception.dart';
 import '../models/profile.dart';
 
+// ignore: constant_identifier_names
+const UNFOLLOW_API = 'https://grad-projj.herokuapp.com/users/unfollow';
+const GET_PROFILE_API = 'https://grad-projj.herokuapp.com/users/account';
+
 class ProfileProvider with ChangeNotifier {
   Profile? _viewedProfile;
   final String _authToken;
@@ -17,24 +21,37 @@ class ProfileProvider with ChangeNotifier {
   }
 
   Future<void> fetchProfileByID(String id) async {
-    await Future.delayed(const Duration(seconds: 1));
-    print('Fetxhing profile');
-    if (id == 'me') {
+    final url = Uri.parse('$GET_PROFILE_API/$id');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $_authToken',
+        },
+      );
+      print('fetching profile');
+      print(id);
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw HttpException('Fetching profile Failed');
+      }
+      final responseData = json.decode(response.body);
+      print(responseData);
       _viewedProfile = Profile(
-          id: id,
-          name: 'Mohamed Kamel',
-          imageUrl: 'dd',
-          followersCount: 20,
-          followingCount: 10,
-          reviewsCount: 10);
-    } else {
-      _viewedProfile = Profile(
-          id: id,
-          name: 'Ahmed Ali',
-          imageUrl: 'dd',
-          followersCount: 24,
-          followingCount: 60,
-          reviewsCount: 5);
+          id: responseData['_id'],
+          name: responseData['name'],
+          imageUrl: 'null', //????????????,
+          followersCount: responseData['followersNum'],
+          followingCount: responseData['followingNum'],
+          reviewsCount: 0, //????????????,
+          isFollowed: responseData['IsFollowed']);
+    } catch (error) {
+      // ignore: avoid_print
+      print('errorrrrrrrrrrrrrrrrrrrrr');
+
+      print(error);
+      rethrow;
     }
   }
 
@@ -42,28 +59,61 @@ class ProfileProvider with ChangeNotifier {
     final url = Uri.parse('https://grad-projj.herokuapp.com/users/follow');
 
     try {
-      final response = await http.post(
+      final response = await http.patch(
         url,
-        headers: <String, String>{
+        encoding: Encoding.getByName("UTF-8"),
+        headers: {
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $_authToken',
         },
         body: json.encode(
           {
             '_id': id,
-            'token': _authToken,
           },
         ),
       );
       print('follow sent');
-      final responseData = json.decode(response.body);
+      final responseData = response.body;
+      print(response.statusCode);
       print(responseData);
 
-      if (responseData['error'] != null) {
-        throw HttpException(MongoErrors.getMongoErrorMessage(responseData));
+      if (response.statusCode != 200 && response.statusCode != 400) {
+        throw HttpException('Follow Failed');
       }
     } catch (error) {
       // ignore: avoid_print
       print(error);
+      rethrow;
+    }
+  }
+
+  Future<void> unfollowProfile(String id) async {
+    final url = Uri.parse(UNFOLLOW_API);
+
+    try {
+      final response = await http.patch(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $_authToken',
+        },
+        body: json.encode(
+          {
+            '_id': id,
+          },
+        ),
+      );
+      print('unfollow sent');
+      final responseData = response.body;
+
+      print(response.statusCode);
+      print(responseData);
+
+      if (response.statusCode != 200 && response.statusCode != 400) {
+        throw HttpException('Unfollow Failed');
+      }
+    } catch (error) {
+      print('error: $error');
       rethrow;
     }
   }
@@ -85,13 +135,13 @@ class ProfileProvider with ChangeNotifier {
       List<Profile> profilesList = [];
       responseData.forEach((profile) {
         profilesList.add(Profile(
-          id: profile["_id"],
-          name: profile["name"],
-          imageUrl: 'null',
-          followersCount: profile['followersNum'],
-          followingCount: profile['followingNum'],
-          reviewsCount: profile['Reviews'].length,
-        ));
+            id: profile["_id"],
+            name: profile["name"],
+            imageUrl: 'null',
+            followersCount: profile['followersNum'],
+            followingCount: profile['followingNum'],
+            reviewsCount: profile['Reviews'].length,
+            isFollowed: profile['IsFollowed']));
       });
 
       return profilesList;

@@ -77,10 +77,11 @@ class RestaurantSearchItem extends StatelessWidget {
   ///           Functions
 
   //select meal tap function handler
-  void _selectRestaurant(BuildContext context) {
-    Navigator.of(context).pushNamed(
-      RestaurantPageScreen.routeName,
-      arguments: currentItem.id,
+  void _selectRestaurant(BuildContext context, Restaurant restaurant) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => RestaurantPageScreen(restaurant: restaurant),
+      ),
     );
   }
 ///////////////////////////////////////////////////////////////////
@@ -95,7 +96,7 @@ class RestaurantSearchItem extends StatelessWidget {
       ),
       elevation: 7,
       child: InkWell(
-        onTap: () => _selectRestaurant(context),
+        onTap: () => _selectRestaurant(context, currentItem),
         child: ListTile(
           leading: ClipRRect(
             // ignore: prefer_const_constructors
