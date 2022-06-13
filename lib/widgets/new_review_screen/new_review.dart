@@ -1,50 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
+import 'package:textfield_search/textfield_search.dart';
+import '../../models/branch.dart';
 import '../../providers/new_review_provider.dart';
+import '../../providers/restaurant_provider.dart';
+import '../../providers/review_provider.dart';
+import '../../screens/Items_review_screen.dart';
+import '../../screens/new_review_screen.dart';
 import 'image_input.dart';
 
 class NewReview extends StatefulWidget {
-  final GlobalKey<FormState> _formKey;
-  const NewReview(this._formKey);
+  /////////////////////////////////////////////////////////////////////////
+  ///
+  ///     Vars and consts
+  ///
+  ////////////////////////////////////////////////////////////////////////////////
+  late final GlobalKey formKey;
+  NewReview(this.formKey, {Key? key}) : super(key: key);
+  static const routeName = '/new-review-page';
+  static const newReviewImagesPath = 'assets/images/new-review-images/';
+
   @override
-  _NewReviewState createState() => _NewReviewState();
+  State<NewReview> createState() => _NewReviewState();
 }
 
 class _NewReviewState extends State<NewReview> {
-  //////////////////////////////////////////////////////////////////////////
-  ///
-  ///       Consts and vars
-  ///
-//////////////////////////////////////////////////////////////////////////
-  //final amountController = TextEditingController();
-  static const newReviewImagesPath = 'assets/images/new-review-images/';
+  late final TextEditingController _restaurantFieldController;
 
-//////////////////////////////////////////////////////////////////////////
-  ///
-  ///       Functions
-  ///
-//////////////////////////////////////////////////////////////////////////
-  ///
-  // void _addImage(File pickedImage) {
-  //   _pickedImage = pickedImage;
-  // }
+  late final TextEditingController _branchFieldController;
 
-//Submit data function
-  void _submitData() {
-    //String titletext = titleController.text;
-    //double amount = double.parse(amountController.text);
+  List<MiniSearchItem> _branchesList = [];
 
-    //widget.newTxHandler(titleController.text, double.parse(amountController.text));
-    Navigator.of(context).pop();
+  bool _loadingBranches = false;
+
+  /////////////////////////////////////////////////////////////////////////
+  ///
+  ///     Functions
+  ///
+  ////////////////////////////////////////////////////////////////////////////////
+
+  Future<List> _fetchRestaurants(
+      BuildContext context, String searchTerm) async {
+    List _resultList = [];
+    setState(() {});
+    List searchList =
+        await Provider.of<RestaurantProvider>(context, listen: false)
+            .searchByName(
+      searchTerm,
+    );
+
+    searchList.forEach((restaurant) {
+      _resultList.add(
+        MiniSearchItem(label: restaurant.title, value: restaurant.id),
+      );
+    });
+
+    return _resultList;
   }
 
-//////////////////////////////////////////////////////////////////////////
+  Future<void> _fetchBranches(BuildContext context, String restaurantId) async {
+    setState(() {
+      _loadingBranches = true;
+    });
+    List<Branch> resultList =
+        await Provider.of<RestaurantProvider>(context, listen: false)
+            .fetchBranches(restaurantId);
+    _branchesList = resultList.map((branch) {
+      return MiniSearchItem(label: branch.location.address, value: branch.id);
+    }).toList();
+    setState(() {
+      _loadingBranches = false;
+    });
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
   ///
-  ///       Build Method
+  ///   Overrides
   ///
-//////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  @override
+  initState() {
+    _restaurantFieldController = TextEditingController();
+    _branchFieldController = TextEditingController();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    _restaurantFieldController.dispose();
+    _branchFieldController.dispose();
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  ///
+  ///     Build method
+  ///
+  ////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     final newPostProvider =
@@ -60,7 +112,7 @@ class _NewReviewState extends State<NewReview> {
           bottom: (MediaQuery.of(context).viewInsets.bottom) + 10),
       children: <Widget>[
         Form(
-          key: widget._formKey,
+          key: widget.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -79,17 +131,31 @@ class _NewReviewState extends State<NewReview> {
                     child: Text("Restaurant",
                         style: Theme.of(context).textTheme.headline4),
                   ),
+                  ///////////////////////////////
+                  /// Restaurant search input
+                  /////////////////////////////
                   SizedBox(
                     width: 200,
-                    child: TextFormField(
-                      controller: null,
-                      onSaved: (value) {
-                        /////////////////////////////
-                        /// needs modification
-                        /////////////////////
-                        newPostProvider.postFormData['restaurantName'] = value;
+                    child: TextFieldSearch(
+                      label: 'Complex Future List',
+                      controller: _restaurantFieldController,
+                      future: () {
+                        return _fetchRestaurants(
+                            context, _restaurantFieldController.text);
                       },
-                      textInputAction: TextInputAction.next,
+                      getSelectedValue: (item) {
+                        print(item.value);
+                        newPostProvider.postFormData['restaurantid'] =
+                            item.value;
+                        newPostProvider.postFormData['restaurantName'] =
+                            item.label;
+                        _branchFieldController.clear();
+                        _fetchBranches(context, item.value as String);
+                      },
+                      minStringLength: 2,
+                      textStyle: TextStyle(color: Colors.red),
+                      decoration:
+                          InputDecoration(hintText: 'Search For Restaurant'),
                     ),
                   ),
                 ],
@@ -104,18 +170,33 @@ class _NewReviewState extends State<NewReview> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
+                  if (_loadingBranches) CircularProgressIndicator(),
                   SizedBox(
                     width: 200,
-                    child: TextFormField(
-                      controller: null,
-                      /////////////////////////////
-                      /// needs modification
-                      /////////////////////
-                      onSaved: (value) {
-                        newPostProvider.postFormData['location'] = value;
+                    child: TextFieldSearch(
+                      label: 'Branch List',
+                      controller: _branchFieldController,
+                      initialList: _branchesList,
+                      itemsInView: 50,
+                      getSelectedValue: (item) {
+                        print(item.value);
+                        newPostProvider.postFormData['branchId'] = item.value;
+                        newPostProvider.postFormData['location'] = item.label;
                       },
-                      textInputAction: TextInputAction.next,
+                      textStyle: TextStyle(color: Colors.red),
+                      decoration: InputDecoration(hintText: 'Select Branch'),
                     ),
+
+                    // TextFormField(
+                    //   controller: null,
+                    //   /////////////////////////////
+                    //   /// needs modification
+                    //   /////////////////////
+                    //   onSaved: (value) {
+                    //     newPostProvider.postFormData['location'] = value;
+                    //   },
+                    //   textInputAction: TextInputAction.next,
+                    // ),
                   ),
                 ],
               ),
@@ -134,7 +215,7 @@ class _NewReviewState extends State<NewReview> {
                         SizedBox(
                           height: 26,
                           child: Image.asset(
-                            newReviewImagesPath + 'price.png',
+                            NewReviewScreen.newReviewImagesPath + 'price.png',
                           ),
                         ),
                         const Text('Price'),
@@ -185,7 +266,7 @@ class _NewReviewState extends State<NewReview> {
                         SizedBox(
                           height: 26,
                           child: Image.asset(
-                            newReviewImagesPath + 'taste.png',
+                            NewReviewScreen.newReviewImagesPath + 'taste.png',
                           ),
                         ),
                         const Text('Taste'),
@@ -234,7 +315,8 @@ class _NewReviewState extends State<NewReview> {
                         SizedBox(
                           height: 26,
                           child: Image.asset(
-                            newReviewImagesPath + 'quantity.png',
+                            NewReviewScreen.newReviewImagesPath +
+                                'quantity.png',
                           ),
                         ),
                         const Text('Quantity'),
@@ -285,7 +367,7 @@ class _NewReviewState extends State<NewReview> {
                         SizedBox(
                           height: 26,
                           child: Image.asset(
-                            newReviewImagesPath + 'service.png',
+                            NewReviewScreen.newReviewImagesPath + 'service.png',
                           ),
                         ),
                         const Text('Service'),
@@ -404,5 +486,27 @@ class _NewReviewState extends State<NewReview> {
         SizedBox(height: MediaQuery.of(context).viewInsets.bottom)
       ],
     );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////
+///
+///       Sub-Widget-build-methods &  other Classes
+///
+////////////////////////////////////////////////////////////////////////////
+///
+
+// Mock Test Item Class
+class MiniSearchItem {
+  final String label;
+  dynamic value;
+
+  MiniSearchItem({required this.label, this.value});
+
+  factory MiniSearchItem.fromJson(Map<String, dynamic> json) {
+    return MiniSearchItem(label: json['label'], value: json['value']);
+  }
+  toLowerCase() {
+    return this.label.toLowerCase();
   }
 }

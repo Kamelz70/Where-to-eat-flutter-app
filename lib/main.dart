@@ -46,9 +46,6 @@ class _MyAppState extends State<MyApp> {
           create: (_) => Auth(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ReviewProvider([]),
-        ),
-        ChangeNotifierProvider(
           create: (_) => NewReviewProvider(),
         ),
         ChangeNotifierProvider(
@@ -60,6 +57,12 @@ class _MyAppState extends State<MyApp> {
           update: (ctx, auth, previousPrifileProvider) => ProfileProvider(
             auth.token,
           ),
+        ),
+        ChangeNotifierProxyProvider<Auth, ReviewProvider>(
+          //we better not use the .value with provider in this case
+          // as it creates the list of products for more efficiency
+          update: (ctx, auth, previousPrifileProvider) =>
+              ReviewProvider(auth.token, auth.userId, auth.userName),
         ),
       ],
       child: Consumer<Auth>(

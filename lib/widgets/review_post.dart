@@ -32,6 +32,7 @@ class ReviewPost extends StatelessWidget {
   }
 
   void openProfile(BuildContext context, String profileId) {
+    print('opening profile $profileId');
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ProfileScreen(userId: profileId),
@@ -326,13 +327,12 @@ class _ExpandablePageViewState extends State<ExpandablePageView>
   void initState() {
     _heights = widget.children!.map((e) => 0.0).toList();
     super.initState();
-    widget.controller
-      .addListener(() {
-        final _newPage = widget.controller.page!.round();
-        if (_currentPage != _newPage) {
-          setState(() => _currentPage = _newPage);
-        }
-      });
+    widget.controller.addListener(() {
+      final _newPage = widget.controller.page!.round();
+      if (_currentPage != _newPage) {
+        setState(() => _currentPage = _newPage);
+      }
+    });
   }
 
   @override

@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import '../data/dummy_data.dart';
+import '../models/branch.dart';
 import '../models/http_exception.dart';
 import '../models/restaurant.dart';
 import 'package:http/http.dart' as http;
 
-const SearchByNameAPI = 'https://grad-projj.herokuapp.com/Restaurants/search';
+const SEARCH_BY_NAME_API =
+    'https://grad-projj.herokuapp.com/Restaurants/search';
+const GET_BRANCHES_API = 'https://grad-projj.herokuapp.com/Restaurant/branches';
 
 class RestaurantProvider with ChangeNotifier {
   List<Restaurant> _items = [];
@@ -34,7 +37,7 @@ class RestaurantProvider with ChangeNotifier {
   }
 
   Future<List<Restaurant>> searchByName(String searchTerm) async {
-    final url = Uri.parse('$SearchByNameAPI/$searchTerm');
+    final url = Uri.parse('$SEARCH_BY_NAME_API/$searchTerm');
 
     try {
       print('fetching restaurants');
@@ -139,6 +142,40 @@ class RestaurantProvider with ChangeNotifier {
       return _items.firstWhere((element) => element.id == id);
     } catch (error) {
       return DUMMY_RestaurantS.firstWhere((element) => element.id == id);
+    }
+  }
+
+  Future<List<Branch>> fetchBranches(String restaurantId) async {
+    final url = Uri.parse('$GET_BRANCHES_API/$restaurantId');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('fetching branches');
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw HttpException('Fetching branches Failed');
+      }
+      final responseData = json.decode(response.body);
+      print(responseData);
+      List<Branch> branchesList = [];
+
+      responseData.forEach((branch) {
+        branchesList.add(Branch(
+          id: branch['_id'],
+          location: PlaceLocation(address: branch['name']),
+        ));
+      });
+      return branchesList;
+    } catch (error) {
+      // ignore: avoid_print
+      print('errorrrrrrrrrrrrrrrrrrrrr');
+
+      print(error);
+      rethrow;
     }
   }
 }

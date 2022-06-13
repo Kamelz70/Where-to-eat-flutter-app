@@ -14,7 +14,9 @@ class ProfileProvider with ChangeNotifier {
   Profile? _viewedProfile;
   final String _authToken;
 
-  ProfileProvider(this._authToken);
+  ProfileProvider(
+    this._authToken,
+  );
 
   get viewedProfile {
     return _viewedProfile;

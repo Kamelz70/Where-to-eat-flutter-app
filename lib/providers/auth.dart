@@ -27,6 +27,7 @@ class Auth with ChangeNotifier {
   //token for comm. with server, expires!!!
   String? _token;
   String? _userId;
+  String? _userName;
   bool get isAuth {
     //return token != null;
     //the following isn't correct
@@ -38,43 +39,13 @@ class Auth with ChangeNotifier {
   }
 
   String? get userId {
-    return 'me';
+    return _userId;
     //_userId;
   }
 
-  // Future<void> _authenticate(
-  //     String address, String email, String password) async {
-  //   final url = Uri.parse(address);
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       body: json.encode(
-  //         {'email': email, 'password': password, 'returnSecureToken': true},
-  //       ),
-  //     );
-  //     final reponseData = json.decode(response.body);
-
-  //     if (reponseData['error'] != null) {
-  //       throw HttpException(reponseData['error']['message']);
-  //     }
-  //     _token = reponseData['idToken'];
-  //     _userId = reponseData['localId'];
-
-  //     notifyListeners();
-
-  //     ///async code also
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final userData = json.encode({
-  //       'token': _token,
-  //       'userId': _userId,
-  //       // 'expiryDate': _expiryDate!.toIso8601String()
-  //     });
-
-  //     prefs.setString('userData', userData);
-  //   } catch (error) {
-  //     throw (error);
-  //   }
-  // }
+  String? get userName {
+    return _userName;
+  }
 
   Future<void> signUp(String email, String password, String accountName) async {
     print('Signing up with email:$email and pass $password');
@@ -142,13 +113,16 @@ class Auth with ChangeNotifier {
 
       _token = reponseData['token'];
       _userId = reponseData['user']['_id'];
+      _userName = reponseData['user']['name'];
       notifyListeners();
       print("saving token: $_token");
+      print("saving userId: $_userId");
 
       final prefs = await SharedPreferences.getInstance();
       final userData = json.encode({
         'token': _token,
         'userId': _userId,
+        'userName': _userName,
       });
 
       prefs.setString('userData', userData);
@@ -189,6 +163,8 @@ class Auth with ChangeNotifier {
       prefs.remove('userData');
       _token = null;
       _userId = null;
+      _userName = null;
+
       notifyListeners();
 
       return;
@@ -222,6 +198,7 @@ class Auth with ChangeNotifier {
 
     _token = extractedUserData['token'] as String?;
     _userId = extractedUserData['userId'] as String?;
+    _userName = extractedUserData['userName'] as String?;
     notifyListeners();
     return true;
   }

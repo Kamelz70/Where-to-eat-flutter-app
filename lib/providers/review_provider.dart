@@ -5,7 +5,14 @@ import '../models/review.dart';
 
 class ReviewProvider with ChangeNotifier {
   List<Review> _items = [];
-  ReviewProvider(this._items);
+  final String _authToken;
+  final String _myUserId;
+  final String _myUserName;
+  ReviewProvider(
+    this._authToken,
+    this._myUserId,
+    this._myUserName,
+  );
 
 ///////////////////////////////////////////////////////
   ///
@@ -112,6 +119,7 @@ class ReviewProvider with ChangeNotifier {
     // }
 
     try {
+      print('adding post of user id is $_myUserId');
       final newReview = Review(
         id: DateTime.now().toString(),
         serviceRating: review.serviceRating,
@@ -119,8 +127,8 @@ class ReviewProvider with ChangeNotifier {
         costRating: review.costRating,
         quantityRating: review.quantityRating,
         restaurantId: review.restaurantId,
-        authorId: review.authorId,
-        authorName: review.authorName,
+        authorId: _myUserId,
+        authorName: _myUserName,
         authorImage: review.authorImage,
         branchtId: review.branchtId,
         restaurantName: review.restaurantName,

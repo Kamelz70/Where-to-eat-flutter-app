@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:textfield_search/textfield_search.dart';
+import '../helpers/common_functions.dart';
+import '../models/branch.dart';
 import '../providers/new_review_provider.dart';
+import '../providers/restaurant_provider.dart';
 import '../providers/review_provider.dart';
+import '../widgets/new_review_screen/image_input.dart';
 import '../widgets/new_review_screen/new_review.dart';
 import 'Items_review_screen.dart';
 
-class NewReviewScreen extends StatelessWidget {
+class NewReviewScreen extends StatefulWidget {
   /////////////////////////////////////////////////////////////////////////
   ///
   ///     Vars and consts
@@ -13,12 +19,45 @@ class NewReviewScreen extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////
   NewReviewScreen({Key? key}) : super(key: key);
   static const routeName = '/new-review-page';
+  static const newReviewImagesPath = 'assets/images/new-review-images/';
+
+  @override
+  State<NewReviewScreen> createState() => _NewReviewScreenState();
+}
+
+class _NewReviewScreenState extends State<NewReviewScreen> {
   final _formKey = GlobalKey<FormState>();
+
   /////////////////////////////////////////////////////////////////////////
   ///
   ///     Functions
   ///
   ////////////////////////////////////////////////////////////////////////////////
+  void _submitForm(BuildContext context) {
+    final newPostProvider =
+        Provider.of<NewReviewProvider>(context, listen: false);
+    final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    if (newPostProvider.postFormData['branchId'].isEmpty) {
+      CommonFunctions.showErrorDialog(
+          context, 'Choose a restauarant and a branch first');
+      return;
+    }
+    _formKey.currentState!.save();
+    print(newPostProvider.postFormData);
+    reviewProvider.postReview(newPostProvider.currentReview);
+    newPostProvider.clearCurrentReview();
+    Navigator.of(context).pop();
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
+  ///
+  ///   Overrides
+  ///
+  //////////////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////////
   ///
@@ -27,10 +66,6 @@ class NewReviewScreen extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
-    final newPostProvider =
-        Provider.of<NewReviewProvider>(context, listen: false);
-    final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Review'),
@@ -58,16 +93,7 @@ class NewReviewScreen extends StatelessWidget {
               const SizedBox(width: 20),
               ElevatedButton(
                 child: const Text('Post'),
-                onPressed: () {
-                  if (!_formKey.currentState!.validate()) {
-                    return;
-                  }
-                  _formKey.currentState!.save();
-                  print(newPostProvider.postFormData);
-                  reviewProvider.postReview(newPostProvider.currentReview);
-                  newPostProvider.clearCurrentReview();
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => _submitForm(context),
               ),
               const SizedBox(width: 20),
             ],
