@@ -126,18 +126,21 @@ class RestaurantSearchItem extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  /////////////////title
-                  currentItem.title,
-                  style: Theme.of(context).textTheme.headline4,
-                  softWrap: true,
-                  overflow: TextOverflow.fade,
+          title: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    /////////////////title
+                    currentItem.title,
+                    style: Theme.of(context).textTheme.headline4,
+                    softWrap: true,
+                    overflow: TextOverflow.fade,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

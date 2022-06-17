@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
+import '../models/branch.dart';
 import '../models/restaurant.dart';
 import '../models/review.dart';
 import '../providers/restaurant_provider.dart';
 import '../providers/review_provider.dart';
 import 'new_review_screen.dart';
 
-class RestaurantPageScreen extends StatelessWidget {
+class RestaurantPageScreen extends StatefulWidget {
+  /////////////////////////////////////////////////////////
+  ///
+  ///       Constants
+  ///
+///////////////////////////////////////////////////////
   static const routeName = '/restaurant-page';
   static const foodImagePath = 'assets/images/item-review-images/food.png';
 
@@ -21,15 +27,30 @@ class RestaurantPageScreen extends StatelessWidget {
       this.restaurant,
       Key? key})
       : super(key: key);
-  //for titles like steps, ingredients
-  Widget buildSectionTitle(BuildContext context, String text) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.headline4,
-      ),
-    );
+
+  @override
+  State<RestaurantPageScreen> createState() => _RestaurantPageScreenState();
+}
+
+class _RestaurantPageScreenState extends State<RestaurantPageScreen> {
+/////////////////////////////////////////////////////////
+  ///
+  ///       Vars
+  ///
+///////////////////////////////////////////////////////
+  List<Branch> _branchesList = [];
+  Branch? _selectedBranch = null;
+/////////////////////////////////////////////////////////
+  ///
+  ///       Functions
+  ///
+///////////////////////////////////////////////////////
+
+  Future<void> _fetchBranches(BuildContext context, String restaurantId) async {
+    print('ggggggggggggggggggggg');
+    _branchesList =
+        await Provider.of<RestaurantProvider>(context, listen: false)
+            .fetchBranches(restaurantId);
   }
 
   void _startAddPost(BuildContext context) {
@@ -40,23 +61,45 @@ class RestaurantPageScreen extends StatelessWidget {
 /////////////////////   Build
   @override
   Widget build(BuildContext context) {
+    // List<DropdownMenuItem<int>>? items = [];/////////////////////////////////////////////////////////////////////////////////////////
     bool isRestaurantFavorite = false;
+
     final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
     final restaurantsProvider =
         Provider.of<RestaurantProvider>(context, listen: false);
+
     Restaurant? viewedRestaurant;
     return FutureBuilder<Restaurant?>(
-      future: restaurant == null
-          ? restaurantsProvider.findById(restaurantId!)
+      future: widget.restaurant == null
+          ? restaurantsProvider.fetchRestaurantById(widget.restaurantId!)
           : null,
       builder: (_, restaurantSnapshot) {
         if (restaurantSnapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
               body: Center(child: LinearProgressIndicator(), key: ValueKey(0)));
         } else {
-          restaurant == null
+          widget.restaurant == null
               ? viewedRestaurant = restaurantSnapshot.data
-              : viewedRestaurant = restaurant;
+              : viewedRestaurant = widget.restaurant;
+          //////////////////////////////////////////////////
+          ///
+          ///     Build futureBuilders before scaffold
+          ///     beacause if they're built in scaffold, any setState will
+          ///     rebuild the futureBuilders
+          ///
+          ////////////////////////////////////////////////////
+          final Widget _branchSelector =
+              _buildBranchSelector(viewedRestaurant!.id);
+          final Widget _reviewPosts = _selectedBranch == null
+              ? _buildReviewPosts(reviewProvider, viewedRestaurant!.id)
+              : _buildReviewPosts(reviewProvider, _selectedBranch!.id,
+                  isBranch: true);
+
+          ///////////////////////////////////////////
+          /////
+          ///   Building the scaffold
+          ///
+          /////////////////////////////////////////////
           return Scaffold(
             appBar: AppBar(
               title: Text(viewedRestaurant!.title),
@@ -100,7 +143,8 @@ class RestaurantPageScreen extends StatelessWidget {
                         );
                       },
                       errorBuilder: (_, sad, asd) {
-                        return Image.asset(foodImagePath, height: 150);
+                        return Image.asset(RestaurantPageScreen.foodImagePath,
+                            height: 150);
                       },
                     ),
                   ),
@@ -133,104 +177,66 @@ class RestaurantPageScreen extends StatelessWidget {
                                       const Padding(
                                           padding: EdgeInsets.only(top: 10)),
                                       const SizedBox(height: 10),
-                                      buildSectionTitle(
-                                          context, viewedRestaurant!.title),
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        child: Text(
+                                          viewedRestaurant!.title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
+                                      ),
                                       Row(
-                                        children: const [
+                                        children: [
                                           Icon(
                                             Icons.location_pin,
                                             color: Colors.amber,
                                             size: 20,
                                           ),
-                                          Text(
-                                              "Location") //MISSING ACTUAL LOCATION
+                                          Text("Branch",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4),
+                                          SizedBox(width: 20),
+                                          _branchSelector,
+                                          //MISSING ACTUAL LOCATION
                                         ],
                                       ),
+                                      SizedBox(height: 10),
                                     ]),
                                 const Spacer(),
-                                Column(
-                                  children: [
-                                    const SizedBox(height: 50),
-                                    IconButton(
-                                        icon: const Icon(
-                                            Icons.add_circle_outline),
-                                        onPressed: () => _startAddPost(context),
-                                        color: Colors.amber,
-                                        iconSize: 35.0),
-                                  ],
-                                ),
                               ]),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 20),
-                                child: Text(
-                                  "Rating",
-                                  style: Theme.of(context).textTheme.headline4,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 11),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        RatingTag(
-                                          rating: viewedRestaurant!.costRating
-                                              .toString(),
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        const Text("Price"),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        RatingTag(
-                                          rating: viewedRestaurant!.tasteRating
-                                              .toString(),
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        const Text("Taste"),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        RatingTag(
-                                          rating: viewedRestaurant!
-                                              .quantityRating
-                                              .toString(),
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        const Text("Quantity"),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        RatingTag(
-                                          rating: viewedRestaurant!
-                                              .serviceRating
-                                              .toString(),
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        const Text("Service"),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Text(
+                              "Rating",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
                           ),
+                          _selectedBranch == null
+                              ? _buildRatingSection(
+                                  costRating:
+                                      viewedRestaurant!.costRating.toString(),
+                                  tasteRating:
+                                      viewedRestaurant!.tasteRating.toString(),
+                                  quantityRating: viewedRestaurant!
+                                      .quantityRating
+                                      .toString(),
+                                  serviceRating: viewedRestaurant!.serviceRating
+                                      .toString(),
+                                )
+                              : _buildRatingSection(
+                                  costRating:
+                                      _selectedBranch!.costRating.toString(),
+                                  tasteRating:
+                                      _selectedBranch!.tasteRating.toString(),
+                                  quantityRating: _selectedBranch!
+                                      .quantityRating
+                                      .toString(),
+                                  serviceRating:
+                                      _selectedBranch!.serviceRating.toString(),
+                                ),
                           const Divider(color: Colors.grey),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -268,9 +274,7 @@ class RestaurantPageScreen extends StatelessWidget {
                               )
                             ],
                           ),
-                          ReviewPosts(
-                              reviewProvider: reviewProvider,
-                              restaurant: viewedRestaurant!),
+                          _reviewPosts
                         ],
                       ),
                     );
@@ -283,31 +287,54 @@ class RestaurantPageScreen extends StatelessWidget {
       },
     );
   }
-}
 
-class ReviewPosts extends StatefulWidget {
-  const ReviewPosts({
-    Key? key,
-    required this.reviewProvider,
-    required this.restaurant,
-  }) : super(key: key);
+//////////////////////////////////////////////////////////////////////
+  ///
+  ///   sub-widgets
+  ///
+/////////////////////////////////////////////////////
+  Widget _buildBranchSelector(String restaurantId) {
+    return FutureBuilder(
+      future: _fetchBranches(context, restaurantId),
+      builder: (ctx, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else {
+          return DropdownButton(
+            hint: Text('Select a branch to view'),
+            icon: Icon(Icons.keyboard_arrow_down),
+            value: _selectedBranch == null ? null : _selectedBranch!.id,
+            items: [
+              ..._branchesList.map((Branch branch) {
+                return DropdownMenuItem(
+                  value: branch.id,
+                  child: Text(branch.location.address),
+                );
+              }).toList()
+            ],
+            onChanged: (newValue) {
+              setState(() {
+                _selectedBranch =
+                    _branchesList.firstWhere((branch) => branch.id == newValue);
+              });
+            },
+          );
+        }
+      },
+    );
+  }
 
-  final ReviewProvider reviewProvider;
-  final Restaurant restaurant;
-
-  @override
-  State<ReviewPosts> createState() => _ReviewPostsState();
-}
-
-class _ReviewPostsState extends State<ReviewPosts> {
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildReviewPosts(ReviewProvider reviewProvider, String id,
+      {bool isBranch = false}) {
     return FutureProvider<List<Review>?>(
       initialData: null,
       create: (_) {
         // print('calling future');
-        return widget.reviewProvider
-            .fetchRestaurantReviews(widget.restaurant.id);
+        if (isBranch) {
+          return reviewProvider.fetchBranchReviews(id);
+        } else {
+          return reviewProvider.fetchRestaurantReviews(id);
+        }
       },
       child: Consumer<List<Review>?>(builder: (_, value, __) {
         if (value == null) {
@@ -320,17 +347,8 @@ class _ReviewPostsState extends State<ReviewPosts> {
       }),
     );
   }
-}
 
-class RatingTag extends StatelessWidget {
-  final String rating;
-  const RatingTag({
-    Key? key,
-    required this.rating,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildRatingTag(String rating) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: const BoxDecoration(
@@ -344,6 +362,65 @@ class RatingTag extends StatelessWidget {
           fontSize: 15,
           color: Colors.white,
         ),
+      ),
+    );
+  }
+
+  Widget _buildRatingSection(
+      {required String costRating,
+      required String tasteRating,
+      required String quantityRating,
+      required String serviceRating}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 11),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              _buildRatingTag(
+                costRating,
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              const Text("Price"),
+            ],
+          ),
+          Column(
+            children: [
+              _buildRatingTag(
+                tasteRating,
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              const Text("Taste"),
+            ],
+          ),
+          Column(
+            children: [
+              _buildRatingTag(
+                quantityRating,
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              const Text("Quantity"),
+            ],
+          ),
+          Column(
+            children: [
+              _buildRatingTag(
+                serviceRating,
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              const Text("Service"),
+            ],
+          ),
+        ],
       ),
     );
   }

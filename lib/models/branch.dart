@@ -9,10 +9,20 @@ class Branch {
   final String id;
   final String? restaurantId;
   final PlaceLocation location;
+  final double? serviceRating;
+  final double? tasteRating;
+  final double? costRating;
+  final double? quantityRating;
+  final double? totalRating;
 
   Branch({
     required this.id,
-    this.restaurantId,
     required this.location,
+    this.tasteRating,
+    this.costRating,
+    this.quantityRating,
+    this.totalRating,
+    this.serviceRating,
+    this.restaurantId,
   });
 }

@@ -7,15 +7,23 @@ import '../models/http_exception.dart';
 import '../models/restaurant.dart';
 import 'package:http/http.dart' as http;
 
+///////////////////////////////////////////////////////
+///
+///     Constants
+///
+////////////////////////////////////////////////////
+
 const SEARCH_BY_NAME_API =
     'https://grad-projj.herokuapp.com/Restaurants/search';
 const GET_BRANCHES_API = 'https://grad-projj.herokuapp.com/Restaurant/branches';
+const GET_RESTAURANT_API = 'https://grad-projj.herokuapp.com/Restaurant';
+const GET_BRANCH_API = '';
 
 class RestaurantProvider with ChangeNotifier {
   List<Restaurant> _items = [];
   RestaurantProvider(this._items);
 
-///////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////
   ///
   ///     getters
   ///
@@ -25,7 +33,7 @@ class RestaurantProvider with ChangeNotifier {
     return [..._items, ...DUMMY_RestaurantS];
   }
 
-///////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////
   ///
   ///         Methods
   ///
@@ -75,73 +83,41 @@ class RestaurantProvider with ChangeNotifier {
     return [];
   }
 
-  Future<void> addRestaurant(Restaurant restaurant) async {
-    // final url = Uri.parse(
-    //     'https://shop-application-c27b8-default-rtdb.firebaseio.com/products.json?auth=$_authToken');
+  Future<void> addRestaurant(Restaurant restaurant) async {}
 
-    // try {
-    //   final response = await http.post(
-    //     url,
-    //     body: json.encode(
-    //       {
-    //         'title': product.title,
-    //         'description': product.description,
-    //         'price': product.price,
-    //         'imageUrl': product.imageUrl,
-    //         'ownerId': _userId
-    //       },
-    //     ),
-    //   );
-    //   final newProduct = Product(
-    //       id: json.decode(response.body)['name'],
-    //       title: product.title,
-    //       description: product.description,
-    //       price: product.price,
-    //       imageUrl: product.imageUrl);
-
-    //   _items.insert(0, newProduct);
-    //   //or _items.add(newProduct);
-    //   notifyListeners();
-    // } catch (error) {
-    //   // ignore: avoid_print
-    //   print(error);
-    //   throw error;
-    // }
-
-    // try {
-    //   final newReview = Review(
-    //     id: DateTime.now().toString(),
-    //     serviceRating: review.serviceRating,
-    //     tasteRating: review.tasteRating,
-    //     costRating: review.costRating,
-    //     quantityRating: review.quantityRating,
-    //     restaurantId: review.restaurantId,
-    //     authorId: review.authorId,
-    //     authorName: review.authorName,
-    //     authorImage: review.authorImage,
-    //     branchtId: review.branchtId,
-    //     restaurantName: review.restaurantName,
-    //     location: review.location,
-    //     reviewText: review.reviewText,
-    //     reviewItems: review.reviewItems,
-    //     isLiked: review.isLiked,
-    //   );
-
-    //   _items.add(newReview);
-    //   //or _items.add(newProduct);
-    //   notifyListeners();
-    // } catch (error) {
-    //   // ignore: avoid_print
-    //   print(error);
-    //   throw error;
-    // }
-  }
-  Future<Restaurant?> findById(String id) async {
+  Future<Restaurant?> fetchRestaurantById(String id) async {
+    final url = Uri.parse('$GET_RESTAURANT_API/$id');
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      return _items.firstWhere((element) => element.id == id);
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('fetching Restaurant');
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw HttpException('Fetching Restaurant Failed');
+      }
+      final responseData = json.decode(response.body);
+      print(responseData);
+
+      return Restaurant(
+          totalRating: responseData['TotalRating'].toDouble(),
+          costRating: responseData['costRating'].toDouble(),
+          tasteRating: responseData['TasteRating'].toDouble(),
+          quantityRating: responseData['quantityRating'].toDouble(),
+          serviceRating: responseData['serviceRating'].toDouble(),
+          id: responseData['_id'],
+          title: responseData['name'],
+          imageUrl: '',
+          categories: []);
     } catch (error) {
-      return DUMMY_RestaurantS.firstWhere((element) => element.id == id);
+      // ignore: avoid_print
+      print('errorrrrrrrrrrrrrrrrrrrrr');
+
+      print(error);
+      rethrow;
     }
   }
 
@@ -164,12 +140,55 @@ class RestaurantProvider with ChangeNotifier {
       List<Branch> branchesList = [];
 
       responseData.forEach((branch) {
-        branchesList.add(Branch(
-          id: branch['_id'],
-          location: PlaceLocation(address: branch['name']),
-        ));
+        branchesList.add(
+          Branch(
+            id: branch['_id'],
+            location: PlaceLocation(
+              address: branch['name'],
+            ),
+            costRating: branch['costRating'].toDouble(),
+            tasteRating: branch['TasteRating'].toDouble(),
+            quantityRating: branch['quantityRating'].toDouble(),
+            serviceRating: branch['serviceRating'].toDouble(),
+          ),
+        );
       });
       return branchesList;
+    } catch (error) {
+      // ignore: avoid_print
+      print('errorrrrrrrrrrrrrrrrrrrrr');
+
+      print(error);
+      rethrow;
+    }
+  }
+
+  Future<Branch?> fetchBranchById(String id) async {
+    final url = Uri.parse('$GET_BRANCH_API/$id');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('fetching Restaurant');
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw HttpException('Fetching Branch Failed');
+      }
+      final responseData = json.decode(response.body);
+      print(responseData);
+
+      return Branch(
+        id: responseData['_id'],
+        totalRating: responseData['TotalRating'].toDouble(),
+        costRating: responseData['costRating'].toDouble(),
+        tasteRating: responseData['TasteRating'].toDouble(),
+        quantityRating: responseData['quantityRating'].toDouble(),
+        serviceRating: responseData['serviceRating'].toDouble(),
+        location: responseData['name'],
+      );
     } catch (error) {
       // ignore: avoid_print
       print('errorrrrrrrrrrrrrrrrrrrrr');

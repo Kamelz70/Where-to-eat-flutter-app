@@ -6,14 +6,24 @@ import 'package:where_to_eat/models/review.dart';
 
 import '../Screens/profile_screen.dart';
 import '../screens/photo_viewer_screen.dart';
+import '../screens/restaurant_page_screen.dart';
 import 'reviewed_food_items_list.dart';
 
 class ReviewPost extends StatelessWidget {
+  ///////////////////////////////////////////////////////////////////////
+  ///
+  ///       consts and Vars
+  ///
+  ///////////////////////////////////////////////////////////////////////
   Review review;
   bool? isLinked;
   ReviewPost(this.review, {Key? key, this.isLinked = true}) : super(key: key);
   final PageController _pageController = PageController();
-
+  ///////////////////////////////////////////////////////////////////////
+  ///
+  ///       Functions
+  ///
+  ///////////////////////////////////////////////////////////////////////
   void _openimageView(
       BuildContext context, List<File> items, int initialIndex) {
     Navigator.push(
@@ -40,6 +50,19 @@ class ReviewPost extends StatelessWidget {
     );
   }
 
+  _openRestaurantPage(BuildContext context, restaurantId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => RestaurantPageScreen(restaurantId: restaurantId),
+      ),
+    );
+  }
+
+  ///////////////////////////////////////////////////////////////////////
+  ///
+  ///       Build Method
+  ///
+  ///////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     int tabsCount = 1;
@@ -148,7 +171,13 @@ class ReviewPost extends StatelessWidget {
                         /////////////////////////////////////
                         /// ////Name And Location of res
                         /////////////////
-                        Text(review.restaurantName),
+                        GestureDetector(
+                          child: Text(review.restaurantName),
+                          onTap: () {
+                            _openRestaurantPage(context, review.restaurantId);
+                          },
+                        ),
+
                         Row(
                           children: [
                             Icon(Icons.location_on,

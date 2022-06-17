@@ -81,6 +81,14 @@ class ReviewProvider with ChangeNotifier {
   }
 
   Future<List<Review>> fetchRestaurantReviews(String restaurantId) async {
+    print('fetching Restaurant revs');
+
+    await Future.delayed(const Duration(seconds: 1));
+    return DUMMY_Reviews;
+  }
+
+  Future<List<Review>> fetchBranchReviews(String branchId) async {
+    print('fetching branch revssssssssssssssssssssssssssssssssssss');
     await Future.delayed(const Duration(seconds: 1));
     return DUMMY_Reviews;
   }
@@ -119,7 +127,6 @@ class ReviewProvider with ChangeNotifier {
     // }
 
     try {
-      print('adding post of user id is $_myUserId');
       final newReview = Review(
         id: DateTime.now().toString(),
         serviceRating: review.serviceRating,
