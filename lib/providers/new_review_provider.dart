@@ -27,14 +27,14 @@ class NewReviewProvider with ChangeNotifier {
     'description': '',
   };
   List<ReviewItem> _reviewItemsList = [];
-  List<File> _imageList = [];
+  List<String> _imageList = [];
 
   List<ReviewItem> get reviewItemsList {
     //copy spread items (brackets means copy)
     return [..._reviewItemsList];
   }
 
-  List<File> get imageList {
+  List<String> get imageList {
     //copy spread items (brackets means copy)
     return [..._imageList];
   }
@@ -64,7 +64,7 @@ class NewReviewProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addImage(File image) {
+  void addImage(String image) {
     _imageList.add(image);
     notifyListeners();
   }

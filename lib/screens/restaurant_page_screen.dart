@@ -53,8 +53,14 @@ class _RestaurantPageScreenState extends State<RestaurantPageScreen> {
             .fetchBranches(restaurantId);
   }
 
-  void _startAddPost(BuildContext context) {
-    Navigator.of(context).pushNamed(NewReviewScreen.routeName);
+  void _startAddPost(
+      BuildContext context, Restaurant? restaurant, Branch? branch) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            NewReviewScreen(restaurant: restaurant, branch: branch),
+      ),
+    );
   }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +119,8 @@ class _RestaurantPageScreenState extends State<RestaurantPageScreen> {
             ),
             floatingActionButton: IconButton(
                 icon: const Icon(Icons.add_circle_outline),
-                onPressed: () => _startAddPost(context),
+                onPressed: () =>
+                    _startAddPost(context, viewedRestaurant!, _selectedBranch),
                 color: Theme.of(context).colorScheme.primary,
                 iconSize: 45.0),
             body: Stack(

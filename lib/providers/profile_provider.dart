@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import '../models/profile.dart';
 // ignore: constant_identifier_names
 const UNFOLLOW_API = 'https://grad-projj.herokuapp.com/users/unfollow';
 const GET_PROFILE_API = 'https://grad-projj.herokuapp.com/users/account';
+const UPLOAD_AVATAR_API = 'https://grad-projj.herokuapp.com/avatar';
 
 class ProfileProvider with ChangeNotifier {
   Profile? _viewedProfile;
@@ -20,6 +22,28 @@ class ProfileProvider with ChangeNotifier {
 
   get viewedProfile {
     return _viewedProfile;
+  }
+
+  Future<String> uploadAvatarImage(File file) async {
+    final url = Uri.parse(UPLOAD_AVATAR_API);
+
+    var request = http.MultipartRequest("POST", url);
+    //add text fields
+    // request.fields["text_field"] = text;
+    request.headers["Authorization"] = 'Bearer $_authToken';
+    request.headers["Content-Type"] = 'application/json; charset=UTF-8';
+    request.fields["Avatar"] = '';
+    //create multipart using filepath, string or bytes
+    var pic = await http.MultipartFile.fromPath("upload", file.path);
+    //add multipart to request
+    request.files.add(pic);
+    var response = await request.send();
+
+    //Get the response from the server
+    var responseData = await response.stream.bytesToString();
+    ;
+    print(responseData);
+    return responseData;
   }
 
   Future<void> fetchProfileByID(String id) async {
@@ -41,13 +65,15 @@ class ProfileProvider with ChangeNotifier {
       final responseData = json.decode(response.body);
       print(responseData);
       _viewedProfile = Profile(
-          id: responseData['_id'],
-          name: responseData['name'],
-          imageUrl: 'null', //????????????,
-          followersCount: responseData['followersNum'],
-          followingCount: responseData['followingNum'],
-          reviewsCount: 0, //????????????,
-          isFollowed: responseData['IsFollowed']);
+          id: responseData['user']['_id'],
+          name: responseData['user']['name'],
+          imageUrl: responseData['url'].isEmpty
+              ? ''
+              : responseData['url'][0], //????????????,
+          followersCount: responseData['user']['followersNum'],
+          followingCount: responseData['user']['followingNum'],
+          reviewsCount: responseData['user']['ReviewsNum'], //????????????,
+          isFollowed: responseData['user']['IsFollowed']);
     } catch (error) {
       // ignore: avoid_print
       print('errorrrrrrrrrrrrrrrrrrrrr');
@@ -135,7 +161,7 @@ class ProfileProvider with ChangeNotifier {
       final responseData = json.decode(response.body);
       print(responseData);
       List<Profile> profilesList = [];
-      responseData.forEach((profile) {
+      responseData['user'].forEach((profile) {
         profilesList.add(Profile(
             id: profile["_id"],
             name: profile["name"],

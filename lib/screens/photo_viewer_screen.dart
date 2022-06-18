@@ -21,7 +21,7 @@ class PhotoViewerScreen extends StatefulWidget {
   final dynamic maxScale;
   final int initialIndex;
   final PageController pageController;
-  final List<File> galleryItems;
+  final List<String> galleryItems;
   final Axis scrollDirection;
 
   @override
@@ -32,12 +32,12 @@ class PhotoViewerScreen extends StatefulWidget {
 
 class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    final File item = widget.galleryItems[index];
+    final String item = widget.galleryItems[index];
 
     PhotoViewScaleStateController scaleStateController;
     scaleStateController = PhotoViewScaleStateController();
     return PhotoViewGalleryPageOptions(
-      imageProvider: Image.file(item).image,
+      imageProvider: Image.network(item).image,
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,

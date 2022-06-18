@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:textfield_search/textfield_search.dart';
 import '../../models/branch.dart';
+import '../../models/restaurant.dart';
 import '../../providers/new_review_provider.dart';
 import '../../providers/restaurant_provider.dart';
 import '../../providers/review_provider.dart';
@@ -17,7 +18,10 @@ class NewReview extends StatefulWidget {
   ///
   ////////////////////////////////////////////////////////////////////////////////
   late final GlobalKey formKey;
-  NewReview(this.formKey, {Key? key}) : super(key: key);
+  Restaurant? restaurant;
+  Branch? branch;
+  NewReview(this.formKey, {this.restaurant, this.branch, Key? key})
+      : super(key: key);
   static const routeName = '/new-review-page';
   static const newReviewImagesPath = 'assets/images/new-review-images/';
 
@@ -101,7 +105,17 @@ class _NewReviewState extends State<NewReview> {
   Widget build(BuildContext context) {
     final newPostProvider =
         Provider.of<NewReviewProvider>(context, listen: false);
-
+    if (widget.restaurant != null) {
+      newPostProvider.postFormData['restaurantid'] = widget.restaurant!.id;
+      newPostProvider.postFormData['restaurantName'] = widget.restaurant!.title;
+      _restaurantFieldController.text = widget.restaurant!.title;
+    }
+    if (widget.branch != null) {
+      newPostProvider.postFormData['branchId'] = widget.branch!.id;
+      newPostProvider.postFormData['location'] =
+          widget.branch!.location.address;
+      _branchFieldController.text = widget.branch!.location.address;
+    }
     String? _ratingInputError;
     final _starSize = MediaQuery.of(context).size.height * 0.05;
     return ListView(
@@ -120,8 +134,6 @@ class _NewReviewState extends State<NewReview> {
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.headline5),
               const SizedBox(height: 20),
-              //restarant,branch inputs container
-              //restarant,branch column
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -131,32 +143,43 @@ class _NewReviewState extends State<NewReview> {
                     child: Text("Restaurant",
                         style: Theme.of(context).textTheme.headline4),
                   ),
+                  Spacer(),
+                  Icon(Icons.food_bank,
+                      color: Theme.of(context).colorScheme.primary),
+                  SizedBox(width: 5),
                   ///////////////////////////////
                   /// Restaurant search input
                   /////////////////////////////
                   SizedBox(
                     width: 200,
-                    child: TextFieldSearch(
-                      label: 'Complex Future List',
-                      controller: _restaurantFieldController,
-                      future: () {
-                        return _fetchRestaurants(
-                            context, _restaurantFieldController.text);
-                      },
-                      getSelectedValue: (item) {
-                        print(item.value);
-                        newPostProvider.postFormData['restaurantid'] =
-                            item.value;
-                        newPostProvider.postFormData['restaurantName'] =
-                            item.label;
-                        _branchFieldController.clear();
-                        _fetchBranches(context, item.value as String);
-                      },
-                      minStringLength: 2,
-                      textStyle: TextStyle(color: Colors.red),
-                      decoration:
-                          InputDecoration(hintText: 'Search For Restaurant'),
-                    ),
+                    child: widget.restaurant == null
+                        ? TextFieldSearch(
+                            label: 'Complex Future List',
+                            controller: _restaurantFieldController,
+                            future: () {
+                              return _fetchRestaurants(
+                                  context, _restaurantFieldController.text);
+                            },
+                            getSelectedValue: (item) {
+                              print(item.value);
+                              newPostProvider.postFormData['restaurantid'] =
+                                  item.value;
+                              newPostProvider.postFormData['restaurantName'] =
+                                  item.label;
+                              _branchFieldController.clear();
+                              _fetchBranches(context, item.value as String);
+                            },
+                            minStringLength: 2,
+                            decoration: InputDecoration(
+                                hintText: 'Search For Restaurant'),
+                          )
+                        : Text(
+                            widget.restaurant!.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline3!
+                                .copyWith(fontSize: 17),
+                          ),
                   ),
                 ],
               ),
@@ -170,34 +193,37 @@ class _NewReviewState extends State<NewReview> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
+                  Spacer(),
+                  Icon(Icons.location_on,
+                      color: Theme.of(context).colorScheme.primary),
+                  SizedBox(width: 5),
                   if (_loadingBranches) CircularProgressIndicator(),
+                  ///////////////////////////////
+                  /// Branch search input
+                  /////////////////////////////
                   SizedBox(
-                    width: 200,
-                    child: TextFieldSearch(
-                      label: 'Branch List',
-                      controller: _branchFieldController,
-                      initialList: _branchesList,
-                      itemsInView: 50,
-                      getSelectedValue: (item) {
-                        print(item.value);
-                        newPostProvider.postFormData['branchId'] = item.value;
-                        newPostProvider.postFormData['location'] = item.label;
-                      },
-                      textStyle: TextStyle(color: Colors.red),
-                      decoration: InputDecoration(hintText: 'Select Branch'),
-                    ),
-
-                    // TextFormField(
-                    //   controller: null,
-                    //   /////////////////////////////
-                    //   /// needs modification
-                    //   /////////////////////
-                    //   onSaved: (value) {
-                    //     newPostProvider.postFormData['location'] = value;
-                    //   },
-                    //   textInputAction: TextInputAction.next,
-                    // ),
-                  ),
+                      width: 200,
+                      child: widget.branch == null
+                          ? TextFieldSearch(
+                              label: 'Branch List',
+                              controller: _branchFieldController,
+                              initialList: _branchesList,
+                              itemsInView: 50,
+                              getSelectedValue: (item) {
+                                print(item.value);
+                                newPostProvider.postFormData['branchId'] =
+                                    item.value;
+                                newPostProvider.postFormData['location'] =
+                                    item.label;
+                              },
+                              decoration:
+                                  InputDecoration(hintText: 'Select Branch'),
+                            )
+                          : Text(widget.branch!.location.address,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(fontSize: 17))),
                 ],
               ),
               const SizedBox(height: 20),
@@ -221,6 +247,9 @@ class _NewReviewState extends State<NewReview> {
                         const Text('Price'),
                         SizedBox(
                           width: 30,
+                          ///////////////////////////////
+                          /// Price Rating input
+                          /////////////////////////////
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
@@ -272,6 +301,9 @@ class _NewReviewState extends State<NewReview> {
                         const Text('Taste'),
                         SizedBox(
                           width: 30,
+                          ///////////////////////////////
+                          /// taset Rating input
+                          /////////////////////////////
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
                             decoration: const InputDecoration(counterText: ""),
@@ -322,6 +354,9 @@ class _NewReviewState extends State<NewReview> {
                         const Text('Quantity'),
                         SizedBox(
                           width: 30,
+                          ///////////////////////////////
+                          /// quantity Rating input
+                          /////////////////////////////
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
@@ -373,6 +408,9 @@ class _NewReviewState extends State<NewReview> {
                         const Text('Service'),
                         SizedBox(
                           width: 30,
+                          ///////////////////////////////
+                          /// service Rating input
+                          /////////////////////////////
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
                             decoration: const InputDecoration(counterText: ""),
@@ -408,6 +446,9 @@ class _NewReviewState extends State<NewReview> {
                 ],
               ),
               const SizedBox(height: 50),
+              ///////////////////////////////
+              /// Review Text input
+              /////////////////////////////
               TextFormField(
                 onSaved: (value) {
                   newPostProvider.postFormData['reviewText'] = value;
@@ -445,6 +486,9 @@ class _NewReviewState extends State<NewReview> {
               ),
             ),
             const SizedBox(width: 20),
+            ///////////////////////////////
+            /// Like/Dislike Buttons
+            /////////////////////////////
             Expanded(
               child: ElevatedButton(
                 onPressed: () {

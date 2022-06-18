@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspaths;
 import '../../helpers/common_functions.dart';
 import '../../models/http_exception.dart';
 import '../../models/profile.dart';
 import '../../providers/auth.dart';
 import '../../providers/profile_provider.dart';
+import '../../screens/photo_viewer_screen.dart';
 
 enum ProfileFollowState { FOLLOWED, UNFOLLOWED }
 
@@ -99,6 +105,48 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     }
   }
 
+  Future<void> _takePicture(BuildContext context) async {
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
+    final picker = ImagePicker();
+
+    final imageFile = await picker.pickImage(
+      source: ImageSource.camera,
+      maxWidth: 600,
+    );
+    if (imageFile == null) {
+      return;
+    }
+    File? _memoryStoredImage;
+    _memoryStoredImage = File(imageFile.path);
+    // // get the appdata directory
+    // final appDir = await syspaths.getApplicationDocumentsDirectory();
+    // //name it with the base name
+    // final fileName = path.basename(imageFile.path);
+    // final savedImage =
+    //     await _memoryStoredImage.copy('${appDir.path}/$fileName');
+    String url = await profileProvider.uploadAvatarImage(_memoryStoredImage);
+    setState(() {
+      widget.profile.imageUrl = url;
+    });
+  }
+
+  void _openimageView(BuildContext context, String url) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoViewerScreen(
+          galleryItems: [url],
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: 0,
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
+
   ///////////////////////////////////////////////////////
   ///
   ///       Overrides
@@ -107,7 +155,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   @override
   initState() {
     super.initState();
-    _fetchProfile(context, widget.profile.id);
+    // _fetchProfile(context, widget.profile.id);
   }
 
   @override
@@ -122,32 +170,51 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           child: Stack(
             alignment: Alignment.center,
             children: [
+              if (widget.profile.id == authProvider.userId)
+                Positioned(
+                  top: 0,
+                  left: 65,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.camera_alt,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      _takePicture(context);
+                    },
+                  ),
+                ),
               CircleAvatar(
                 radius: 70.0,
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Image.network(
-                  /////image here
-                  widget.profile.imageUrl,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                        ),
-                      ),
-                    );
-                  },
-                  errorBuilder: (_, as, asd) {
-                    return Icon(Icons.person,
-                        size: 100,
-                        color: Theme.of(context).colorScheme.onPrimary);
-                  },
+                child: InkWell(
+                  onTap: () => _openimageView(context, widget.profile.imageUrl),
+                  child: ClipOval(
+                    child: Image.network(
+                      /////image here
+                      widget.profile.imageUrl,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (_, as, asd) {
+                        return Icon(Icons.person,
+                            size: 100,
+                            color: Theme.of(context).colorScheme.onPrimary);
+                      },
+                    ),
+                  ),
                 ),
               ),
             ],

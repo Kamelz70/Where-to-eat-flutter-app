@@ -18,7 +18,7 @@ class Review {
   final String reviewText;
   final bool isLiked;
   final List<ReviewItem>? reviewItems;
-  final List<File> reviewImages;
+  final List<String> reviewImages;
   int downVotes;
   int upVotes;
 

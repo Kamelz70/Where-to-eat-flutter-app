@@ -25,7 +25,7 @@ class ReviewPost extends StatelessWidget {
   ///
   ///////////////////////////////////////////////////////////////////////
   void _openimageView(
-      BuildContext context, List<File> items, int initialIndex) {
+      BuildContext context, List<String> items, int initialIndex) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -238,7 +238,7 @@ class ReviewPost extends StatelessWidget {
                               height: 200,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.file(
+                                child: Image.network(
                                   image,
                                   fit: BoxFit.contain,
                                 ),
