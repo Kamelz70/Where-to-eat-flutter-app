@@ -8,6 +8,7 @@ class Review {
   final double tasteRating;
   final double costRating;
   final double quantityRating;
+  final double? totalRating;
   final String authorId;
   final String authorName;
   final String authorImage;
@@ -28,6 +29,7 @@ class Review {
     required this.tasteRating,
     required this.costRating,
     required this.quantityRating,
+    this.totalRating,
     required this.authorId,
     required this.authorName,
     required this.restaurantId,

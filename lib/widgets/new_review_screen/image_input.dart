@@ -32,31 +32,31 @@ class _ImageInputState extends State<ImageInput> {
       return;
     }
     //////////////////////////////Upload Image First
-    newReviewProvider.addImage("uploadedURL");
+    newReviewProvider.addImage(File(imageFile.path));
     //get the appdata directory
-    final appDir = await syspaths.getApplicationDocumentsDirectory();
-    //name it with the base name
-    final fileName = path.basename(imageFile.path);
-    final savedImage = await _storedImage!.copy('${appDir.path}/$fileName');
-    widget.onSelectImage(savedImage);
+    // final appDir = await syspaths.getApplicationDocumentsDirectory();
+    //name it with the base name and save locally (not needed)
+    // final fileName = path.basename(imageFile.path);
+    // final savedImage = await _storedImage!.copy('${appDir.path}/$fileName');
+    // widget.onSelectImage(savedImage);
   }
 
-  // void _openimageView(
-  //     BuildContext context, List<File> items, int initialIndex) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => PhotoViewerScreen(
-  //         galleryItems: items,
-  //         backgroundDecoration: const BoxDecoration(
-  //           color: Colors.black,
-  //         ),
-  //         initialIndex: initialIndex,
-  //         scrollDirection: Axis.horizontal,
-  //       ),
-  //     ),
-  //   );
-  // }
+  void _openimageView(
+      BuildContext context, List<File> items, int initialIndex) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoViewerScreen(
+          galleryItemsFiles: items,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: initialIndex,
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,12 +85,12 @@ class _ImageInputState extends State<ImageInput> {
                       child: Stack(children: [
                         InkWell(
                           onTap: () {
-                            // _openimageView(
-                            //     context, newReviewProvider.imageList, index);
+                            _openimageView(
+                                context, newReviewProvider.imageList, index);
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
+                            child: Image.file(
                               newReviewProvider.imageList[index],
                               fit: BoxFit.cover,
                               width: double.infinity,

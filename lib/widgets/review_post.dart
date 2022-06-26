@@ -15,6 +15,8 @@ class ReviewPost extends StatelessWidget {
   ///       consts and Vars
   ///
   ///////////////////////////////////////////////////////////////////////
+  ///
+  static const foodImagePath = 'assets/images/item-review-images/food.png';
   Review review;
   bool? isLinked;
   ReviewPost(this.review, {Key? key, this.isLinked = true}) : super(key: key);
@@ -30,7 +32,7 @@ class ReviewPost extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => PhotoViewerScreen(
-          galleryItems: items,
+          galleryItemsUrls: items,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
@@ -142,7 +144,7 @@ class ReviewPost extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Text("Rated: ${review.costRating}/10"),
+                          Text("Rated: ${review.totalRating}/10"),
                           const SizedBox(width: 7),
                           CircleAvatar(
                             backgroundColor:
@@ -229,22 +231,45 @@ class ReviewPost extends StatelessWidget {
                             ),
                           ),
                         ...review.reviewImages.map((image) {
-                          return InkWell(
-                            onTap: () {
-                              _openimageView(context, review.reviewImages,
-                                  review.reviewImages.indexOf(image));
-                            },
-                            child: SizedBox(
-                              height: 200,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  image,
-                                  fit: BoxFit.contain,
+                          return GestureDetector(
+                              onTap: () {
+                                _openimageView(context, review.reviewImages,
+                                    review.reviewImages.indexOf(image));
+                              },
+                              child: SizedBox(
+                                height: 200,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    image,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return SizedBox(
+                                        height: 200,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (_, sad, asd) {
+                                      return Image.asset(foodImagePath,
+                                          height: 150);
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
+                              ));
                         }).toList(),
                       ],
                     ),
@@ -294,7 +319,7 @@ class ReviewPost extends StatelessWidget {
                         ),
                         ///////////////////////////////////////////
                         /// UpVotes
-                        const Text('23'),
+                        Text(review.upVotes.toString()),
                         CircleAvatar(
                           radius: 12,
                           backgroundColor: Colors.red,
@@ -308,11 +333,12 @@ class ReviewPost extends StatelessWidget {
                         ),
                         /////////////////////////////////////////
                         /// DownVotes
-                        const Text('23'),
-                        IconButton(
-                          icon: const Icon(Icons.comment_outlined),
-                          onPressed: () {},
-                        ),
+                        Text(review.downVotes.toString()),
+                        // IconButton(
+                        //   icon: const Icon(Icons.comment_outlined),
+                        //   onPressed: () {},
+                        // ),
+                        SizedBox(width: 40)
                       ],
                     ),
                   ),

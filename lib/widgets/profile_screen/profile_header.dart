@@ -33,7 +33,7 @@ class ProfileHeader extends StatefulWidget {
 
 class _ProfileHeaderState extends State<ProfileHeader> {
   bool _isLoading = false;
-  ProfileFollowState profileFollowState = ProfileFollowState.FOLLOWED;
+  late ProfileFollowState profileFollowState;
   ///////////////////////////////////////////////////////
   ///
   ///       Functions
@@ -124,7 +124,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     // //name it with the base name
     // final fileName = path.basename(imageFile.path);
     // final savedImage =
-    //     await _memoryStoredImage.copy('${appDir.path}/$fileName');
+    //     await _mfkn]emoryStoredImage.copy('${appDir.path}/$fileName');
     String url = await profileProvider.uploadAvatarImage(_memoryStoredImage);
     setState(() {
       widget.profile.imageUrl = url;
@@ -136,7 +136,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       context,
       MaterialPageRoute(
         builder: (context) => PhotoViewerScreen(
-          galleryItems: [url],
+          galleryItemsUrls: [url],
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
@@ -156,6 +156,9 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   initState() {
     super.initState();
     // _fetchProfile(context, widget.profile.id);
+    profileFollowState = widget.profile.isFollowed
+        ? ProfileFollowState.FOLLOWED
+        : ProfileFollowState.UNFOLLOWED;
   }
 
   @override
@@ -200,6 +203,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         return Container(
                           child: Center(
                             child: CircularProgressIndicator(
+                              color: Colors.white,
                               value: loadingProgress.expectedTotalBytes != null
                                   ? loadingProgress.cumulativeBytesLoaded /
                                       loadingProgress.expectedTotalBytes!

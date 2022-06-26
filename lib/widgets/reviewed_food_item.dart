@@ -33,7 +33,7 @@ class ReviewedFoodItem extends StatelessWidget {
       ),
       elevation: 7,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         child: Row(
           children: [
             Container(
@@ -41,7 +41,9 @@ class ReviewedFoodItem extends StatelessWidget {
               height: 60,
               child: Image.asset(
                 /////////////////food type here
-                itemReviewImagesPath + 'food.png',
+                foodType == FoodType.FOOD
+                    ? itemReviewImagesPath + 'food.png'
+                    : itemReviewImagesPath + 'beverage.png',
               ),
             ),
             Expanded(
@@ -49,10 +51,15 @@ class ReviewedFoodItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /////////////////name here
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    alignment: WrapAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runAlignment: WrapAlignment.spaceBetween,
                     children: [
-                      Text(title, style: Theme.of(context).textTheme.headline4),
+                      Text(title,
+                          overflow: TextOverflow.clip,
+                          style: Theme.of(context).textTheme.headline4),
                       if (deletible)
                         IconButton(
                           onPressed: () {

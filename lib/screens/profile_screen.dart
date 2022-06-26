@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   //////////////////////////////////////////////////////////////////////////////////////////
   ///
-  ///         sub-wogets
+  ///         sub-widgets
   ///
   ////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildProfileHeader(ProfileProvider profileProvider, String Id,
@@ -128,7 +128,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       future:
           widget.profile == null ? profileProvider.fetchProfileByID(Id) : null,
       builder: (_, profileSnapshot) {
-        if (profileSnapshot.connectionState == ConnectionState.waiting) {
+        if (profileSnapshot.hasError) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 30, bottom: 30),
+            child: Center(
+              child: Text(
+                  "Couldn't load Profile Check your connection and refresh"),
+            ),
+          );
+        } else if (profileSnapshot.connectionState == ConnectionState.waiting) {
           return LinearProgressIndicator(key: ValueKey(0));
         } else {
           return ProfileHeader(

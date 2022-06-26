@@ -5,13 +5,19 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class PhotoViewerScreen extends StatefulWidget {
+  /////////////////////////////////////////
+  ///
+  /// You Have to input list of either files or urls of your images to view
+  ///
+  ////////////////////////////////////////
   PhotoViewerScreen({
     this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
     this.initialIndex = 0,
-    required this.galleryItems,
+    this.galleryItemsUrls,
+    this.galleryItemsFiles,
     this.scrollDirection = Axis.horizontal,
   }) : pageController = PageController(initialPage: initialIndex);
 
@@ -21,7 +27,8 @@ class PhotoViewerScreen extends StatefulWidget {
   final dynamic maxScale;
   final int initialIndex;
   final PageController pageController;
-  final List<String> galleryItems;
+  final List<String>? galleryItemsUrls;
+  final List<File>? galleryItemsFiles;
   final Axis scrollDirection;
 
   @override
@@ -32,12 +39,19 @@ class PhotoViewerScreen extends StatefulWidget {
 
 class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    final String item = widget.galleryItems[index];
+    late final item;
+    if (widget.galleryItemsUrls == null) {
+      item = widget.galleryItemsFiles![index];
+    } else {
+      item = widget.galleryItemsUrls![index];
+    }
 
     PhotoViewScaleStateController scaleStateController;
     scaleStateController = PhotoViewScaleStateController();
     return PhotoViewGalleryPageOptions(
-      imageProvider: Image.network(item).image,
+      imageProvider: widget.galleryItemsUrls == null
+          ? Image.file(widget.galleryItemsFiles![index]).image
+          : Image.network(widget.galleryItemsUrls![index]).image,
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,
@@ -68,7 +82,9 @@ class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
             PhotoViewGallery.builder(
               scrollPhysics: const BouncingScrollPhysics(),
               builder: _buildItem,
-              itemCount: widget.galleryItems.length,
+              itemCount: widget.galleryItemsUrls == null
+                  ? widget.galleryItemsFiles!.length
+                  : widget.galleryItemsUrls!.length,
               loadingBuilder: widget.loadingBuilder,
               backgroundDecoration: widget.backgroundDecoration,
               pageController: widget.pageController,

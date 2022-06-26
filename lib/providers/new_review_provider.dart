@@ -9,9 +9,19 @@ class NewReviewProvider with ChangeNotifier {
   Map<String, dynamic> postFormData = {
     'restaurantName': '',
     'restaurantid': '',
+    'RestaurantReviewsCount': '',
+    'RestaurantTotalCostRating': '',
+    'RestaurantTotalTasteRating': '',
+    'RestaurantTotalQuantityRating': '',
+    'RestaurantTotalServiceRating': '',
     'isLiked': true,
     'location': '',
     'branchId': '',
+    'branchReviewsCount': '',
+    'BranchTotalCostRating': '',
+    'BranchTotalTasteRating': '',
+    'BranchTotalQuantityRating': '',
+    'BranchTotalServiceRating': '',
     'reviewText': '',
     'serviceRating': '',
     'tasteRating': '',
@@ -27,14 +37,14 @@ class NewReviewProvider with ChangeNotifier {
     'description': '',
   };
   List<ReviewItem> _reviewItemsList = [];
-  List<String> _imageList = [];
+  List<File> _imageList = [];
 
   List<ReviewItem> get reviewItemsList {
     //copy spread items (brackets means copy)
     return [..._reviewItemsList];
   }
 
-  List<String> get imageList {
+  List<File> get imageList {
     //copy spread items (brackets means copy)
     return [..._imageList];
   }
@@ -55,7 +65,6 @@ class NewReviewProvider with ChangeNotifier {
       reviewText: postFormData['reviewText'],
       isLiked: postFormData['isLiked'],
       reviewItems: _reviewItemsList.isEmpty ? null : _reviewItemsList,
-      reviewImages: _imageList,
     );
   }
 
@@ -64,7 +73,7 @@ class NewReviewProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addImage(String image) {
+  void addImage(File image) {
     _imageList.add(image);
     notifyListeners();
   }
@@ -89,9 +98,19 @@ class NewReviewProvider with ChangeNotifier {
     postFormData = {
       'restaurantName': '',
       'restaurantid': '',
+      'RestaurantReviewsCount': '',
+      'RestaurantTotalCostRating': '',
+      'RestaurantTotalTasteRating': '',
+      'RestaurantTotalQuantityRating': '',
+      'RestaurantTotalServiceRating': '',
       'isLiked': true,
       'location': '',
       'branchId': '',
+      'branchReviewsCount': '',
+      'BranchTotalCostRating': '',
+      'BranchTotalTasteRating': '',
+      'BranchTotalQuantityRating': '',
+      'BranchTotalServiceRating': '',
       'reviewText': '',
       'serviceRating': '',
       'tasteRating': '',

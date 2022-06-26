@@ -39,7 +39,7 @@ class NewsFeedScreen extends StatelessWidget {
               return RefreshIndicator(
                 onRefresh: () => _fetchReviewPosts(ctx),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Consumer<ReviewProvider>(
                     builder: (_, reviewsData, child) {
                       return ReviewsList(reviewsData.items);

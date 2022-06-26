@@ -13,26 +13,59 @@ var DUMMY_Reviews = [
       tasteRating: 4.0,
       costRating: 4.5,
       quantityRating: 4.5,
+      totalRating: 6.5,
       authorId: 'as',
-      authorName: 'Kamel',
-      restaurantName: 'Hamada',
+      authorName: 'Kamool',
+      restaurantName: 'Kentucky',
       isLiked: true,
       branchtId: '',
       authorImage: '',
       reviewText:
           'This is Not the best place in terms of cost, but still liked the experience',
-      upVotes: 40,
-      downVotes: 20,
+      upVotes: 13,
+      downVotes: 3,
       restaurantId: '',
-      location: 'Branch A',
+      location: 'Nasr City',
       reviewItems: [
         const ReviewItem(
             id: 'm',
-            title: '7amada zangabeel',
-            foodType: FoodType.BEVERAGE,
-            price: 20,
-            rating: 3,
-            description: 'asdsdasdas')
+            title: 'Rizo',
+            foodType: FoodType.FOOD,
+            price: 40,
+            rating: 4,
+            description:
+                "the rice was good, but the chikcen pieces wasn't the best")
+      ]),
+  Review(
+      id: 'r1',
+      serviceRating: 8.5,
+      tasteRating: 8.0,
+      costRating: 6.5,
+      quantityRating: 7.5,
+      totalRating: 8.5,
+      authorId: 'as',
+      authorName: 'Kamool',
+      restaurantName: 'Hardees',
+      isLiked: true,
+      branchtId: '',
+      authorImage: '',
+      reviewText:
+          'Great Prices, Good service overall, and the new offer was awesome',
+      upVotes: 12,
+      downVotes: 1,
+      restaurantId: '',
+      location: 'Merghany',
+      reviewImages: [
+        'https://i0.wp.com/www.theimpulsivebuy.com/wordpress/wp-content/uploads/2022/04/hardfrisco1.jpeg'
+      ],
+      reviewItems: [
+        const ReviewItem(
+            id: 'm',
+            title: 'Double Hardy',
+            foodType: FoodType.FOOD,
+            price: 55,
+            rating: 4,
+            description: 'Good,juicy, tasty')
       ]),
   Review(
     id: 'r2',
@@ -47,9 +80,10 @@ var DUMMY_Reviews = [
     location: 'sad',
     authorImage: '',
     quantityRating: 3.5,
+    totalRating: 7.5,
     reviewText: 'Prices are high, worst service, worst experience',
-    upVotes: 40,
-    downVotes: 20,
+    upVotes: 3,
+    downVotes: 0,
     restaurantId: '',
   ),
   Review(
@@ -58,6 +92,7 @@ var DUMMY_Reviews = [
     tasteRating: 4.5,
     costRating: 5,
     quantityRating: 5,
+    totalRating: 7.5,
     authorId: 'as',
     authorName: 'Kamel',
     restaurantName: 'Hamada',
@@ -66,8 +101,8 @@ var DUMMY_Reviews = [
     location: 'sad',
     authorImage: '',
     reviewText: 'Best place for your family gatherings, great prices',
-    upVotes: 40,
-    downVotes: 20,
+    upVotes: 2,
+    downVotes: 1,
     restaurantId: '',
   ),
   Review(
@@ -76,6 +111,7 @@ var DUMMY_Reviews = [
     tasteRating: 4.0,
     costRating: 4.5,
     quantityRating: 4.5,
+    totalRating: 7.5,
     reviewText:
         'This is Not the best place in terms of cost, but still liked the experience',
     upVotes: 40,
@@ -102,6 +138,7 @@ var DUMMY_Reviews = [
     branchtId: '',
     authorImage: '',
     quantityRating: 3.5,
+    totalRating: 7.5,
     reviewText:
         'An Average Experience with an acceptable service, would come again another time, But not soon',
     upVotes: 40,

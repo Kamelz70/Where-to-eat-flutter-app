@@ -152,8 +152,11 @@ class _AddItemReviewState extends State<AddItemReview> {
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                  Icon(Icons.attach_money,
-                      color: Theme.of(context).colorScheme.primary),
+                  Text('EGP',
+                      style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color: (Theme.of(context).colorScheme.primary))),
+                  // Icon(Icons.attach_money,
+                  //     color: Theme.of(context).colorScheme.primary),
                 ],
               ),
               const SizedBox(height: 20),

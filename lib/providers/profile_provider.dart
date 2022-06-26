@@ -72,7 +72,7 @@ class ProfileProvider with ChangeNotifier {
               : responseData['url'][0], //????????????,
           followersCount: responseData['user']['followersNum'],
           followingCount: responseData['user']['followingNum'],
-          reviewsCount: responseData['user']['ReviewsNum'], //????????????,
+          reviewsCount: 6, //????????????,
           isFollowed: responseData['user']['IsFollowed']);
     } catch (error) {
       // ignore: avoid_print
@@ -137,7 +137,7 @@ class ProfileProvider with ChangeNotifier {
       print(response.statusCode);
       print(responseData);
 
-      if (response.statusCode != 200 && response.statusCode != 400) {
+      if (response.statusCode != 200 && response.statusCode != 404) {
         throw HttpException('Unfollow Failed');
       }
     } catch (error) {
@@ -158,7 +158,19 @@ class ProfileProvider with ChangeNotifier {
         },
       );
       print('fetching profiles');
+      print(response.statusCode);
+
+      if (response.statusCode != 200 && response.statusCode != 500) {
+        ///////////////////////make it 404
+        throw HttpException("Couldn't search profiles");
+      }
       final responseData = json.decode(response.body);
+      if (responseData.isEmpty) {
+        //return empty list of users indicating none are found
+        print('empty');
+
+        return [];
+      }
       print(responseData);
       List<Profile> profilesList = [];
       responseData['user'].forEach((profile) {

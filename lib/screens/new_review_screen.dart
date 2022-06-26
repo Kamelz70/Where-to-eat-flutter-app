@@ -52,7 +52,8 @@ class _NewReviewScreenState extends State<NewReviewScreen> {
     }
     _formKey.currentState!.save();
     print(newPostProvider.postFormData);
-    reviewProvider.postReview(newPostProvider.currentReview);
+    reviewProvider.postReview(
+        newPostProvider.currentReview, newPostProvider.imageList);
     newPostProvider.clearCurrentReview();
     Navigator.of(context).pop();
   }
