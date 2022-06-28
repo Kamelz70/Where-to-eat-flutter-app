@@ -117,6 +117,7 @@ class Auth with ChangeNotifier {
       notifyListeners();
       print("saving token: $_token");
       print("saving userId: $_userId");
+      print("saving userName: $_userName");
 
       final prefs = await SharedPreferences.getInstance();
       final userData = json.encode({
@@ -199,6 +200,7 @@ class Auth with ChangeNotifier {
     _token = extractedUserData['token'] as String?;
     _userId = extractedUserData['userId'] as String?;
     _userName = extractedUserData['userName'] as String?;
+    print('userId is $_userId');
     notifyListeners();
     return true;
   }

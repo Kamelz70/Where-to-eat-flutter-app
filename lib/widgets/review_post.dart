@@ -1,15 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:where_to_eat/models/review.dart';
 
 import '../Screens/profile_screen.dart';
+import '../providers/review_provider.dart';
 import '../screens/photo_viewer_screen.dart';
 import '../screens/restaurant_page_screen.dart';
 import 'reviewed_food_items_list.dart';
 
-class ReviewPost extends StatelessWidget {
+class ReviewPost extends StatefulWidget {
   ///////////////////////////////////////////////////////////////////////
   ///
   ///       consts and Vars
@@ -20,7 +22,14 @@ class ReviewPost extends StatelessWidget {
   Review review;
   bool? isLinked;
   ReviewPost(this.review, {Key? key, this.isLinked = true}) : super(key: key);
+
+  @override
+  State<ReviewPost> createState() => _ReviewPostState();
+}
+
+class _ReviewPostState extends State<ReviewPost> {
   final PageController _pageController = PageController();
+
   ///////////////////////////////////////////////////////////////////////
   ///
   ///       Functions
@@ -60,6 +69,32 @@ class ReviewPost extends StatelessWidget {
     );
   }
 
+  void _upvotePost(
+    BuildContext context,
+  ) async {
+    try {
+      final reviewProvider =
+          Provider.of<ReviewProvider>(context, listen: false);
+      reviewProvider.upvotePost(widget.review.id);
+      setState(() {
+        widget.review.isUpvoted = true;
+      });
+    } catch (error) {}
+  }
+
+  void _downvotePost(
+    BuildContext context,
+  ) async {
+    try {
+      final reviewProvider =
+          Provider.of<ReviewProvider>(context, listen: false);
+      reviewProvider.downvotePost(widget.review.id);
+      setState(() {
+        widget.review.isDownvoted = true;
+      });
+    } catch (error) {}
+  }
+
   ///////////////////////////////////////////////////////////////////////
   ///
   ///       Build Method
@@ -68,8 +103,8 @@ class ReviewPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int tabsCount = 1;
-    if (review.reviewItems != null) tabsCount += 1;
-    tabsCount += review.reviewImages.length;
+    if (widget.review.reviewItems != null) tabsCount += 1;
+    tabsCount += widget.review.reviewImages.length;
     //whole post card
     return Card(
         margin: const EdgeInsets.all(15),
@@ -86,9 +121,9 @@ class ReviewPost extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: isLinked!
+                    onTap: widget.isLinked!
                         ? () {
-                            openProfile(context, review.authorId);
+                            openProfile(context, widget.review.authorId);
                           }
                         : () {},
                     child: CircleAvatar(
@@ -96,7 +131,7 @@ class ReviewPost extends StatelessWidget {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       child: ClipRRect(
                         child: Image.network(
-                          review.authorImage,
+                          widget.review.authorImage,
                           fit: BoxFit.cover,
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {
@@ -129,13 +164,13 @@ class ReviewPost extends StatelessWidget {
                       ////////////////////////////////////////////////////////////////////////////////////////////////
                       ///reviewer name
                       GestureDetector(
-                        onTap: isLinked!
+                        onTap: widget.isLinked!
                             ? () {
-                                openProfile(context, review.authorId);
+                                openProfile(context, widget.review.authorId);
                               }
                             : () {},
                         child: Text(
-                          review.authorName,
+                          widget.review.authorName,
                           style: Theme.of(context)
                               .textTheme
                               .bodyText2!
@@ -144,16 +179,17 @@ class ReviewPost extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Text("Rated: ${review.totalRating}/10"),
+                          Text("Rated: ${widget.review.totalRating}/10"),
                           const SizedBox(width: 7),
                           CircleAvatar(
-                            backgroundColor:
-                                review.isLiked ? Colors.green : Colors.red,
+                            backgroundColor: widget.review.isLiked
+                                ? Colors.green
+                                : Colors.red,
                             radius: 9,
                             child: Icon(
                               ////////////////////////////////////////////////////////////////////////////////////////////////
                               ///If liked ?
-                              review.isLiked
+                              widget.review.isLiked
                                   ? Icons.thumb_up
                                   : Icons.thumb_down,
                               color: Colors.white,
@@ -174,9 +210,10 @@ class ReviewPost extends StatelessWidget {
                         /// ////Name And Location of res
                         /////////////////
                         GestureDetector(
-                          child: Text(review.restaurantName),
+                          child: Text(widget.review.restaurantName),
                           onTap: () {
-                            _openRestaurantPage(context, review.restaurantId);
+                            _openRestaurantPage(
+                                context, widget.review.restaurantId);
                           },
                         ),
 
@@ -185,7 +222,7 @@ class ReviewPost extends StatelessWidget {
                             Icon(Icons.location_on,
                                 color: Theme.of(context).colorScheme.primary,
                                 size: 15),
-                            Text(review.location,
+                            Text(widget.review.location,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText2!
@@ -203,8 +240,8 @@ class ReviewPost extends StatelessWidget {
                     ExpandablePageView(
                       controller: _pageController,
                       children: [
-                        Text(review.reviewText),
-                        if (review.reviewItems != null)
+                        Text(widget.review.reviewText),
+                        if (widget.review.reviewItems != null)
                           ConstrainedBox(
                             constraints: const BoxConstraints(
                                 minHeight: 20, maxHeight: 300),
@@ -225,16 +262,18 @@ class ReviewPost extends StatelessWidget {
                                       ),
                                     ),
                                     child: ReviewedFoodItemsList(
-                                        review.reviewItems!)),
+                                        widget.review.reviewItems!)),
                                 const Divider(),
                               ],
                             ),
                           ),
-                        ...review.reviewImages.map((image) {
+                        ...widget.review.reviewImages.map((image) {
                           return GestureDetector(
                               onTap: () {
-                                _openimageView(context, review.reviewImages,
-                                    review.reviewImages.indexOf(image));
+                                _openimageView(
+                                    context,
+                                    widget.review.reviewImages,
+                                    widget.review.reviewImages.indexOf(image));
                               },
                               child: SizedBox(
                                 height: 200,
@@ -264,7 +303,8 @@ class ReviewPost extends StatelessWidget {
                                     },
                                     fit: BoxFit.contain,
                                     errorBuilder: (_, sad, asd) {
-                                      return Image.asset(foodImagePath,
+                                      return Image.asset(
+                                          ReviewPost.foodImagePath,
                                           height: 150);
                                     },
                                   ),
@@ -306,34 +346,47 @@ class ReviewPost extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        ///////////////////////////////////////////
+                        /// UpVotes
                         CircleAvatar(
                           radius: 12,
-                          backgroundColor: Colors.green,
+                          backgroundColor: widget.review.isUpvoted
+                              ? Colors.grey
+                              : Colors.green,
                           child: IconButton(
                             padding: const EdgeInsets.all(2),
-                            onPressed: () {},
+                            onPressed: widget.review.isUpvoted
+                                ? () {}
+                                : () {
+                                    _upvotePost(context);
+                                  },
                             iconSize: 20,
                             icon: const Icon(Icons.arrow_drop_up,
                                 color: Colors.white),
                           ),
                         ),
-                        ///////////////////////////////////////////
-                        /// UpVotes
-                        Text(review.upVotes.toString()),
+                        /////////////////////////////////////////
+                        /// DownVotes
+                        Text(widget.review.upVotes.toString()),
                         CircleAvatar(
                           radius: 12,
-                          backgroundColor: Colors.red,
+                          backgroundColor: widget.review.isDownvoted
+                              ? Colors.grey
+                              : Colors.red,
                           child: IconButton(
                             padding: const EdgeInsets.all(2),
-                            onPressed: () {},
+                            onPressed: widget.review.isDownvoted!
+                                ? () {}
+                                : () {
+                                    _downvotePost(context);
+                                  },
                             iconSize: 20,
                             icon: const Icon(Icons.arrow_drop_down,
                                 color: Colors.white),
                           ),
                         ),
-                        /////////////////////////////////////////
-                        /// DownVotes
-                        Text(review.downVotes.toString()),
+
+                        Text(widget.review.downVotes.toString()),
                         // IconButton(
                         //   icon: const Icon(Icons.comment_outlined),
                         //   onPressed: () {},

@@ -141,7 +141,7 @@ class SettingsScreen extends StatelessWidget {
     final authenticator = Provider.of<Auth>(context, listen: false);
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
-    final profile = profileProvider.viewedProfile;
+
 // final profile = context.watch<Profile>();
     return Scaffold(
       appBar: AppBar(
@@ -156,13 +156,15 @@ class SettingsScreen extends StatelessWidget {
             Card(
               margin: const EdgeInsets.all(8.0),
               child: ListTile(
-                title: Text(profile.name),
+                title: Text(authenticator.userName!),
                 leading: CircleAvatar(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   child: ClipRRect(
                     child: Image.network(
                       /////image here
-                      profile.imageUrl,
+                      profileProvider.viewedProfile == null
+                          ? ''
+                          : profileProvider.viewedProfile.imageUrl,
                       fit: BoxFit.cover,
                       loadingBuilder: (BuildContext context, Widget child,
                           ImageChunkEvent? loadingProgress) {

@@ -67,12 +67,12 @@ class ProfileProvider with ChangeNotifier {
       _viewedProfile = Profile(
           id: responseData['user']['_id'],
           name: responseData['user']['name'],
-          imageUrl: responseData['url'].isEmpty
+          imageUrl: responseData['user']['avatar'] == null
               ? ''
-              : responseData['url'][0], //????????????,
+              : responseData['user']['avatar'], //????????????,
           followersCount: responseData['user']['followersNum'],
           followingCount: responseData['user']['followingNum'],
-          reviewsCount: 6, //????????????,
+          reviewsCount: responseData['user']['ReviewsNum'], //????????????,
           isFollowed: responseData['user']['IsFollowed']);
     } catch (error) {
       // ignore: avoid_print

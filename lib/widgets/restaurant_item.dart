@@ -70,7 +70,7 @@ class RestaurantItem extends StatelessWidget {
                   const Text("70-80"),
                 ],
               ),
-              const Text('Location Data'),
+              // const Text('Location Data'),
               const SizedBox(
                 height: 10,
               ),

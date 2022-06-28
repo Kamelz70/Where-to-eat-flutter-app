@@ -35,6 +35,10 @@ class NewsFeedScreen extends StatelessWidget {
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text(
+                      "Couldn't fetch posts, check your connection and retry"));
             } else {
               return RefreshIndicator(
                 onRefresh: () => _fetchReviewPosts(ctx),

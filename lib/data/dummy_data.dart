@@ -20,6 +20,8 @@ var DUMMY_Reviews = [
       isLiked: true,
       branchtId: '',
       authorImage: '',
+      isUpvoted: false,
+      isDownvoted: false,
       reviewText:
           'This is Not the best place in terms of cost, but still liked the experience',
       upVotes: 13,
@@ -40,6 +42,8 @@ var DUMMY_Reviews = [
       id: 'r1',
       serviceRating: 8.5,
       tasteRating: 8.0,
+      isUpvoted: false,
+      isDownvoted: false,
       costRating: 6.5,
       quantityRating: 7.5,
       totalRating: 8.5,
@@ -69,6 +73,8 @@ var DUMMY_Reviews = [
       ]),
   Review(
     id: 'r2',
+    isUpvoted: false,
+    isDownvoted: false,
     serviceRating: 3.5,
     tasteRating: 2.0,
     costRating: 1.5,
@@ -93,6 +99,8 @@ var DUMMY_Reviews = [
     costRating: 5,
     quantityRating: 5,
     totalRating: 7.5,
+    isUpvoted: false,
+    isDownvoted: false,
     authorId: 'as',
     authorName: 'Kamel',
     restaurantName: 'Hamada',
@@ -111,6 +119,8 @@ var DUMMY_Reviews = [
     tasteRating: 4.0,
     costRating: 4.5,
     quantityRating: 4.5,
+    isUpvoted: false,
+    isDownvoted: false,
     totalRating: 7.5,
     reviewText:
         'This is Not the best place in terms of cost, but still liked the experience',
@@ -127,6 +137,8 @@ var DUMMY_Reviews = [
   ),
   Review(
     id: 'r5',
+    isUpvoted: false,
+    isDownvoted: false,
     serviceRating: 3.5,
     tasteRating: 3.0,
     costRating: 4.5,

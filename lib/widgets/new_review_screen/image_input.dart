@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
@@ -31,8 +32,11 @@ class _ImageInputState extends State<ImageInput> {
     if (imageFile == null) {
       return;
     }
+    File rotatedImage =
+        await FlutterExifRotation.rotateAndSaveImage(path: imageFile.path);
+
     //////////////////////////////Upload Image First
-    newReviewProvider.addImage(File(imageFile.path));
+    newReviewProvider.addImage(File(rotatedImage.path));
     //get the appdata directory
     // final appDir = await syspaths.getApplicationDocumentsDirectory();
     //name it with the base name and save locally (not needed)

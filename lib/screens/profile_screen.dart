@@ -87,7 +87,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : reviewProvider.fetchPostsOfId(widget.profile!.id),
               builder: (_, reviewsSnapshot) {
                 Widget child;
-                if (reviewsSnapshot.connectionState ==
+                if (reviewsSnapshot.hasError) {
+                  child = Center(
+                      child: Text(
+                          "couldn't fetch porsts, check connection and retry"));
+                } else if (reviewsSnapshot.connectionState ==
                     ConnectionState.waiting) {
                   child = const SizedBox(
                     height: 269,

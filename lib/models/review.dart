@@ -18,6 +18,8 @@ class Review {
   final String location;
   final String reviewText;
   final bool isLiked;
+  bool isUpvoted;
+  bool isDownvoted;
   final List<ReviewItem>? reviewItems;
   final List<String> reviewImages;
   int downVotes;
@@ -38,6 +40,8 @@ class Review {
     required this.location,
     required this.reviewText,
     required this.isLiked,
+    required this.isUpvoted,
+    required this.isDownvoted,
     this.reviewItems,
     this.reviewImages = const [],
     this.authorImage = '',

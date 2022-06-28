@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:where_to_eat/models/http_exception.dart';
+import 'package:where_to_eat/screens/splash_screen.dart';
 
 import '../helpers/common_functions.dart';
 import '../providers/auth.dart';
 
 //enum for authentication state
 enum AuthMode { Signup, LoginWithMail, LoginWithMobile }
+
+const mainImagesPath = 'assets/images/main';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -134,19 +137,25 @@ class _AuthCardState extends State<AuthCard> {
     return Form(
       key: _formKey,
       child: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? SplashScreen()
           : ListView(
               padding: const EdgeInsets.all(20),
               children: <Widget>[
                 const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 23),
+                  child: Center(
+                      child: Image.asset('$mainImagesPath/no_bg_logo.png',
+                          height: 150)),
+                ),
                 Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Center(
                     child: Text(
                       _authMode == AuthMode.Signup
                           ? 'Create An Account'
-                          : ' Welcome to \n Where to eat ?',
+                          : ' Welcome',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 30,
@@ -289,18 +298,20 @@ class _AuthCardState extends State<AuthCard> {
                       selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                     ),
                   ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      //forgot password screen
-                    },
-                    child: const Text(
-                      'Forgot Password?',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
+                _authMode != AuthMode.Signup
+                    ? Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            //forgot password screen
+                          },
+                          child: const Text(
+                            'Forgot Password?',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : SizedBox(height: 20),
                 Container(
                     height: 50,
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

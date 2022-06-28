@@ -67,18 +67,19 @@ class RestaurantProvider with ChangeNotifier {
           title: restaurant['name'],
           imageUrl: '',
           categories: [],
-          serviceRating: restaurant['serviceRating'].toDouble(),
-          tasteRating: restaurant['TasteRating'].toDouble(),
-          costRating: restaurant['costRating'].toDouble(),
-          quantityRating: restaurant['quantityRating'].toDouble(),
-          totalRating: restaurant['TotalRating'].toDouble(),
+          reviewsCount: restaurant['NoOfReviews'],
+          serviceRating: double.parse(restaurant['serviceRating']),
+          tasteRating: double.parse(restaurant['TasteRating']),
+          costRating: double.parse(restaurant['costRating']),
+          quantityRating: double.parse(restaurant['quantityRating']),
+          totalRating: double.parse(restaurant['TotalRating']),
         ));
       });
+
       return restaurantList;
     } catch (error) {
       // ignore: avoid_print
       print(error);
-      throw error;
     }
     return [];
   }
@@ -146,10 +147,12 @@ class RestaurantProvider with ChangeNotifier {
             location: PlaceLocation(
               address: branch['name'],
             ),
-            costRating: branch['costRating'].toDouble(),
-            tasteRating: branch['TasteRating'].toDouble(),
-            quantityRating: branch['quantityRating'].toDouble(),
-            serviceRating: branch['serviceRating'].toDouble(),
+            reviewsCount: branch['NoOfReviews'],
+            costRating: double.parse(branch['costRating']),
+            tasteRating: double.parse(branch['TasteRating']),
+            quantityRating: double.parse(branch['quantityRating']),
+            serviceRating: double.parse(branch['serviceRating']),
+            totalRating: double.parse(branch['TotalRating']),
           ),
         );
       });
@@ -182,6 +185,7 @@ class RestaurantProvider with ChangeNotifier {
 
       return Branch(
         id: responseData['_id'],
+        reviewsCount: responseData['reviewsCount'],
         totalRating: responseData['TotalRating'].toDouble(),
         costRating: responseData['costRating'].toDouble(),
         tasteRating: responseData['TasteRating'].toDouble(),

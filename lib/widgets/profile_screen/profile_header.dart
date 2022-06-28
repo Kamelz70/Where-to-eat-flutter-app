@@ -111,7 +111,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     final picker = ImagePicker();
 
     final imageFile = await picker.pickImage(
-      source: ImageSource.camera,
+      source: ImageSource.gallery,
       maxWidth: 600,
     );
     if (imageFile == null) {

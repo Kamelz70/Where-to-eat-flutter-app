@@ -271,7 +271,7 @@ class _RestaurantPageScreenState extends State<RestaurantPageScreen> {
                                     ),
                                     onPressed: () {}, //ADD FUNC
                                     child: const Text(
-                                      'Data',
+                                      '23',
                                       style: TextStyle(
                                         color: Colors.amber,
                                       ),

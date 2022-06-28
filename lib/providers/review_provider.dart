@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../data/dummy_data.dart';
 import '../models/review.dart';
+import '../models/review_item.dart';
 
 const String UPLOAD_IMAGE_API = 'https://grad-projj.herokuapp.com/image';
+const String POST_REVIEW_API = 'https://grad-projj.herokuapp.com/review';
+const String GET_PROFILE_POSTS_API =
+    'https://grad-projj.herokuapp.com/users/reviews';
+const String UPVOTE_API = '';
+const String DOWNVOTE_API = '';
 
 class ReviewProvider with ChangeNotifier {
   List<Review> _items = [];
@@ -36,48 +42,6 @@ class ReviewProvider with ChangeNotifier {
   /////////////////////////////////////////////////////////////////
 
   Future<void> fetchAndSetNewsFeed([bool filterByUser = false]) async {
-    // try {
-    //   String filterString = '';
-    //   if (filterByUser) {
-    //     filterString = '&orderBy="ownerId"&equalTo="$_userId"';
-    //   }
-    //   final url = Uri.parse(
-    //       'https://shop-application-c27b8-default-rtdb.firebaseio.com/products.json?auth=$_authToken$filterString');
-
-    //   final response = await http.get(url);
-    //   final data = json.decode(response.body) as Map<String, dynamic>;
-    //   if (data == null) {
-    //     return;
-    //   }
-
-    //   ///
-    //   final favoritesUrl = Uri.parse(
-    //       'https://shop-application-c27b8-default-rtdb.firebaseio.com/userFavorites/$_userId.json?auth=$_authToken');
-    //   final favoritesResponse = await http.get(favoritesUrl);
-    //   final favoritesData = json.decode(favoritesResponse.body);
-
-    //   ///
-    //   final List<Product> loadedProducts = [];
-    //   data.forEach((prodId, prodData) {
-    //     loadedProducts.add(Product(
-    //       id: prodId,
-    //       title: prodData['title'],
-    //       description: prodData['description'],
-    //       price: prodData['price'],
-    //       isFavorite:
-    //           //?? means check if null and put
-    //           favoritesData == null
-    //               ? false
-    //               : favoritesData[prodId] as bool ?? false,
-    //       imageUrl: prodData['imageUrl'],
-    //     ));
-    //   });
-    //   _items = loadedProducts;
-    //   notifyListeners();
-    // } catch (error) {
-    //   print(error);
-    //   throw error;
-    // }
     await Future.delayed(const Duration(seconds: 1));
 
     _items = _items.isEmpty ? [..._items, ...DUMMY_Reviews] : _items;
@@ -125,38 +89,79 @@ class ReviewProvider with ChangeNotifier {
     }
   }
 
-  Future<void> postReview(Review review, List<File> reviewImages) async {
+  Future<void> postReview(Map formData, List<File> reviewImages) async {
+    List<String> ImagesUrls = [];
+    for (int i = 0; i < reviewImages.length; i++) {
+      ImagesUrls.add(await uploadImage(reviewImages[i]));
+    }
+    ///////////for each doeesn't work
+    // reviewImages.forEach((imageFile) async {
+    //   ImagesUrls.add(await uploadImage(imageFile));
+    // });
+    final url = Uri.parse('$POST_REVIEW_API');
     try {
-      List<String> ImagesUrls = [];
-      for (int i = 0; i < reviewImages.length; i++) {
-        ImagesUrls.add(await uploadImage(reviewImages[i]));
-      }
-      ///////////for each doeesn't work
-      // reviewImages.forEach((imageFile) async {
-      //   ImagesUrls.add(await uploadImage(imageFile));
-      // });
-      print(ImagesUrls);
-      final newReview = Review(
-        id: DateTime.now().toString(),
-        serviceRating: review.serviceRating,
-        tasteRating: review.tasteRating,
-        costRating: review.costRating,
-        quantityRating: review.quantityRating,
-        restaurantId: review.restaurantId,
-        authorId: _myUserId,
-        authorName: _myUserName,
-        authorImage: review.authorImage,
-        branchtId: review.branchtId,
-        restaurantName: review.restaurantName,
-        location: review.location,
-        reviewText: review.reviewText,
-        reviewItems: review.reviewItems,
-        reviewImages: ImagesUrls,
-        isLiked: review.isLiked,
-      );
+      print('1111111111111111');
 
-      _items.insert(0, newReview);
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $_authToken',
+          },
+          body: json.encode({
+            "comment": formData['reviewText'],
+            "serviceRating": formData['serviceRating'],
+            "TasteRating": formData['tasteRating'],
+            "costRating": formData['costRating'],
+            "quantityRating": formData['quantityRating'],
+            "branchId": formData['branchId'],
+            "restaurantId": formData['restaurantid'],
+            "imgUrl": ImagesUrls,
+            "branchReviewsCount": formData['branchReviewsCount'],
+            "BranchTotalCostRating": formData['BranchTotalCostRating'],
+            "BranchTotalTasteRating": formData['BranchTotalTasteRating'],
+            "BranchTotalQuantityRating": formData['BranchTotalQuantityRating'],
+            "BranchTotalServiceRating": formData['BranchTotalServiceRating'],
+            "restaurantReviewsCount": formData['RestaurantReviewsCount'],
+            "restaurantTotalCostRating": formData['RestaurantTotalCostRating'],
+            "restaurantTotalTasteRating":
+                formData['RestaurantTotalTasteRating'],
+            "restaurantTotalQuantityRating":
+                formData['RestaurantTotalQuantityRating'],
+            "restaurantTotalServiceRating":
+                formData['RestaurantTotalServiceRating'],
+          }));
+      print('222222222222222222222222222222');
+      print(response.statusCode);
+      print(response.headers);
+      print(response.body);
+
+      if (response.statusCode != 201) {
+        throw HttpException("Couldn't post reveiw");
+      }
+      print(response.body);
+      // final newReview = Review(
+      //   id: DateTime.now().toString(),
+      //   serviceRating: formData['serviceRating'],
+      //   tasteRating: formData['tasteRating'],
+      //   costRating: formData['costRating'],
+      //   quantityRating: formData['quantityRating'],
+      //   restaurantId: formData['restaurantid'],
+      //   authorId: _myUserId,
+      //   authorName: _myUserName,
+      //   authorImage: '',
+      //   branchtId: formData['branchId'],
+      //   restaurantName: formData['restaurantName'],
+      //   location: formData['restaurantName'],
+      //   reviewText: formData['reviewText'],
+      //   reviewItems: null,
+      //   reviewImages: ImagesUrls,
+      //   isLiked: formData['isLiked'],
+      // );
+
+      // _items.insert(0, newReview);
       //or _items.add(newProduct);
+      print('222222222222222222222222222222');
+
       notifyListeners();
     } catch (error) {
       // ignore: avoid_print
@@ -166,7 +171,125 @@ class ReviewProvider with ChangeNotifier {
   }
 
   Future<List<Review>> fetchPostsOfId(String profileId) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return DUMMY_Reviews;
+    final url = Uri.parse('$GET_PROFILE_POSTS_API/$profileId');
+    List<Review> reviewsList = [];
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('fetching posts for id');
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw HttpException('Fetching profile Failed');
+      }
+      final responseData = json.decode(response.body);
+      print(responseData);
+
+      print(responseData[1]['imgUrl'].runtimeType);
+      responseData.forEach((review) {
+        {
+          reviewsList.add(Review(
+            id: review['_id'],
+            serviceRating: review['serviceRating'].toDouble(),
+            tasteRating: review['TasteRating'].toDouble(),
+            costRating: review['costRating'].toDouble(),
+            quantityRating: review['quantityRating'].toDouble(),
+            totalRating: review['TotalRating'].toDouble(),
+            authorId: review['owner'],
+            // get restaurants for profile id
+            authorName: '',
+            authorImage: '',
+            restaurantId: '',
+            restaurantName: '',
+            branchtId: review['branchId'],
+            location: '', //branch name
+            reviewText: review['comment'],
+            isLiked: false,
+            isUpvoted: review['IsUpvoted'],
+            isDownvoted: review['IsDownVoted'],
+            reviewItems: null,
+            reviewImages: List<String>.from(review['imgUrl']),
+            //    reviewImages: review['imgUrl'].isEmpty
+            // ? []
+            // : review['imgUrl'] as List<String>,
+            downVotes: 0,
+            upVotes: 0,
+          ));
+        }
+      });
+      return reviewsList;
+    } catch (error) {
+      // ignore: avoid_print
+      print('errorrrrrrrrrrrrrrrrrrrrr');
+
+      print(error);
+      rethrow;
+    }
+  }
+
+  Future<void> upvotePost(String id) async {
+    final url = Uri.parse(UPVOTE_API);
+
+    try {
+      final response = await http.patch(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $_authToken',
+        },
+        body: json.encode(
+          {
+            '_id': id,
+          },
+        ),
+      );
+      print('Upvote sent');
+      final responseData = response.body;
+
+      print(response.statusCode);
+      print(responseData);
+
+      if (response.statusCode != 200 && response.statusCode != 404) {
+        throw HttpException('Upvote Failed');
+      }
+    } catch (error) {
+      print('error: $error');
+      rethrow;
+    }
+  }
+
+  Future<void> downvotePost(String id) async {
+    final url = Uri.parse(DOWNVOTE_API);
+
+    try {
+      final response = await http.patch(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $_authToken',
+        },
+        body: json.encode(
+          {
+            '_id': id,
+          },
+        ),
+      );
+      print('Downvote sent');
+      final responseData = response.body;
+
+      print(response.statusCode);
+      print(responseData);
+
+      if (response.statusCode != 200 && response.statusCode != 404) {
+        throw HttpException('Downvote Failed');
+      }
+    } catch (error) {
+      print('error: $error');
+      rethrow;
+    }
   }
 }

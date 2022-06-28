@@ -34,7 +34,9 @@ class _NewReviewState extends State<NewReview> {
 
   late final TextEditingController _branchFieldController;
 
-  List<MiniSearchItem> _branchesList = [];
+  List<MiniSearchItem> _miniSearchBranchesList = [];
+  List<Branch> _BranchesList = [];
+  List<Restaurant> _RestaurantsList = [];
 
   bool _loadingBranches = false;
 
@@ -48,13 +50,13 @@ class _NewReviewState extends State<NewReview> {
       BuildContext context, String searchTerm) async {
     List _resultList = [];
     setState(() {});
-    List searchList =
+    _RestaurantsList =
         await Provider.of<RestaurantProvider>(context, listen: false)
             .searchByName(
       searchTerm,
     );
 
-    searchList.forEach((restaurant) {
+    _RestaurantsList.forEach((restaurant) {
       _resultList.add(
         MiniSearchItem(label: restaurant.title, value: restaurant.id),
       );
@@ -67,10 +69,10 @@ class _NewReviewState extends State<NewReview> {
     setState(() {
       _loadingBranches = true;
     });
-    List<Branch> resultList =
+    _BranchesList =
         await Provider.of<RestaurantProvider>(context, listen: false)
             .fetchBranches(restaurantId);
-    _branchesList = resultList.map((branch) {
+    _miniSearchBranchesList = _BranchesList.map((branch) {
       return MiniSearchItem(label: branch.location.address, value: branch.id);
     }).toList();
     setState(() {
@@ -106,14 +108,12 @@ class _NewReviewState extends State<NewReview> {
     final newPostProvider =
         Provider.of<NewReviewProvider>(context, listen: false);
     if (widget.restaurant != null) {
-      newPostProvider.postFormData['restaurantid'] = widget.restaurant!.id;
-      newPostProvider.postFormData['restaurantName'] = widget.restaurant!.title;
+      newPostProvider.selectRestaurant(widget.restaurant!);
       _restaurantFieldController.text = widget.restaurant!.title;
     }
     if (widget.branch != null) {
-      newPostProvider.postFormData['branchId'] = widget.branch!.id;
-      newPostProvider.postFormData['location'] =
-          widget.branch!.location.address;
+      newPostProvider.selectBranch(widget.branch!);
+
       _branchFieldController.text = widget.branch!.location.address;
     }
     String? _ratingInputError;
@@ -162,10 +162,10 @@ class _NewReviewState extends State<NewReview> {
                             },
                             getSelectedValue: (item) {
                               print(item.value);
-                              newPostProvider.postFormData['restaurantid'] =
-                                  item.value;
-                              newPostProvider.postFormData['restaurantName'] =
-                                  item.label;
+                              newPostProvider.selectRestaurant(
+                                  _RestaurantsList.firstWhere((restaurant) =>
+                                      restaurant.id == item.value));
+
                               _branchFieldController.clear();
                               _fetchBranches(context, item.value as String);
                             },
@@ -207,14 +207,13 @@ class _NewReviewState extends State<NewReview> {
                           ? TextFieldSearch(
                               label: 'Branch List',
                               controller: _branchFieldController,
-                              initialList: _branchesList,
+                              initialList: _miniSearchBranchesList,
                               itemsInView: 50,
                               getSelectedValue: (item) {
                                 print(item.value);
-                                newPostProvider.postFormData['branchId'] =
-                                    item.value;
-                                newPostProvider.postFormData['location'] =
-                                    item.label;
+                                newPostProvider.selectBranch(
+                                    _BranchesList.firstWhere(
+                                        (branch) => branch.id == item.value));
                               },
                               decoration:
                                   InputDecoration(hintText: 'Select Branch'),

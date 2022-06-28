@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:where_to_eat/providers/review_provider.dart';
 
+import '../models/branch.dart';
+import '../models/restaurant.dart';
 import '../models/review.dart';
 import '../models/review_item.dart';
 
@@ -52,7 +55,7 @@ class NewReviewProvider with ChangeNotifier {
   Review get currentReview {
     return Review(
       id: DateTime.now().toString(),
-      serviceRating: postFormData['serviceRating'] as double,
+      serviceRating: postFormData['serviceRating'],
       tasteRating: postFormData['tasteRating'],
       costRating: postFormData['costRating'],
       quantityRating: postFormData['quantityRating'],
@@ -65,6 +68,8 @@ class NewReviewProvider with ChangeNotifier {
       reviewText: postFormData['reviewText'],
       isLiked: postFormData['isLiked'],
       reviewItems: _reviewItemsList.isEmpty ? null : _reviewItemsList,
+      isUpvoted: false,
+      isDownvoted: false,
     );
   }
 
@@ -81,6 +86,26 @@ class NewReviewProvider with ChangeNotifier {
   void deleteItemById(String id) {
     _reviewItemsList.removeWhere((element) => element.id == id);
     notifyListeners();
+  }
+
+  void selectBranch(Branch branch) {
+    postFormData['branchId'] = branch.id;
+    postFormData['location'] = branch.location.address;
+    postFormData['branchReviewsCount'] = branch.reviewsCount;
+    postFormData['BranchTotalCostRating'] = branch.costRating;
+    postFormData['BranchTotalTasteRating'] = branch.tasteRating;
+    postFormData['BranchTotalQuantityRating'] = branch.quantityRating;
+    postFormData['BranchTotalServiceRating'] = branch.serviceRating;
+  }
+
+  void selectRestaurant(Restaurant restaurant) {
+    postFormData['restaurantName'] = restaurant.title;
+    postFormData['restaurantid'] = restaurant.id;
+    postFormData['RestaurantReviewsCount'] = restaurant.reviewsCount;
+    postFormData['RestaurantTotalCostRating'] = restaurant.costRating;
+    postFormData['RestaurantTotalTasteRating'] = restaurant.tasteRating;
+    postFormData['RestaurantTotalQuantityRating'] = restaurant.quantityRating;
+    postFormData['RestaurantTotalServiceRating'] = restaurant.serviceRating;
   }
 
   void clearCurrentReviewItem() {
@@ -128,6 +153,10 @@ class NewReviewProvider with ChangeNotifier {
     _reviewItemsList = [];
     _imageList = [];
     notifyListeners();
+  }
+
+  void postCurrentReview(ReviewProvider reviewProvider) {
+    reviewProvider.postReview(postFormData, _imageList);
   }
 
   void removeImage(int index) {
