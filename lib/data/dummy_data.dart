@@ -8,6 +8,7 @@ import '../models/review_item.dart';
 // ignore: non_constant_identifier_names
 var DUMMY_Reviews = [
   Review(
+      date: DateTime.now(),
       id: 'r1',
       serviceRating: 4.5,
       tasteRating: 4.0,
@@ -39,6 +40,7 @@ var DUMMY_Reviews = [
                 "the rice was good, but the chikcen pieces wasn't the best")
       ]),
   Review(
+      date: DateTime.now(),
       id: 'r1',
       serviceRating: 8.5,
       tasteRating: 8.0,
@@ -72,6 +74,7 @@ var DUMMY_Reviews = [
             description: 'Good,juicy, tasty')
       ]),
   Review(
+    date: DateTime.now(),
     id: 'r2',
     isUpvoted: false,
     isDownvoted: false,
@@ -93,6 +96,7 @@ var DUMMY_Reviews = [
     restaurantId: '',
   ),
   Review(
+    date: DateTime.now(),
     id: 'r3',
     serviceRating: 5,
     tasteRating: 4.5,
@@ -114,6 +118,7 @@ var DUMMY_Reviews = [
     restaurantId: '',
   ),
   Review(
+    date: DateTime.now(),
     id: 'r4',
     serviceRating: 4.5,
     tasteRating: 4.0,
@@ -136,6 +141,7 @@ var DUMMY_Reviews = [
     location: 'sad',
   ),
   Review(
+    date: DateTime.now(),
     id: 'r5',
     isUpvoted: false,
     isDownvoted: false,

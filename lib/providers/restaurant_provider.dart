@@ -104,11 +104,11 @@ class RestaurantProvider with ChangeNotifier {
       print(responseData);
 
       return Restaurant(
-          totalRating: responseData['TotalRating'].toDouble(),
-          costRating: responseData['costRating'].toDouble(),
-          tasteRating: responseData['TasteRating'].toDouble(),
-          quantityRating: responseData['quantityRating'].toDouble(),
-          serviceRating: responseData['serviceRating'].toDouble(),
+          totalRating: double.parse(responseData['TotalRating']),
+          costRating: double.parse(responseData['costRating']),
+          tasteRating: double.parse(responseData['TasteRating']),
+          quantityRating: double.parse(responseData['quantityRating']),
+          serviceRating: double.parse(responseData['serviceRating']),
           id: responseData['_id'],
           title: responseData['name'],
           imageUrl: '',

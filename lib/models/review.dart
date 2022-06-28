@@ -18,6 +18,7 @@ class Review {
   final String location;
   final String reviewText;
   final bool isLiked;
+  final DateTime date;
   bool isUpvoted;
   bool isDownvoted;
   final List<ReviewItem>? reviewItems;
@@ -42,6 +43,7 @@ class Review {
     required this.isLiked,
     required this.isUpvoted,
     required this.isDownvoted,
+    required this.date,
     this.reviewItems,
     this.reviewImages = const [],
     this.authorImage = '',

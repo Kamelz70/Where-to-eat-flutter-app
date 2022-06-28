@@ -173,7 +173,8 @@ class ProfileProvider with ChangeNotifier {
       }
       print(responseData);
       List<Profile> profilesList = [];
-      responseData['user'].forEach((profile) {
+      responseData.forEach((profile) {
+        print('follow state:${profile['IsFollowed']}');
         profilesList.add(Profile(
             id: profile["_id"],
             name: profile["name"],

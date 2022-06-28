@@ -41,6 +41,7 @@ class NewReviewProvider with ChangeNotifier {
   };
   List<ReviewItem> _reviewItemsList = [];
   List<File> _imageList = [];
+  bool _uploadingPost = false;
 
   List<ReviewItem> get reviewItemsList {
     //copy spread items (brackets means copy)
@@ -50,6 +51,11 @@ class NewReviewProvider with ChangeNotifier {
   List<File> get imageList {
     //copy spread items (brackets means copy)
     return [..._imageList];
+  }
+
+  bool get uploadingPost {
+    //copy spread items (brackets means copy)
+    return _uploadingPost;
   }
 
   Review get currentReview {
@@ -70,6 +76,7 @@ class NewReviewProvider with ChangeNotifier {
       reviewItems: _reviewItemsList.isEmpty ? null : _reviewItemsList,
       isUpvoted: false,
       isDownvoted: false,
+      date: DateTime.now(),
     );
   }
 
@@ -155,8 +162,14 @@ class NewReviewProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void postCurrentReview(ReviewProvider reviewProvider) {
-    reviewProvider.postReview(postFormData, _imageList);
+  Future<void> postCurrentReview(ReviewProvider reviewProvider) async {
+    _uploadingPost = true;
+    notifyListeners();
+    try {
+      await reviewProvider.postReview(this);
+    } catch (error) {}
+    _uploadingPost = false;
+    notifyListeners();
   }
 
   void removeImage(int index) {

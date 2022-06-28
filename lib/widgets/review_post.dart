@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:where_to_eat/models/review.dart';
-
+import 'package:timeago/timeago.dart' as timeago;
 import '../Screens/profile_screen.dart';
+import '../helpers/common_functions.dart';
 import '../providers/review_provider.dart';
 import '../screens/photo_viewer_screen.dart';
 import '../screens/restaurant_page_screen.dart';
@@ -29,6 +30,8 @@ class ReviewPost extends StatefulWidget {
 
 class _ReviewPostState extends State<ReviewPost> {
   final PageController _pageController = PageController();
+  late int downVotes;
+  late int upVotes;
 
   ///////////////////////////////////////////////////////////////////////
   ///
@@ -75,8 +78,13 @@ class _ReviewPostState extends State<ReviewPost> {
     try {
       final reviewProvider =
           Provider.of<ReviewProvider>(context, listen: false);
-      reviewProvider.upvotePost(widget.review.id);
+      await reviewProvider.upvotePost(widget.review.id);
       setState(() {
+        if (widget.review.isDownvoted = true) {
+          widget.review.isDownvoted = false;
+          downVotes = downVotes - 1;
+        }
+        upVotes = upVotes + 1;
         widget.review.isUpvoted = true;
       });
     } catch (error) {}
@@ -88,11 +96,28 @@ class _ReviewPostState extends State<ReviewPost> {
     try {
       final reviewProvider =
           Provider.of<ReviewProvider>(context, listen: false);
-      reviewProvider.downvotePost(widget.review.id);
+      await reviewProvider.downvotePost(widget.review.id);
       setState(() {
+        if (widget.review.isUpvoted = true) {
+          widget.review.isUpvoted = false;
+          upVotes = upVotes - 1;
+        }
+        downVotes = downVotes + 1;
         widget.review.isDownvoted = true;
       });
     } catch (error) {}
+  }
+
+  ///////////////////////////////////////////////////////////////////////
+  ///
+  ///       Overrides
+  ///
+  ///////////////////////////////////////////////////////////////////////
+  @override
+  initState() {
+    super.initState();
+    upVotes = widget.review.upVotes;
+    downVotes = widget.review.downVotes;
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -102,6 +127,7 @@ class _ReviewPostState extends State<ReviewPost> {
   ///////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    int upVotes = widget.review.upVotes;
     int tabsCount = 1;
     if (widget.review.reviewItems != null) tabsCount += 1;
     tabsCount += widget.review.reviewImages.length;
@@ -351,8 +377,10 @@ class _ReviewPostState extends State<ReviewPost> {
                         CircleAvatar(
                           radius: 12,
                           backgroundColor: widget.review.isUpvoted
-                              ? Colors.grey
-                              : Colors.green,
+                              ? Colors.green
+                              : widget.review.isDownvoted
+                                  ? Colors.grey
+                                  : Colors.green,
                           child: IconButton(
                             padding: const EdgeInsets.all(2),
                             onPressed: widget.review.isUpvoted
@@ -365,17 +393,19 @@ class _ReviewPostState extends State<ReviewPost> {
                                 color: Colors.white),
                           ),
                         ),
+                        Text(upVotes.toString()),
                         /////////////////////////////////////////
                         /// DownVotes
-                        Text(widget.review.upVotes.toString()),
                         CircleAvatar(
                           radius: 12,
                           backgroundColor: widget.review.isDownvoted
-                              ? Colors.grey
-                              : Colors.red,
+                              ? Colors.red
+                              : widget.review.isUpvoted
+                                  ? Colors.grey
+                                  : Colors.red,
                           child: IconButton(
                             padding: const EdgeInsets.all(2),
-                            onPressed: widget.review.isDownvoted!
+                            onPressed: widget.review.isDownvoted
                                 ? () {}
                                 : () {
                                     _downvotePost(context);
@@ -386,7 +416,7 @@ class _ReviewPostState extends State<ReviewPost> {
                           ),
                         ),
 
-                        Text(widget.review.downVotes.toString()),
+                        Text(upVotes.toString()),
                         // IconButton(
                         //   icon: const Icon(Icons.comment_outlined),
                         //   onPressed: () {},
@@ -397,7 +427,7 @@ class _ReviewPostState extends State<ReviewPost> {
                   ),
                   const Spacer(flex: 2),
                   Text(
-                    '1 hour ago',
+                    timeago.format(widget.review.date, locale: 'en_short'),
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!

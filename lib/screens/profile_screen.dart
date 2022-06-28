@@ -12,10 +12,10 @@ import '../widgets/reviews_list.dart';
 
 class ProfileScreen extends StatefulWidget {
   final bool isMe;
-  final String? userId;
-  final Profile? profile;
+  String? userId;
+  Profile? profile;
 
-  const ProfileScreen(
+  ProfileScreen(
       // ignore: avoid_init_to_null
       {this.userId,
       this.isMe = false,
@@ -38,6 +38,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(ctx).pushNamed(
       WishListScreen.routeName,
     );
+  }
+
+  void _refreshProfile(
+    ProfileProvider profileProvider,
+    String Id,
+  ) async {
+    if (widget.profile != null) {
+      try {
+        widget.profile = await profileProvider.fetchProfileByID(Id) as Profile;
+      } catch (error) {
+        print(error.toString());
+      }
+    }
   }
 
   @override

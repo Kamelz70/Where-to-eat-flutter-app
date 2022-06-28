@@ -6,13 +6,17 @@ import 'package:http/http.dart' as http;
 import '../data/dummy_data.dart';
 import '../models/review.dart';
 import '../models/review_item.dart';
+import 'new_review_provider.dart';
 
 const String UPLOAD_IMAGE_API = 'https://grad-projj.herokuapp.com/image';
 const String POST_REVIEW_API = 'https://grad-projj.herokuapp.com/review';
 const String GET_PROFILE_POSTS_API =
     'https://grad-projj.herokuapp.com/users/reviews';
-const String UPVOTE_API = '';
-const String DOWNVOTE_API = '';
+const String UPVOTE_API = 'https://grad-projj.herokuapp.com/review/upvotes';
+const String DOWNVOTE_API =
+    'https://grad-projj.herokuapp.com/ /review/downvotes';
+const String FETCH_NEWSFEED_API =
+    'https://grad-projj.herokuapp.com/user/newsFeed';
 
 class ReviewProvider with ChangeNotifier {
   List<Review> _items = [];
@@ -40,13 +44,81 @@ class ReviewProvider with ChangeNotifier {
   ///         Methods
   ///
   /////////////////////////////////////////////////////////////////
+  List<Review> _decodeReviewsResponse(List responseData) {
+    List<Review> reviewsList = [];
+    responseData.forEach((review) {
+      {
+        List<ReviewItem> reviewItems =
+            List<Map<String, dynamic>>.from(review['Dishes'])
+                .map<ReviewItem>((item) {
+          return ReviewItem(
+            id: item['_id'],
+            title: item['name'],
+            foodType: item['Type'] == true ? FoodType.FOOD : FoodType.BEVERAGE,
+            price: double.parse(item['price']),
+            rating: double.parse(item['rating']),
+            description: '',
+          );
+        }).toList();
+
+        reviewsList.add(Review(
+          id: review['_id'],
+          serviceRating: review['serviceRating'].toDouble(),
+          tasteRating: review['TasteRating'].toDouble(),
+          costRating: review['costRating'].toDouble(),
+          quantityRating: review['quantityRating'].toDouble(),
+          totalRating: review['TotalRating'].toDouble(),
+          authorId: review['owner'],
+          // get restaurants for profile id
+          authorName: review['authorName'],
+          authorImage: review['authorImage'],
+          restaurantId: review['ResturantID'],
+          restaurantName: review['restaurantName'],
+          branchtId: review['branchId'],
+          location: review['location'], //branch name
+          reviewText: review['comment'],
+          isLiked: review['wouldRecommend'],
+          isUpvoted: review['IsUpvoted'],
+          isDownvoted: review['IsDownVoted'],
+          reviewItems: reviewItems.isEmpty ? null : reviewItems,
+          reviewImages: List<String>.from(review['imgUrl']),
+          date: DateTime.parse(review['createdAt']),
+          downVotes: review['downVotesCount'],
+          upVotes: review['upVotesCount'],
+        ));
+      }
+    });
+    return reviewsList;
+  }
 
   Future<void> fetchAndSetNewsFeed([bool filterByUser = false]) async {
-    await Future.delayed(const Duration(seconds: 1));
+    final url = Uri.parse('$FETCH_NEWSFEED_API');
 
-    _items = _items.isEmpty ? [..._items, ...DUMMY_Reviews] : _items;
-    print('refreshing');
-    notifyListeners();
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $_authToken',
+        },
+      );
+      print('fetching NEWSFEED');
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw HttpException('Fetching profile Failed');
+      }
+      final responseData = json.decode(response.body);
+      print(responseData);
+
+      _items = _decodeReviewsResponse(responseData);
+      notifyListeners();
+    } catch (error) {
+      // ignore: avoid_print
+      print('errorrrrrrrrrrrrrrrrrrrrr');
+
+      print(error);
+      rethrow;
+    }
   }
 
   Future<List<Review>> fetchRestaurantReviews(String restaurantId) async {
@@ -89,7 +161,12 @@ class ReviewProvider with ChangeNotifier {
     }
   }
 
-  Future<void> postReview(Map formData, List<File> reviewImages) async {
+  Future<void> postReview(
+    NewReviewProvider newReviewProvider,
+  ) async {
+    List<File> reviewImages = newReviewProvider.imageList;
+    Map formData = newReviewProvider.postFormData;
+    List<ReviewItem> reviewItems = newReviewProvider.reviewItemsList;
     List<String> ImagesUrls = [];
     for (int i = 0; i < reviewImages.length; i++) {
       ImagesUrls.add(await uploadImage(reviewImages[i]));
@@ -100,8 +177,6 @@ class ReviewProvider with ChangeNotifier {
     // });
     final url = Uri.parse('$POST_REVIEW_API');
     try {
-      print('1111111111111111');
-
       final response = await http.post(url,
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -129,8 +204,16 @@ class ReviewProvider with ChangeNotifier {
                 formData['RestaurantTotalQuantityRating'],
             "restaurantTotalServiceRating":
                 formData['RestaurantTotalServiceRating'],
+            "wouldRecommend": formData['isLiked'],
+            "dishes": reviewItems.map<Map<String, dynamic>>((item) {
+              return {
+                'name': item.title,
+                'rating': item.rating,
+                'price': item.price,
+                'Type': item.foodType == FoodType.FOOD ? true : false,
+              };
+            }).toList(),
           }));
-      print('222222222222222222222222222222');
       print(response.statusCode);
       print(response.headers);
       print(response.body);
@@ -172,7 +255,6 @@ class ReviewProvider with ChangeNotifier {
 
   Future<List<Review>> fetchPostsOfId(String profileId) async {
     final url = Uri.parse('$GET_PROFILE_POSTS_API/$profileId');
-    List<Review> reviewsList = [];
 
     try {
       final response = await http.get(
@@ -189,39 +271,7 @@ class ReviewProvider with ChangeNotifier {
       final responseData = json.decode(response.body);
       print(responseData);
 
-      print(responseData[1]['imgUrl'].runtimeType);
-      responseData.forEach((review) {
-        {
-          reviewsList.add(Review(
-            id: review['_id'],
-            serviceRating: review['serviceRating'].toDouble(),
-            tasteRating: review['TasteRating'].toDouble(),
-            costRating: review['costRating'].toDouble(),
-            quantityRating: review['quantityRating'].toDouble(),
-            totalRating: review['TotalRating'].toDouble(),
-            authorId: review['owner'],
-            // get restaurants for profile id
-            authorName: '',
-            authorImage: '',
-            restaurantId: '',
-            restaurantName: '',
-            branchtId: review['branchId'],
-            location: '', //branch name
-            reviewText: review['comment'],
-            isLiked: false,
-            isUpvoted: review['IsUpvoted'],
-            isDownvoted: review['IsDownVoted'],
-            reviewItems: null,
-            reviewImages: List<String>.from(review['imgUrl']),
-            //    reviewImages: review['imgUrl'].isEmpty
-            // ? []
-            // : review['imgUrl'] as List<String>,
-            downVotes: 0,
-            upVotes: 0,
-          ));
-        }
-      });
-      return reviewsList;
+      return _decodeReviewsResponse(responseData);
     } catch (error) {
       // ignore: avoid_print
       print('errorrrrrrrrrrrrrrrrrrrrr');

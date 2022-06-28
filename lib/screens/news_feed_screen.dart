@@ -4,20 +4,22 @@ import 'package:where_to_eat/screens/new_review_screen.dart';
 import 'package:where_to_eat/widgets/reviews_list.dart';
 
 import '../models/review.dart';
+import '../providers/new_review_provider.dart';
 import '../providers/review_provider.dart';
 
 class NewsFeedScreen extends StatelessWidget {
   const NewsFeedScreen({Key? key}) : super(key: key);
 
   Future<List<Review>> _fetchReviewPosts(BuildContext context) async {
-    final provider = Provider.of<ReviewProvider>(context, listen: false);
+    final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
 
-    await provider.fetchAndSetNewsFeed();
-    return provider.items;
+    await reviewProvider.fetchAndSetNewsFeed();
+    return reviewProvider.items;
   }
 
   @override
   Widget build(BuildContext context) {
+    final newReviewProvider = Provider.of<NewReviewProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -56,12 +58,14 @@ class NewsFeedScreen extends StatelessWidget {
         ),
         //reviewsData.items
       ), // This trailing comma makes auto-formatting nicer for build methods.
-      floatingActionButton: IconButton(
-          icon: const Icon(Icons.add_circle_outline),
-          onPressed: () =>
-              Navigator.of(context).pushNamed(NewReviewScreen.routeName),
-          color: Theme.of(context).colorScheme.primary,
-          iconSize: 45.0),
+      floatingActionButton: newReviewProvider.uploadingPost
+          ? CircularProgressIndicator()
+          : IconButton(
+              icon: const Icon(Icons.add_circle_outline),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(NewReviewScreen.routeName),
+              color: Theme.of(context).colorScheme.primary,
+              iconSize: 45.0),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

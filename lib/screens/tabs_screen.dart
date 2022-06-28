@@ -58,7 +58,7 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'News Feed',
       },
       {
-        'page': const ProfileScreen(isMe: true),
+        'page': ProfileScreen(isMe: true),
         'title': 'My Profile',
       },
     ];
