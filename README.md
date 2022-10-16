@@ -1,5 +1,6 @@
 # where_to_eat
 This is my graduation project flutter App, the project was marked an A
+
 ![image](https://user-images.githubusercontent.com/56312212/196059241-6e6b919c-8795-47ed-ba2b-285729d5e250.png)
 
 This is a hybrid of a restaurant recommendation and a social media platform.
